@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>App Link Test Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .link { display: block; margin: 10px 0; padding: 10px; background: #f5f5f5; text-decoration: none; color: #333; }
+        .link:hover { background: #e5e5e5; }
+    </style>
+</head>
+<body>
+    <h1>App Link Test Page</h1>
+    
+    <!-- TELEPHONE LINKS -->
+    <div class="section">
+        <h2>📞 Telephone Links</h2>
+        <a href="tel:+1234567890" class="link">tel:+1234567890</a>
+        <a href="telprompt:+1234567890" class="link">telprompt:+1234567890</a>
+        <a href="tel:911" class="link">Emergency: tel:911</a>
+    </div>
+    
+    <!-- SMS LINKS -->
+    <div class="section">
+        <h2>💬 SMS Links</h2>
+        <a href="sms:+1234567890" class="link">sms:+1234567890</a>
+        <a href="sms:+1234567890?body=Hello%20World" class="link">SMS with message</a>
+        <a href="smsto:+1234567890" class="link">smsto:+1234567890</a>
+        <a href="smsto:+1234567890?body=Test%20message" class="link">SMS To with message</a>
+    </div>
+    
+    <!-- EMAIL LINKS -->
+    <div class="section">
+        <h2>📧 Email Links</h2>
+        <a href="mailto:test@example.com" class="link">mailto:test@example.com</a>
+        <a href="mailto:test@example.com?subject=Hello&body=Test%20email" class="link">Email with subject & body</a>
+        <a href="mailto:test@example.com?cc=cc@example.com&bcc=bcc@example.com" class="link">Email with CC & BCC</a>
+    </div>
+    
+    <!-- SOCIAL MEDIA APP LINKS -->
+    <div class="section">
+        <h2>📱 Social Media App Links</h2>
+        <a href="whatsapp://send?phone=1234567890&text=Hello" class="link">WhatsApp</a>
+        <a href="tg://msg?text=Hello&to=username" class="link">Telegram</a>
+        <a href="viber://chat?number=1234567890" class="link">Viber</a>
+        <a href="fb://profile/100000000000000" class="link">Facebook Profile</a>
+        <a href="instagram://user?username=testuser" class="link">Instagram</a>
+        <a href="twitter://user?screen_name=testuser" class="link">Twitter</a>
+        <a href="linkedin://profile/testuser" class="link">LinkedIn</a>
+    </div>
+    
+    <!-- MAP LINKS -->
+    <div class="section">
+        <h2>🗺️ Maps & Navigation</h2>
+        <a href="geo:37.7749,-122.4194" class="link">Geo coordinates</a>
+        <a href="https://maps.google.com/?q=San+Francisco" class="link">Google Maps</a>
+        <a href="comgooglemaps://?q=San+Francisco" class="link">Google Maps App</a>
+        <a href="waze://?q=San+Francisco" class="link">Waze</a>
+    </div>
+    
+    <!-- SHOPPING APP LINKS -->
+    <div class="section">
+        <h2>🛒 Shopping Apps</h2>
+        <a href="amazon://www.amazon.com/dp/B08N5WRWNW" class="link">Amazon Product</a>
+        <a href="ebay://item/123456789" class="link">eBay Item</a>
+    </div>
+    
+    <!-- MEDIA APP LINKS -->
+    <div class="section">
+        <h2>🎵 Media Apps</h2>
+        <a href="spotify:track:4iV5W9uYEdYUVa79Axb7Rh" class="link">Spotify Track</a>
+        <a href="youtube://watch?v=dQw4w9WgXcQ" class="link">YouTube Video</a>
+        <a href="vnd.youtube://watch?v=dQw4w9WgXcQ" class="link">YouTube (alt scheme)</a>
+    </div>
+    
+    <!-- CUSTOM APP LINKS -->
+    <div class="section">
+        <h2>🔧 Custom App Schemes</h2>
+        <a href="myapp://open?param=value" class="link">Custom App Scheme</a>
+        <a href="myapp://profile/123" class="link">Custom Deep Link</a>
+    </div>
+    
+    <!-- FILE LINKS -->
+    <div class="section">
+        <h2>📁 File Links</h2>
+        <a href="file:///android_asset/test.pdf" class="link">Local File</a>
+        <a href="content://com.example.provider/files/test.txt" class="link">Content Provider</a>
+    </div>
+    
+    <!-- MARKET LINKS -->
+    <div class="section">
+        <h2>🏪 App Store Links</h2>
+        <a href="market://details?id=com.whatsapp" class="link">Play Store (Market)</a>
+        <a href="https://play.google.com/store/apps/details?id=com.whatsapp" class="link">Play Store (Web)</a>
+    </div>
+
+    <script>
+        // Add click tracking
+        document.querySelectorAll('.link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                console.log('Clicked:', this.href);
+                // Optional: Add analytics tracking here
+            });
+        });
+    </script>
+</body>
+</html>
