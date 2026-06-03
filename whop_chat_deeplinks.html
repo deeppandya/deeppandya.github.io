@@ -38,14 +38,18 @@
 
   <div class="card">
     <div class="kv">Build: <b>com.whop.whopapp.develop</b> &nbsp;·&nbsp; Test account: <b>@deeppandya91</b></div>
-    <div class="kv">Feed: <b>feed_1Cb8MVzVkTuSYYMP2sdLvS</b> &nbsp;·&nbsp; Message: <b>post_1CbXB13xCu5VFNUGLfL8uL</b> &nbsp;·&nbsp; Company route: <b>deep-ai-7c1d</b> &nbsp;·&nbsp; Experience: <b>exp_qLNmi6qNhFcYFZ</b></div>
+    <div class="kv">Feed: <b>feed_1Cb8MVzVkTuSYYMP2sdLvS</b> &nbsp;·&nbsp; Message: <b>post_1CbXB13xCu5VFNUGLfL8uL</b> &nbsp;·&nbsp; Company route: <b>deep-ai-7c1d</b> &nbsp;·&nbsp; Chat experience: <b>exp_k0RVZCvT7LW7eH</b> (whop-wide-internal)</div>
   </div>
 
-  <h2>How to fire a deeplink</h2>
-  <p class="mut">Most reliable (works for every URL shape) — push the URL as the <code>deeplink</code> extra:</p>
+  <h2>How to use this page</h2>
+  <p>Open this page in a browser on the device and <b>tap a link</b> — it should open the Whop app. Every link is under <code>whop.com/joined/…</code>, the path the app's verified App Links filter claims; the parser strips the <code>joined</code> segment, so each one resolves to the same destination as its canonical deeplink (e.g. <code>/joined/messages?chat=…</code> ≡ <code>/messages?chat=…</code>).</p>
+  <div class="card">
+    <b>If a tap opens the browser instead of the app</b> (common on the <code>develop</code> build, which isn't auto-verified on whop.com):
+    <div class="mut" style="margin-top:6px">Settings → Apps → <b>Whop (develop)</b> → <b>Open by default</b> → enable <b>Open supported links</b> and add <code>whop.com</code>. Then taps route into the app.</div>
+  </div>
+  <p class="mut">Fallback that always works (bypasses link verification) — push the URL as the <code>deeplink</code> extra, or use each row's <b>copy adb</b> button:</p>
   <pre id="adbtpl">adb shell am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
   --es deeplink "&lt;URL&gt;"</pre>
-  <p class="mut">Tapping the links below on the device works too, but Android App Links only auto-verifies the <code>/joined/*</code> path, so non-<code>/joined</code> links may open the browser instead of the app — use the <code>adb</code> form for those.</p>
 
   <h2>Verification table</h2>
   <table>
@@ -53,42 +57,52 @@
     <tbody>
       <tr>
         <td class="num">1</td><td>DM inbox</td>
-        <td><a class="dl" href="https://whop.com/messages">https://whop.com/messages</a></td>
+        <td><a class="dl" href="https://whop.com/joined/messages">https://whop.com/joined/messages</a></td>
         <td>Opens the <b>Messages tab / inbox</b>. <span class="mut">(before: fell to WebView)</span></td>
       </tr>
       <tr>
         <td class="num">2</td><td>DM feed</td>
-        <td><a class="dl" href="https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
+        <td><a class="dl" href="https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
         <td>Opens your DM conversation at the latest message.</td>
       </tr>
       <tr>
         <td class="num">3</td><td>Feed alias</td>
-        <td><a class="dl" href="https://whop.com/messages?feed=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/messages?feed=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
+        <td><a class="dl" href="https://whop.com/joined/messages?feed=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/joined/messages?feed=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
         <td>Identical to #2 — <code>feed</code>/<code>feed_id</code> now accepted as aliases.</td>
       </tr>
       <tr>
         <td class="num">4 <span class="star">★</span></td><td>DM scroll-to-message</td>
-        <td><a class="dl" href="https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
+        <td><a class="dl" href="https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
         <td>Opens the DM <b>scrolled to that message</b>. <span class="mut">(before: the message id was dropped)</span></td>
       </tr>
       <tr>
         <td class="num">4b</td><td>Message alias</td>
-        <td><a class="dl" href="https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;post=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;post=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
+        <td><a class="dl" href="https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;post=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;post=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
         <td>Identical to #4 — <code>post</code>/<code>post_id</code>/<code>message</code>/<code>message_id</code> all work.</td>
       </tr>
       <tr>
+        <td class="num">6 <span class="star">★</span></td><td>Open DM with user</td>
+        <td><a class="dl" href="https://whop.com/joined/messages?to_user_id=deeppandya">https://whop.com/joined/messages?to_user_id=deeppandya</a></td>
+        <td>Creates/opens a DM thread with that user, lands in it. <span class="mut">Expects a <code>user_…</code> tag; a bare username may not resolve in <code>createDM</code> — swap in the <code>user_…</code> tag if it doesn't open.</span></td>
+      </tr>
+      <tr>
         <td class="num">7 <span class="star">★</span></td><td>Support chat</td>
-        <td><a class="dl" href="https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
+        <td><a class="dl" href="https://whop.com/joined/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/joined/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
         <td>Opens the feed <b>in place</b> (does <i>not</i> switch to the Messages tab). <span class="mut">Using your DM feed here verifies the support-chat route; for a real support feed, Share from your whop's support chat.</span></td>
       </tr>
       <tr>
         <td class="num">—</td><td>Experience route</td>
-        <td><a class="dl" href="https://whop.com/deep-ai-7c1d/courses-qLNmi6qNhFcYFZ/app/">https://whop.com/deep-ai-7c1d/courses-qLNmi6qNhFcYFZ/app/</a></td>
-        <td>Opens the courses experience (generic experience routing).</td>
+        <td><a class="dl" href="https://whop.com/joined/whop-wide-internal/exp_k0RVZCvT7LW7eH/app/">https://whop.com/joined/whop-wide-internal/exp_k0RVZCvT7LW7eH/app/</a></td>
+        <td>Opens experience <code>exp_k0RVZCvT7LW7eH</code> (generic experience routing). <span class="mut">This is a <code>/joined/*</code> link, so tapping it opens the app directly via verified App Links.</span></td>
+      </tr>
+      <tr>
+        <td class="num">8 <span class="star">★</span></td><td>Experience chat scroll</td>
+        <td><a class="dl" href="https://whop.com/joined/whop-wide-internal/exp_k0RVZCvT7LW7eH/app/?message=post_1CbS8BzUmE6a2hzQjPcqmd">https://whop.com/joined/whop-wide-internal/exp_k0RVZCvT7LW7eH/app/?message=post_1CbS8BzUmE6a2hzQjPcqmd</a></td>
+        <td>Opens the chat experience <b>scrolled to <code>post_1CbS8BzUmE6a2hzQjPcqmd</code></b>. <span class="mut">This is the exact URL the in‑app Share button emits; before the fix the <code>?message=</code> was dropped for experience chats.</span></td>
       </tr>
       <tr>
         <td class="num">9</td><td>AI chat <span class="pill gap">gap</span></td>
-        <td><a class="dl" href="https://whop.com/chats/chat_abc">https://whop.com/chats/chat_abc</a></td>
+        <td><a class="dl" href="https://whop.com/joined/chats/chat_abc">https://whop.com/joined/chats/chat_abc</a></td>
         <td>Opens in WebView — no native AI-chat screen on Android.</td>
       </tr>
     </tbody>
@@ -96,9 +110,7 @@
 
   <h2>Cases still needing a real id</h2>
   <ul class="mut">
-    <li><b>#5 DM-via-experience</b> <code>/messages/exp_X/app/?chat_feed_id=Y</code> — needs a <b>chat_feed_id</b> (the shared experience is a courses app, which has no chat feed).</li>
-    <li><b>#6 open-DM-with-user</b> <code>?to_user_id=user_…</code> — needs a <b>user tag</b>.</li>
-    <li><b>#8 experience-chat scroll</b> <code>/joined/&lt;route&gt;/chat-exp_…/app/?message=…</code> — needs a <b>chat</b> experience plus a post in it.</li>
+    <li><b>#5 DM-via-experience</b> <code>/messages/exp_X/app/?chat_feed_id=Y</code> — needs a <b>chat_feed_id</b> (a DM surfaced inside an experience). Share that to fill it in.</li>
   </ul>
 
   <footer>
