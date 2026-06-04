@@ -15,6 +15,9 @@
   .pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;vertical-align:middle}
   .new{background:rgba(52,199,89,.15);color:var(--good);border:1px solid rgba(52,199,89,.4)}
   .gap{background:rgba(255,159,10,.15);color:var(--warn);border:1px solid rgba(255,159,10,.4)}
+  .p0{background:rgba(255,69,58,.15);color:#ff453a;border:1px solid rgba(255,69,58,.4)}
+  .p1{background:rgba(255,159,10,.15);color:var(--warn);border:1px solid rgba(255,159,10,.4)}
+  .p2{background:rgba(154,163,178,.15);color:var(--mut);border:1px solid rgba(154,163,178,.4)}
   code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
   pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px}
@@ -120,6 +123,58 @@
   <ul class="mut">
     <li><b>#5 DM-via-experience</b> <code>/messages/exp_X/app/?chat_feed_id=Y</code> — needs a <b>chat_feed_id</b> (a DM surfaced inside an experience). Share that to fill it in.</li>
   </ul>
+
+  <h2>Android deeplink gaps &amp; things to address</h2>
+  <p class="mut">Where Android diverges from iOS/Web for chat/DM links — backlog to look into separately. Priority is by user reach.</p>
+  <table>
+    <thead><tr><th>P</th><th>Gap</th><th>Where to fix</th><th>What to do</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="pill p0">P0</span></td>
+        <td><b>External https links only cover <code>/joined/*</code></b><div class="mut">App Links <code>autoVerify</code> claims only <code>whop.com/joined/*</code>, so <code>/messages</code>, <code>/chats</code>, <code>/experiences</code>, <code>/@user</code> tapped from a browser, email, or another app open the <i>browser</i>, not the app. iOS opens the whole domain via AASA.</div></td>
+        <td><code>AndroidManifest.xml</code> intent-filters + <code>whop.com/.well-known/assetlinks.json</code></td>
+        <td>Broaden the verified host coverage (drop the <code>/joined</code> <code>pathPrefix</code> or add filters for the other paths); confirm the app fingerprint is in <code>assetlinks.json</code>. Keep web-only paths (<code>/checkout</code>, <code>/billing</code>) routing to <code>External</code>.</td>
+      </tr>
+      <tr>
+        <td><span class="pill p1">P1</span></td>
+        <td><b>“Message this user” (<code>?to_user_id=</code>) unsupported</b><div class="mut">Supported on Web + iOS; absent on Android. “Send message” links from profiles / app store / share don’t work.</div></td>
+        <td><code>DeepLinkParser.parseDm</code>, <code>WhopUrl</code>, <code>DeepLinkHandler</code></td>
+        <td>Add a <code>WhopUrl.DMWithUser(userId, initialContent?)</code>, parse <code>to_user_id</code>/<code>initial_content</code>, resolve-or-create the DM feed for that user, then route to <code>MessageListScreen</code>.</td>
+      </tr>
+      <tr>
+        <td><span class="pill p1">P1</span></td>
+        <td><b>No deep-link to a specific message <i>inside a DM</i></b><div class="mut">Android keeps only the DM <code>feedId</code> and drops <code>message</code>/<code>post</code>; iOS/Web scroll to it. (Experience chat already supports <code>?message=</code>.)</div></td>
+        <td><code>WhopUrl.DMMessages</code> → <code>Route.ChatWithMetadata</code> → <code>MessageListScreen</code></td>
+        <td>Thread <code>postId</code> through and scroll/highlight it (load a window around the id if not on the first page).</td>
+      </tr>
+      <tr>
+        <td><span class="pill p1">P1</span></td>
+        <td><b>Prefilled DM text (<code>initial_content</code>) unsupported</b><div class="mut">Web/iOS prefill the composer; Android ignores it.</div></td>
+        <td>Folds into the <code>to_user_id</code> work</td>
+        <td>Carry <code>initialContent</code> into the DM screen composer.</td>
+      </tr>
+      <tr>
+        <td><span class="pill p2">P2</span></td>
+        <td><b>Support chat <code>/{bot}/support/?chat=</code> not handled</b><div class="mut">Falls through to generic/WebView; iOS sets an <code>isSupportChat</code> flag and opens in place.</div></td>
+        <td><code>DeepLinkParser</code> + DM route</td>
+        <td>Add parse rule (2 segments, 2nd == <code>support</code>) → DM route with a support flag.</td>
+      </tr>
+      <tr>
+        <td><span class="pill p2">P2</span></td>
+        <td><b>AI chat <code>/chats/{id}</code> → WebView</b> <span class="pill gap">gap</span><div class="mut">iOS/Web have native AI chat; Android opens WebView.</div></td>
+        <td><code>DeepLinkParser</code> / navigation</td>
+        <td>Decide native vs WebView (depends on whether a native AI-chat screen exists) — confirm intent before building.</td>
+      </tr>
+      <tr>
+        <td><span class="pill p2">P2</span></td>
+        <td><b>Few query-param aliases</b><div class="mut">iOS accepts <code>chat</code>/<code>feed</code>/<code>feed_id</code> and <code>post</code>/<code>post_id</code>/<code>message</code>/<code>message_id</code>; Android accepts only <code>chat</code>/<code>chat_feed_id</code>. Links using other aliases don’t resolve.</div></td>
+        <td><code>DeepLinkParser.parseDm</code></td>
+        <td>Broaden accepted query keys to match iOS (cheap; do alongside the DM-parity work).</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="mut"><b>Cross-cutting:</b> add parser/handler tests per new pattern (mirror <code>DeepLinkParserAndroidTest</code>); the three platforms define these patterns independently — a shared fixture list (iOS <code>ParseUrlTests</code> is most complete) would prevent future drift.</p>
+  <p class="mut"><b>Suggested order:</b> P0 (biggest reach) → aliases (cheap, enables the rest) → <code>to_user_id</code> + DM scroll + prefill (one DM-parity PR) → support chat → AI chat (confirm intent first).</p>
 
   <footer>
     Android chat/DM deeplink parity with iOS · parser → route → navigation. Generated for on-device QA.
