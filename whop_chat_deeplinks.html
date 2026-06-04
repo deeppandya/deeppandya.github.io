@@ -48,8 +48,9 @@
     <div class="mut" style="margin-top:6px">Settings → Apps → <b>Whop (develop)</b> → <b>Open by default</b> → enable <b>Open supported links</b> and add <code>whop.com</code>. Then taps route into the app.</div>
   </div>
   <p class="mut">Fallback that always works (bypasses link verification) — push the URL as the <code>deeplink</code> extra, or use each row's <b>copy adb</b> button:</p>
-  <pre id="adbtpl">adb shell am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
-  --es deeplink "&lt;URL&gt;"</pre>
+  <pre id="adbtpl">adb shell "am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
+  --es deeplink '&lt;URL&gt;'"</pre>
+  <p class="mut">Note: the URL is single-quoted <i>inside</i> the device command on purpose — an unquoted <code>&amp;</code> is eaten by the phone's shell and truncates the link before <code>&amp;message=…</code> (so it opens the chat but won't scroll). The <b>copy adb</b> buttons already emit this safe form.</p>
 
   <h2>Verification table</h2>
   <table>
@@ -125,7 +126,7 @@
       btn.className='copy';btn.textContent='copy adb';
       btn.onclick=function(e){
         e.preventDefault();
-        var cmd='adb shell am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity --es deeplink "'+a.href+'"';
+        var cmd="adb shell \"am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity --es deeplink '"+a.href+"'\"";
         navigator.clipboard.writeText(cmd).then(function(){btn.textContent='copied!';setTimeout(function(){btn.textContent='copy adb';},1200);});
       };
       a.parentNode.appendChild(btn);
