@@ -19,7 +19,7 @@
   th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
   th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
   td.num{color:var(--mut);white-space:nowrap}
-  td.plat{white-space:nowrap;font-size:13px;letter-spacing:1px}
+  td.p,th.p{text-align:center;white-space:nowrap}
   a.dl{color:var(--accent);text-decoration:none;word-break:break-all;font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
   a.dl:hover{text-decoration:underline}
   .star{color:var(--good);font-weight:700}
@@ -41,7 +41,7 @@
 </head>
 <body>
   <h1>Whop — Chat / DM Deeplink Verification</h1>
-  <p class="mut">The same <code>whop.com</code> URLs open the chat/DM screen on <b>web</b>, <b>iOS</b>, and <b>Android</b>. Tap a link (with the app installed &amp; signed in) to verify. <span class="star">★</span> = behaviors recently added on Android. Platform support is shown per row (W = web, i = iOS, A = Android).</p>
+  <p class="mut">The same <code>whop.com</code> URLs open the chat/DM screen on <b>web</b>, <b>iOS</b>, and <b>Android</b>. Tap a link (with the app installed &amp; signed in) to verify. Platform support is shown per row.</p>
 
   <div class="card">
     <div class="kv">Feed: <b>feed_1Cb8MVzVkTuSYYMP2sdLvS</b> &nbsp;·&nbsp; Message: <b>post_1CbXB13xCu5VFNUGLfL8uL</b> &nbsp;·&nbsp; User: <b>user_332WAZBYJ1yKq</b></div>
@@ -50,45 +50,45 @@
 
   <h2>Deeplinks</h2>
   <table>
-    <thead><tr><th>#</th><th>Case</th><th>W&nbsp;i&nbsp;A</th><th>Deeplink</th><th>Expected result</th></tr></thead>
+    <thead><tr><th>#</th><th>Case</th><th class="p">Web</th><th class="p">iOS</th><th class="p">Android</th><th>Deeplink</th><th>Expected result</th></tr></thead>
     <tbody>
       <tr>
-        <td class="num">1</td><td>DM inbox</td><td class="plat">✅✅✅</td>
+        <td class="num">1</td><td>DM inbox</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/messages">https://whop.com/messages</a></td>
         <td>Opens the Messages inbox.</td>
       </tr>
       <tr>
-        <td class="num">2</td><td>DM feed</td><td class="plat">✅✅✅</td>
+        <td class="num">2</td><td>DM feed</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
         <td>Opens that DM conversation at the latest message.</td>
       </tr>
       <tr>
-        <td class="num">3 <span class="star">★</span></td><td>DM scroll-to-message</td><td class="plat">✅✅✅</td>
+        <td class="num">3</td><td>DM scroll-to-message</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
         <td>Opens the DM <b>scrolled to &amp; highlighting</b> that message (loads a window around it if it's not in the first page).</td>
       </tr>
       <tr>
-        <td class="num">4 <span class="star">★</span></td><td>Open DM with user</td><td class="plat">✅✅✅</td>
+        <td class="num">4</td><td>Open DM with user</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/messages?to_user_id=user_332WAZBYJ1yKq">https://whop.com/messages?to_user_id=user_332WAZBYJ1yKq</a></td>
         <td>Creates/opens a DM thread with that user and lands in it.</td>
       </tr>
       <tr>
-        <td class="num">5 <span class="star">★</span></td><td>Support chat</td><td class="plat">✅✅✅</td>
+        <td class="num">5</td><td>Support chat</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
         <td>Opens the support chat in place (doesn't switch to the Messages tab).</td>
       </tr>
       <tr>
-        <td class="num">6 <span class="star">★</span></td><td>Support chat + scroll</td><td class="plat">✅✅✅</td>
+        <td class="num">6</td><td>Support chat + scroll</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
         <td>Opens the support chat <b>scrolled to that message</b>. <span class="mut">(Android: newly added — was opening the feed without scrolling.)</span></td>
       </tr>
       <tr>
-        <td class="num">7 <span class="star">★</span></td><td>Experience chat + scroll</td><td class="plat">✅✅✅</td>
+        <td class="num">7</td><td>Experience chat + scroll</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/whop-wide-internal/i-os-Ftg4IyrNx9jK7M/app/?message=post_1CbW6dBc7VBE6UndWYsgF8">https://whop.com/whop-wide-internal/i-os-Ftg4IyrNx9jK7M/app/?message=post_1CbW6dBc7VBE6UndWYsgF8</a></td>
         <td>Opens the experience's chat <b>scrolled to that message</b>. <span class="mut">Vanity slug resolves to <code>exp_Ftg4IyrNx9jK7M</code>.</span></td>
       </tr>
       <tr>
-        <td class="num">8</td><td>AI chat</td><td class="plat">✅✅⚠️</td>
+        <td class="num">8</td><td>AI chat</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
         <td><a class="dl" href="https://whop.com/chats/chat_abc">https://whop.com/chats/chat_abc</a></td>
         <td>Native AI-chat screen on web &amp; iOS. <span class="mut">Android: opens in an in-app WebView (no native screen yet).</span></td>
       </tr>
