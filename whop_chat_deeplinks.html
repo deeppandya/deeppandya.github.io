@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Whop Android — Chat/DM Deeplink Verification</title>
+<title>Whop — Chat/DM Deeplink Verification</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   :root{--bg:#0f1115;--card:#171a21;--line:#262b36;--fg:#e6e9ef;--mut:#9aa3b2;--accent:#5b8cff;--good:#34c759;--warn:#ff9f0a;--code:#0b0d12}
@@ -12,12 +12,6 @@
   h2{font-size:17px;margin:28px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
   p,li{color:var(--fg)}
   .mut{color:var(--mut);font-size:14px}
-  .pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;vertical-align:middle}
-  .new{background:rgba(52,199,89,.15);color:var(--good);border:1px solid rgba(52,199,89,.4)}
-  .gap{background:rgba(255,159,10,.15);color:var(--warn);border:1px solid rgba(255,159,10,.4)}
-  .p0{background:rgba(255,69,58,.15);color:#ff453a;border:1px solid rgba(255,69,58,.4)}
-  .p1{background:rgba(255,159,10,.15);color:var(--warn);border:1px solid rgba(255,159,10,.4)}
-  .p2{background:rgba(154,163,178,.15);color:var(--mut);border:1px solid rgba(154,163,178,.4)}
   code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
   pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px}
@@ -25,178 +19,123 @@
   th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
   th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
   td.num{color:var(--mut);white-space:nowrap}
+  td.plat{white-space:nowrap;font-size:13px;letter-spacing:1px}
   a.dl{color:var(--accent);text-decoration:none;word-break:break-all;font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
   a.dl:hover{text-decoration:underline}
-  .copy{cursor:pointer;border:1px solid var(--line);background:#1f2531;color:var(--mut);border-radius:6px;font-size:11px;padding:2px 7px;margin-left:6px;flex:none}
-  .copy:hover{color:var(--fg)}
-  .cmd{margin-top:6px;display:flex;gap:8px;align-items:flex-start;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
-  .cmd code{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--mut);white-space:pre-wrap;word-break:break-all;user-select:all}
   .star{color:var(--good);font-weight:700}
   .kv{color:var(--mut);font-size:13px}
   .kv b{color:var(--fg);font-family:ui-monospace,Menlo,monospace}
+  details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:16px 0}
+  summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:15px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:'\25B8\00a0';color:var(--mut)}
+  details[open] summary::before{content:'\25BE\00a0'}
+  .dbody{padding:0 16px 16px}
+  .copy{cursor:pointer;border:1px solid var(--line);background:#1f2531;color:var(--mut);border-radius:6px;font-size:11px;padding:2px 7px;margin-left:6px;flex:none}
+  .copy:hover{color:var(--fg)}
+  .cmd{margin:8px 0;display:flex;gap:8px;align-items:flex-start;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+  .cmd code{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--mut);white-space:pre-wrap;word-break:break-all;user-select:all}
+  .cmd .lbl{color:var(--fg);font-size:11px;min-width:120px}
   footer{margin-top:32px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:12px}
 </style>
 </head>
 <body>
-  <h1>Whop Android — Chat / DM Deeplink Verification</h1>
-  <p class="mut">Parity pass that makes Android handle every chat/DM deeplink iOS supports. <span class="star">★</span> marks the three behaviors this change adds.</p>
+  <h1>Whop — Chat / DM Deeplink Verification</h1>
+  <p class="mut">The same <code>whop.com</code> URLs open the chat/DM screen on <b>web</b>, <b>iOS</b>, and <b>Android</b>. Tap a link (with the app installed &amp; signed in) to verify. <span class="star">★</span> = behaviors recently added on Android. Platform support is shown per row (W = web, i = iOS, A = Android).</p>
 
   <div class="card">
-    <div class="kv">Build: <b>com.whop.whopapp.develop</b> &nbsp;·&nbsp; Test account: <b>@deeppandya91</b></div>
-    <div class="kv">Feed: <b>feed_1Cb8MVzVkTuSYYMP2sdLvS</b> &nbsp;·&nbsp; Message: <b>post_1CbXB13xCu5VFNUGLfL8uL</b> &nbsp;·&nbsp; Company route: <b>deep-ai-7c1d</b> &nbsp;·&nbsp; Experience: <b>exp_k0RVZCvT7LW7eH</b> &nbsp;·&nbsp; Chat experience: <b>exp_Ftg4IyrNx9jK7M</b> (i-os, whop-wide-internal)</div>
+    <div class="kv">Feed: <b>feed_1Cb8MVzVkTuSYYMP2sdLvS</b> &nbsp;·&nbsp; Message: <b>post_1CbXB13xCu5VFNUGLfL8uL</b> &nbsp;·&nbsp; User: <b>user_332WAZBYJ1yKq</b></div>
+    <div class="kv">Company route: <b>deep-ai-7c1d</b> &nbsp;·&nbsp; Chat experience: <b>i-os</b> (whop-wide-internal) · message <b>post_1CbW6dBc7VBE6UndWYsgF8</b></div>
   </div>
 
-  <h2>How to use this page</h2>
-  <p>Open this page in a browser on the device and <b>tap a link</b> — it should open the Whop app. Every link is under <code>whop.com/joined/…</code>, the path the app's verified App Links filter claims; the parser strips the <code>joined</code> segment, so each one resolves to the same destination as its canonical deeplink (e.g. <code>/joined/messages?chat=…</code> ≡ <code>/messages?chat=…</code>).</p>
-  <div class="card">
-    <b>If a tap opens the browser instead of the app</b> (common on the <code>develop</code> build, which isn't auto-verified on whop.com):
-    <div class="mut" style="margin-top:6px">Settings → Apps → <b>Whop (develop)</b> → <b>Open by default</b> → enable <b>Open supported links</b> and add <code>whop.com</code>. Then taps route into the app.</div>
-  </div>
-  <p class="mut">Fallback that always works (bypasses link verification) — push the URL as the <code>deeplink</code> extra, or use each row's <b>copy adb</b> button:</p>
-  <pre id="adbtpl">adb shell "am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
+  <h2>Deeplinks</h2>
+  <table>
+    <thead><tr><th>#</th><th>Case</th><th>W&nbsp;i&nbsp;A</th><th>Deeplink</th><th>Expected result</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="num">1</td><td>DM inbox</td><td class="plat">✅✅✅</td>
+        <td><a class="dl" href="https://whop.com/messages">https://whop.com/messages</a></td>
+        <td>Opens the Messages inbox.</td>
+      </tr>
+      <tr>
+        <td class="num">2</td><td>DM feed</td><td class="plat">✅✅✅</td>
+        <td><a class="dl" href="https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
+        <td>Opens that DM conversation at the latest message.</td>
+      </tr>
+      <tr>
+        <td class="num">3 <span class="star">★</span></td><td>DM scroll-to-message</td><td class="plat">✅✅✅</td>
+        <td><a class="dl" href="https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
+        <td>Opens the DM <b>scrolled to &amp; highlighting</b> that message (loads a window around it if it's not in the first page).</td>
+      </tr>
+      <tr>
+        <td class="num">4 <span class="star">★</span></td><td>Open DM with user</td><td class="plat">✅✅✅</td>
+        <td><a class="dl" href="https://whop.com/messages?to_user_id=user_332WAZBYJ1yKq">https://whop.com/messages?to_user_id=user_332WAZBYJ1yKq</a></td>
+        <td>Creates/opens a DM thread with that user and lands in it.</td>
+      </tr>
+      <tr>
+        <td class="num">5 <span class="star">★</span></td><td>Support chat</td><td class="plat">✅✅✅</td>
+        <td><a class="dl" href="https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
+        <td>Opens the support chat in place (doesn't switch to the Messages tab).</td>
+      </tr>
+      <tr>
+        <td class="num">6 <span class="star">★</span></td><td>Support chat + scroll</td><td class="plat">✅✅✅</td>
+        <td><a class="dl" href="https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
+        <td>Opens the support chat <b>scrolled to that message</b>. <span class="mut">(Android: newly added — was opening the feed without scrolling.)</span></td>
+      </tr>
+      <tr>
+        <td class="num">7 <span class="star">★</span></td><td>Experience chat + scroll</td><td class="plat">✅✅✅</td>
+        <td><a class="dl" href="https://whop.com/whop-wide-internal/i-os-Ftg4IyrNx9jK7M/app/?message=post_1CbW6dBc7VBE6UndWYsgF8">https://whop.com/whop-wide-internal/i-os-Ftg4IyrNx9jK7M/app/?message=post_1CbW6dBc7VBE6UndWYsgF8</a></td>
+        <td>Opens the experience's chat <b>scrolled to that message</b>. <span class="mut">Vanity slug resolves to <code>exp_Ftg4IyrNx9jK7M</code>.</span></td>
+      </tr>
+      <tr>
+        <td class="num">8</td><td>AI chat</td><td class="plat">✅✅⚠️</td>
+        <td><a class="dl" href="https://whop.com/chats/chat_abc">https://whop.com/chats/chat_abc</a></td>
+        <td>Native AI-chat screen on web &amp; iOS. <span class="mut">Android: opens in an in-app WebView (no native screen yet).</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="mut">Canonical query params: <code>chat</code> (feed id) and <code>message</code> (message id). Mobile also accepts aliases <code>feed</code>/<code>feed_id</code> and <code>post</code>/<code>post_id</code>/<code>message_id</code>.</p>
+
+  <details>
+    <summary>Android testing (develop build)</summary>
+    <div class="dbody">
+      <p class="mut">Build: <code>com.whop.whopapp.develop</code> &nbsp;·&nbsp; signed in as <b>@deeppandya91</b>.</p>
+
+      <p><b>Browser tap.</b> Android only auto-verifies the <code>/joined/*</code> path, so a tapped <code>whop.com/messages…</code> link opens the browser, not the app. To make taps open the app, either prefix the path with <code>/joined/</code> (the parser strips it, same destination — e.g. <code>whop.com/joined/messages?chat=…</code>), or enable it once in <i>Settings → Apps → Whop (develop) → Open by default → Open supported links → add whop.com</i>.</p>
+
+      <p><b>adb (always works, bypasses link verification).</b> Pushes the URL as the <code>deeplink</code> extra. The URL is single-quoted <i>inside</i> the device command so an unquoted <code>&amp;</code> isn't eaten by the phone's shell (which would truncate the link before <code>&amp;message=…</code> and skip the scroll):</p>
+      <pre>adb shell "am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
   --es deeplink '&lt;URL&gt;'"</pre>
-  <p class="mut">Note: the URL is single-quoted <i>inside</i> the device command on purpose — an unquoted <code>&amp;</code> is eaten by the phone's shell and truncates the link before <code>&amp;message=…</code> (so it opens the chat but won't scroll). The <b>copy adb</b> buttons already emit this safe form.</p>
 
-  <h2>Verification table</h2>
-  <table>
-    <thead><tr><th>#</th><th>Case</th><th>Deeplink</th><th>Expected result</th></tr></thead>
-    <tbody>
-      <tr>
-        <td class="num">1</td><td>DM inbox</td>
-        <td><a class="dl" href="https://whop.com/joined/messages">https://whop.com/joined/messages</a></td>
-        <td>Opens the <b>Messages tab / inbox</b>. <span class="mut">(before: fell to WebView)</span></td>
-      </tr>
-      <tr>
-        <td class="num">2</td><td>DM feed</td>
-        <td><a class="dl" href="https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
-        <td>Opens your DM conversation at the latest message.</td>
-      </tr>
-      <tr>
-        <td class="num">3</td><td>Feed alias</td>
-        <td><a class="dl" href="https://whop.com/joined/messages?feed=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/joined/messages?feed=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
-        <td>Identical to #2 — <code>feed</code>/<code>feed_id</code> now accepted as aliases.</td>
-      </tr>
-      <tr>
-        <td class="num">4 <span class="star">★</span></td><td>DM scroll-to-message</td>
-        <td><a class="dl" href="https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;message=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
-        <td>Opens the DM <b>scrolled to that message</b> — loads a window around it (by id) if it isn't in the first page. <span class="mut">(before: the message id was dropped)</span></td>
-      </tr>
-      <tr>
-        <td class="num">4b</td><td>Message alias</td>
-        <td><a class="dl" href="https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;post=post_1CbXB13xCu5VFNUGLfL8uL">https://whop.com/joined/messages?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS&amp;post=post_1CbXB13xCu5VFNUGLfL8uL</a></td>
-        <td>Identical to #4 — <code>post</code>/<code>post_id</code>/<code>message</code>/<code>message_id</code> all work.</td>
-      </tr>
-      <tr>
-        <td class="num">6 <span class="star">★</span></td><td>Open DM with user</td>
-        <td><a class="dl" href="https://whop.com/joined/messages?to_user_id=user_332WAZBYJ1yKq">https://whop.com/joined/messages?to_user_id=user_332WAZBYJ1yKq</a></td>
-        <td>Creates/opens a DM thread with <code>user_332WAZBYJ1yKq</code> (deeppandya) and lands in it.</td>
-      </tr>
-      <tr>
-        <td class="num">7 <span class="star">★</span></td><td>Support chat</td>
-        <td><a class="dl" href="https://whop.com/joined/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS">https://whop.com/joined/deep-ai-7c1d/support?chat=feed_1Cb8MVzVkTuSYYMP2sdLvS</a></td>
-        <td>Opens the feed <b>in place</b> (does <i>not</i> switch to the Messages tab). <span class="mut">Using your DM feed here verifies the support-chat route; for a real support feed, Share from your whop's support chat.</span></td>
-      </tr>
-      <tr>
-        <td class="num">—</td><td>Experience route</td>
-        <td><a class="dl" href="https://whop.com/joined/whop-wide-internal/exp_k0RVZCvT7LW7eH/app/">https://whop.com/joined/whop-wide-internal/exp_k0RVZCvT7LW7eH/app/</a></td>
-        <td>Opens experience <code>exp_k0RVZCvT7LW7eH</code> (generic experience routing). <span class="mut">This is a <code>/joined/*</code> link, so tapping it opens the app directly via verified App Links.</span></td>
-      </tr>
-      <tr>
-        <td class="num">8 <span class="star">★</span></td><td>Experience chat scroll</td>
-        <td><a class="dl" href="https://whop.com/joined/whop-wide-internal/i-os-Ftg4IyrNx9jK7M/app/?message=post_1CbW6dBc7VBE6UndWYsgF8">https://whop.com/joined/whop-wide-internal/i-os-Ftg4IyrNx9jK7M/app/?message=post_1CbW6dBc7VBE6UndWYsgF8</a></td>
-        <td>Opens the chat experience <b>scrolled to <code>post_1CbW6dBc7VBE6UndWYsgF8</code></b>. <span class="mut">Vanity slug <code>i-os-Ftg4IyrNx9jK7M</code> resolves to <code>exp_Ftg4IyrNx9jK7M</code>. This is the exact URL the in‑app Share button emits; before the fix the <code>?message=</code> was dropped for experience chats.</span></td>
-      </tr>
-      <tr>
-        <td class="num">9 <span class="star">★</span></td><td>Global support</td>
-        <td><a class="dl" href="https://whop.com/joined/support">https://whop.com/joined/support</a></td>
-        <td>Opens the customer-support (Intercom) messenger. <span class="mut">Also via <code>?intercom=1</code>. Before: <code>/support</code> mis-routed to a company page.</span></td>
-      </tr>
-      <tr>
-        <td class="num">10</td><td>AI chat <span class="pill gap">gap</span></td>
-        <td><a class="dl" href="https://whop.com/joined/chats/chat_abc">https://whop.com/joined/chats/chat_abc</a></td>
-        <td>Opens in WebView — no native AI-chat screen on Android.</td>
-      </tr>
-    </tbody>
-  </table>
+      <p class="mut">Per-case adb commands (canonical URLs; work regardless of App-Links state):</p>
+      <div id="android-adb"></div>
 
-  <h2>Cases still needing a real id</h2>
-  <ul class="mut">
-    <li><b>#5 DM-via-experience</b> <code>/messages/exp_X/app/?chat_feed_id=Y</code> — needs a <b>chat_feed_id</b> (a DM surfaced inside an experience). Share that to fill it in.</li>
-  </ul>
+      <p class="mut" style="margin-top:14px"><b>Android-specific behavior notes</b></p>
+      <ul class="mut">
+        <li>Deeplinks delivered while the app is <b>backgrounded/cold</b> are replayed once the app is ready (fixed: were dropped on a replay-0 event bus before the UI subscribed).</li>
+        <li>Scroll-to-message <b>loads a window around the target by id</b> if it's not already paged in, then <b>centers &amp; briefly highlights</b> it.</li>
+        <li>A deeplink launch <b>suppresses the townhall feed load and the rating prompt</b>, so it opens straight to the target.</li>
+        <li><b>AI chat</b> (<code>/chats/&lt;id&gt;</code>) has no native screen → opens in a WebView.</li>
+      </ul>
+    </div>
+  </details>
 
-  <h2>Android deeplink gaps &amp; things to address</h2>
-  <p class="mut">Where Android diverges from iOS/Web for chat/DM links — backlog to look into separately. Priority is by user reach.</p>
-  <table>
-    <thead><tr><th>P</th><th>Gap</th><th>Where to fix</th><th>What to do</th></tr></thead>
-    <tbody>
-      <tr>
-        <td><span class="pill p0">P0</span></td>
-        <td><b>External https links only cover <code>/joined/*</code></b><div class="mut">App Links <code>autoVerify</code> claims only <code>whop.com/joined/*</code>, so <code>/messages</code>, <code>/chats</code>, <code>/experiences</code>, <code>/@user</code> tapped from a browser, email, or another app open the <i>browser</i>, not the app. iOS opens the whole domain via AASA.</div></td>
-        <td><code>AndroidManifest.xml</code> intent-filters + <code>whop.com/.well-known/assetlinks.json</code></td>
-        <td>Broaden the verified host coverage (drop the <code>/joined</code> <code>pathPrefix</code> or add filters for the other paths); confirm the app fingerprint is in <code>assetlinks.json</code>. Keep web-only paths (<code>/checkout</code>, <code>/billing</code>) routing to <code>External</code>.</td>
-      </tr>
-      <tr>
-        <td><span class="pill p1">P1</span></td>
-        <td><b>“Message this user” (<code>?to_user_id=</code>) unsupported</b><div class="mut">Supported on Web + iOS; absent on Android. “Send message” links from profiles / app store / share don’t work.</div></td>
-        <td><code>DeepLinkParser.parseDm</code>, <code>WhopUrl</code>, <code>DeepLinkHandler</code></td>
-        <td>Add a <code>WhopUrl.DMWithUser(userId, initialContent?)</code>, parse <code>to_user_id</code>/<code>initial_content</code>, resolve-or-create the DM feed for that user, then route to <code>MessageListScreen</code>.</td>
-      </tr>
-      <tr>
-        <td><span class="pill p1">P1</span></td>
-        <td><b>No deep-link to a specific message <i>inside a DM</i></b><div class="mut">Android keeps only the DM <code>feedId</code> and drops <code>message</code>/<code>post</code>; iOS/Web scroll to it. (Experience chat already supports <code>?message=</code>.)</div></td>
-        <td><code>WhopUrl.DMMessages</code> → <code>Route.ChatWithMetadata</code> → <code>MessageListScreen</code></td>
-        <td>Thread <code>postId</code> through and scroll/highlight it (load a window around the id if not on the first page).</td>
-      </tr>
-      <tr>
-        <td><span class="pill p1">P1</span></td>
-        <td><b>Prefilled DM text (<code>initial_content</code>) unsupported</b><div class="mut">Web/iOS prefill the composer; Android ignores it.</div></td>
-        <td>Folds into the <code>to_user_id</code> work</td>
-        <td>Carry <code>initialContent</code> into the DM screen composer.</td>
-      </tr>
-      <tr>
-        <td><span class="pill p2">P2</span></td>
-        <td><b>Support chat <code>/{bot}/support/?chat=</code> not handled</b><div class="mut">Falls through to generic/WebView; iOS sets an <code>isSupportChat</code> flag and opens in place.</div></td>
-        <td><code>DeepLinkParser</code> + DM route</td>
-        <td>Add parse rule (2 segments, 2nd == <code>support</code>) → DM route with a support flag.</td>
-      </tr>
-      <tr>
-        <td><span class="pill p2">P2</span></td>
-        <td><b>AI chat <code>/chats/{id}</code> → WebView</b> <span class="pill gap">gap</span><div class="mut">iOS/Web have native AI chat; Android opens WebView.</div></td>
-        <td><code>DeepLinkParser</code> / navigation</td>
-        <td>Decide native vs WebView (depends on whether a native AI-chat screen exists) — confirm intent before building.</td>
-      </tr>
-      <tr>
-        <td><span class="pill p2">P2</span></td>
-        <td><b>Few query-param aliases</b><div class="mut">iOS accepts <code>chat</code>/<code>feed</code>/<code>feed_id</code> and <code>post</code>/<code>post_id</code>/<code>message</code>/<code>message_id</code>; Android accepts only <code>chat</code>/<code>chat_feed_id</code>. Links using other aliases don’t resolve.</div></td>
-        <td><code>DeepLinkParser.parseDm</code></td>
-        <td>Broaden accepted query keys to match iOS (cheap; do alongside the DM-parity work).</td>
-      </tr>
-    </tbody>
-  </table>
-  <p class="mut"><b>Cross-cutting:</b> add parser/handler tests per new pattern (mirror <code>DeepLinkParserAndroidTest</code>); the three platforms define these patterns independently — a shared fixture list (iOS <code>ParseUrlTests</code> is most complete) would prevent future drift.</p>
-  <p class="mut"><b>Suggested order:</b> P0 (biggest reach) → aliases (cheap, enables the rest) → <code>to_user_id</code> + DM scroll + prefill (one DM-parity PR) → support chat → AI chat (confirm intent first).</p>
-
-  <footer>
-    Android chat/DM deeplink parity with iOS · parser → route → navigation. Generated for on-device QA.
-  </footer>
+  <footer>Chat/DM deeplink parity across web, iOS, and Android. Generated for on-device QA.</footer>
 
 <script>
-  // copy-to-clipboard for the adb template, and a per-link "copy adb" affordance
-  function attach(){
-    document.querySelectorAll('a.dl').forEach(function(a){
+  // Build per-case adb commands inside the Android section from the table's deeplinks.
+  function buildAndroidAdb(){
+    var host=document.getElementById('android-adb');
+    document.querySelectorAll('table a.dl').forEach(function(a){
       var cmd="adb shell \"am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity --es deeplink '"+a.href+"'\"";
       var wrap=document.createElement('div'); wrap.className='cmd';
       var code=document.createElement('code'); code.textContent=cmd;
       var btn=document.createElement('button'); btn.className='copy'; btn.textContent='copy';
-      btn.onclick=function(e){
-        e.preventDefault();
-        navigator.clipboard.writeText(cmd).then(function(){btn.textContent='copied!';setTimeout(function(){btn.textContent='copy';},1200);});
-      };
-      wrap.appendChild(code); wrap.appendChild(btn);
-      a.parentNode.appendChild(wrap);
+      btn.onclick=function(){ navigator.clipboard.writeText(cmd).then(function(){btn.textContent='copied!';setTimeout(function(){btn.textContent='copy';},1200);}); };
+      wrap.appendChild(code); wrap.appendChild(btn); host.appendChild(wrap);
     });
   }
-  document.addEventListener('DOMContentLoaded',attach);
+  document.addEventListener('DOMContentLoaded', buildAndroidAdb);
 </script>
 </body>
 </html>
