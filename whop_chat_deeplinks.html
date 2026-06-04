@@ -24,8 +24,10 @@
   td.num{color:var(--mut);white-space:nowrap}
   a.dl{color:var(--accent);text-decoration:none;word-break:break-all;font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
   a.dl:hover{text-decoration:underline}
-  .copy{cursor:pointer;border:1px solid var(--line);background:#1f2531;color:var(--mut);border-radius:6px;font-size:11px;padding:2px 7px;margin-left:6px}
+  .copy{cursor:pointer;border:1px solid var(--line);background:#1f2531;color:var(--mut);border-radius:6px;font-size:11px;padding:2px 7px;margin-left:6px;flex:none}
   .copy:hover{color:var(--fg)}
+  .cmd{margin-top:6px;display:flex;gap:8px;align-items:flex-start;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+  .cmd code{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--mut);white-space:pre-wrap;word-break:break-all;user-select:all}
   .star{color:var(--good);font-weight:700}
   .kv{color:var(--mut);font-size:13px}
   .kv b{color:var(--fg);font-family:ui-monospace,Menlo,monospace}
@@ -122,14 +124,16 @@
   // copy-to-clipboard for the adb template, and a per-link "copy adb" affordance
   function attach(){
     document.querySelectorAll('a.dl').forEach(function(a){
-      var btn=document.createElement('button');
-      btn.className='copy';btn.textContent='copy adb';
+      var cmd="adb shell \"am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity --es deeplink '"+a.href+"'\"";
+      var wrap=document.createElement('div'); wrap.className='cmd';
+      var code=document.createElement('code'); code.textContent=cmd;
+      var btn=document.createElement('button'); btn.className='copy'; btn.textContent='copy';
       btn.onclick=function(e){
         e.preventDefault();
-        var cmd="adb shell \"am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity --es deeplink '"+a.href+"'\"";
-        navigator.clipboard.writeText(cmd).then(function(){btn.textContent='copied!';setTimeout(function(){btn.textContent='copy adb';},1200);});
+        navigator.clipboard.writeText(cmd).then(function(){btn.textContent='copied!';setTimeout(function(){btn.textContent='copy';},1200);});
       };
-      a.parentNode.appendChild(btn);
+      wrap.appendChild(code); wrap.appendChild(btn);
+      a.parentNode.appendChild(wrap);
     });
   }
   document.addEventListener('DOMContentLoaded',attach);
