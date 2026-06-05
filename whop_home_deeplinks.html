@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Whop Android — Home Feed Deeplink Verification</title>
+<title>Whop — Home Feed Deeplink Verification</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   :root{--bg:#0f1115;--card:#171a21;--line:#262b36;--fg:#e6e9ef;--mut:#9aa3b2;--accent:#5b8cff;--good:#34c759;--warn:#ff9f0a;--code:#0b0d12}
@@ -12,11 +12,6 @@
   h2{font-size:17px;margin:28px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
   p,li{color:var(--fg)}
   .mut{color:var(--mut);font-size:14px}
-  .back{display:inline-block;color:var(--mut);text-decoration:none;font-size:13px;margin-bottom:12px}
-  .back:hover{color:var(--fg)}
-  .pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;vertical-align:middle}
-  .new{background:rgba(52,199,89,.15);color:var(--good);border:1px solid rgba(52,199,89,.4)}
-  .gap{background:rgba(255,159,10,.15);color:var(--warn);border:1px solid rgba(255,159,10,.4)}
   code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
   pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px}
@@ -24,96 +19,109 @@
   th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
   th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
   td.num{color:var(--mut);white-space:nowrap}
+  td.p,th.p{text-align:center;white-space:nowrap}
+  .back{display:inline-block;color:var(--mut);text-decoration:none;font-size:13px;margin-bottom:12px}
+  .back:hover{color:var(--fg)}
   a.dl{color:var(--accent);text-decoration:none;word-break:break-all;font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
   a.dl:hover{text-decoration:underline}
-  .copy{cursor:pointer;border:1px solid var(--line);background:#1f2531;color:var(--mut);border-radius:6px;font-size:11px;padding:2px 7px;margin-left:6px;flex:none}
-  .copy:hover{color:var(--fg)}
-  .cmd{margin-top:6px;display:flex;gap:8px;align-items:flex-start;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
-  .cmd code{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--mut);white-space:pre-wrap;word-break:break-all;user-select:all}
   .star{color:var(--good);font-weight:700}
   .kv{color:var(--mut);font-size:13px}
   .kv b{color:var(--fg);font-family:ui-monospace,Menlo,monospace}
+  details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:16px 0}
+  summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:15px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:'\25B8\00a0';color:var(--mut)}
+  details[open] summary::before{content:'\25BE\00a0'}
+  .dbody{padding:0 16px 16px}
+  .copy{cursor:pointer;border:1px solid var(--line);background:#1f2531;color:var(--mut);border-radius:6px;font-size:11px;padding:2px 7px;margin-left:6px;flex:none}
+  .copy:hover{color:var(--fg)}
+  .cmd{margin:8px 0;display:flex;gap:8px;align-items:flex-start;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+  .cmd code{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--mut);white-space:pre-wrap;word-break:break-all;user-select:all}
   footer{margin-top:32px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:12px}
 </style>
 </head>
 <body>
   <a class="back" href="whop_deeplinks.html">&larr; All Whop deeplinks</a>
-  <h1>Whop Android — Home Feed Deeplink Verification <span class="pill new">new</span></h1>
-  <p class="mut">Adds Android support for <code>whop.com/home-feed</code> links, matching iOS's <code>HomeFeed</code> routing. <span class="star">★</span> marks behaviors this change adds.</p>
+  <h1>Whop — Home Feed Deeplink Verification</h1>
+  <p class="mut">The same <code>whop.com</code> URLs open the home feed on <b>web</b>, <b>iOS</b>, and <b>Android</b>. Tap a link (with the app installed &amp; signed in) to verify. Platform support is shown per row.</p>
 
   <div class="card">
-    <div class="kv">Build: <b>com.whop.whopapp.develop</b> &nbsp;·&nbsp; Test account: <b>@deeppandya91</b></div>
     <div class="kv">Experience: <b>exp_nUk9QzPPVFGNKx</b> &nbsp;·&nbsp; Forum post: <b>post_1Cbkxjkqn5KBvPW8fmmL4n</b> &nbsp;·&nbsp; Affiliate: <b>deeppandya91</b></div>
   </div>
 
-  <h2>How to use this page</h2>
-  <p>Open this page in a browser on the device and <b>tap a link</b> — it should open the Whop app on the home feed. <code>whop.com/home-feed</code> is now a verified App Links path (added to the manifest in this change), so tapping resolves into the app. Each <code>/joined/home-feed…</code> variant resolves to the same destination — the parser strips the <code>joined</code> segment.</p>
-  <div class="card">
-    <b>If a tap opens the browser instead of the app</b> (common on the <code>develop</code> build, which isn't auto-verified on whop.com):
-    <div class="mut" style="margin-top:6px">Settings → Apps → <b>Whop (develop)</b> → <b>Open by default</b> → enable <b>Open supported links</b> and add <code>whop.com</code>. Then taps route into the app.</div>
-  </div>
-  <p class="mut">Fallback that always works (bypasses link verification) — push the URL as the <code>deeplink</code> extra, or use each row's <b>copy adb</b> button:</p>
-  <pre id="adbtpl">adb shell "am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
-  --es deeplink '&lt;URL&gt;'"</pre>
-
-  <h2>Verification table</h2>
+  <h2>Deeplinks</h2>
   <table>
-    <thead><tr><th>#</th><th>Case</th><th>Deeplink</th><th>Expected result</th></tr></thead>
+    <thead><tr><th>#</th><th>Case</th><th class="p">Web</th><th class="p">iOS</th><th class="p">Android</th><th>Deeplink</th><th>Expected result</th></tr></thead>
     <tbody>
       <tr>
-        <td class="num">1 <span class="star">★</span></td><td>Home feed</td>
+        <td class="num">1</td><td>Home feed</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/home-feed">https://whop.com/home-feed</a></td>
-        <td>Opens the <b>Home feed tab</b> (pops to root). <span class="mut">(before: fell to WebView)</span></td>
+        <td>Opens the home feed (pops to root). <span class="mut">(Android: newly added — was opening in WebView.)</span></td>
       </tr>
       <tr>
-        <td class="num">1b</td><td>Home feed (/joined alias)</td>
-        <td><a class="dl" href="https://whop.com/joined/home-feed">https://whop.com/joined/home-feed</a></td>
-        <td>Identical to #1 — verifies routing via the <code>/joined/*</code> App Links path.</td>
-      </tr>
-      <tr>
-        <td class="num">2 <span class="star">★</span></td><td>Home feed &rarr; experience</td>
+        <td class="num">2</td><td>Home feed &rarr; experience</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/home-feed/exp_nUk9QzPPVFGNKx">https://whop.com/home-feed/exp_nUk9QzPPVFGNKx</a></td>
-        <td>Lands on the <b>Home tab</b>, then opens experience <code>exp_nUk9QzPPVFGNKx</code> within it.</td>
+        <td>Opens the home feed, then experience <code>exp_nUk9QzPPVFGNKx</code> within it.</td>
       </tr>
       <tr>
-        <td class="num">3 <span class="star">★</span></td><td>Home feed &rarr; experience &rarr; forum post</td>
+        <td class="num">3</td><td>Home feed &rarr; experience &rarr; forum post</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/home-feed/exp_nUk9QzPPVFGNKx/post_1Cbkxjkqn5KBvPW8fmmL4n?a=deeppandya91">https://whop.com/home-feed/exp_nUk9QzPPVFGNKx/post_1Cbkxjkqn5KBvPW8fmmL4n?a=deeppandya91</a></td>
         <td>Opens that experience <b>scrolled to <code>post_1Cbkxjkqn5KBvPW8fmmL4n</code></b>, carrying affiliate <code>deeppandya91</code>.</td>
       </tr>
       <tr>
-        <td class="num">3b</td><td>Canonical experience post <span class="mut">(for comparison)</span></td>
+        <td class="num">3b</td><td>Same post, experience route</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/experiences/exp_nUk9QzPPVFGNKx/app/posts/post_1Cbkxjkqn5KBvPW8fmmL4n?a=deeppandya91">https://whop.com/experiences/exp_nUk9QzPPVFGNKx/app/posts/post_1Cbkxjkqn5KBvPW8fmmL4n?a=deeppandya91</a></td>
-        <td>Same post via the <b>Experience route</b> (not home-feed) — the parser pulls the post id out of <code>…/app/posts/post_…</code>. Should land on the same destination as #3.</td>
+        <td>Same forum post via the canonical experience route — should land on the same destination as #3.</td>
       </tr>
       <tr>
-        <td class="num">4</td><td>Unrecognized tail</td>
+        <td class="num">4</td><td>Unrecognized tail</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/home-feed/not-an-exp">https://whop.com/home-feed/not-an-exp</a></td>
-        <td>Falls back to the <b>Home feed</b> (no experience) — a non-<code>exp_</code> segment is ignored, mirroring iOS.</td>
+        <td>Falls back to the home feed (no experience) — a non-<code>exp_</code> segment is ignored.</td>
       </tr>
     </tbody>
   </table>
+  <p class="mut">Path shape: <code>/home-feed</code>, <code>/home-feed/{experienceId}</code>, or <code>/home-feed/{experienceId}/{postId}</code>. Only <code>exp_</code>/<code>post_</code>-prefixed segments are read; anything else falls back to the base home feed.</p>
 
-  <footer>
-    Android home-feed deeplink parity with iOS · parser &rarr; route &rarr; navigation. Generated for on-device QA.
-  </footer>
+  <details>
+    <summary>Android testing (develop build)</summary>
+    <div class="dbody">
+      <p class="mut">Build: <code>com.whop.whopapp.develop</code> &nbsp;·&nbsp; signed in as <b>@deeppandya91</b>.</p>
+
+      <p><b>Browser tap.</b> Android now auto-verifies the <code>/home-feed</code> path (added to the manifest in this change), so a tapped <code>whop.com/home-feed…</code> link opens the app. The <code>/joined/home-feed…</code> alias also works (the parser strips <code>joined</code>). On the <code>develop</code> build, verification isn't automatic — enable it once in <i>Settings → Apps → Whop (develop) → Open by default → Open supported links → add whop.com</i>.</p>
+
+      <p><b>adb (always works, bypasses link verification).</b> Pushes the URL as the <code>deeplink</code> extra. The URL is single-quoted <i>inside</i> the device command so an unquoted <code>&amp;</code> isn't eaten by the phone's shell (which would truncate the link before <code>&amp;a=…</code>):</p>
+      <pre>adb shell "am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
+  --es deeplink '&lt;URL&gt;'"</pre>
+
+      <p class="mut">Per-case adb commands (canonical URLs; work regardless of App-Links state):</p>
+      <div id="android-adb"></div>
+
+      <p class="mut" style="margin-top:14px"><b>Android-specific behavior notes</b></p>
+      <ul class="mut">
+        <li>The parser resolves <code>/home-feed</code> <b>before</b> the bot-route / experience parsers, so <code>home-feed</code> isn't mistaken for a company route.</li>
+        <li>Bare <code>/home-feed</code> navigates to the <b>Home tab</b> (<code>Main(home)</code>); the experience variant runs <code>navigateSequence(Main(home), Experience(...))</code> so the Home tab is selected underneath.</li>
+        <li>A deeplink launch <b>suppresses the townhall feed load and the rating prompt</b>, so it opens straight to the target.</li>
+        <li>Deeplinks delivered while the app is <b>backgrounded/cold</b> are replayed once the UI is ready.</li>
+      </ul>
+    </div>
+  </details>
+
+  <footer>Home feed deeplink parity across web, iOS, and Android. Generated for on-device QA.</footer>
 
 <script>
-  // copy-to-clipboard: a per-link "copy adb" affordance
-  function attach(){
-    document.querySelectorAll('a.dl').forEach(function(a){
+  // Build per-case adb commands inside the Android section from the table's deeplinks.
+  function buildAndroidAdb(){
+    var host=document.getElementById('android-adb');
+    document.querySelectorAll('table a.dl').forEach(function(a){
       var cmd="adb shell \"am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity --es deeplink '"+a.href+"'\"";
       var wrap=document.createElement('div'); wrap.className='cmd';
       var code=document.createElement('code'); code.textContent=cmd;
       var btn=document.createElement('button'); btn.className='copy'; btn.textContent='copy';
-      btn.onclick=function(e){
-        e.preventDefault();
-        navigator.clipboard.writeText(cmd).then(function(){btn.textContent='copied!';setTimeout(function(){btn.textContent='copy';},1200);});
-      };
-      wrap.appendChild(code); wrap.appendChild(btn);
-      a.parentNode.appendChild(wrap);
+      btn.onclick=function(){ navigator.clipboard.writeText(cmd).then(function(){btn.textContent='copied!';setTimeout(function(){btn.textContent='copy';},1200);}); };
+      wrap.appendChild(code); wrap.appendChild(btn); host.appendChild(wrap);
     });
   }
-  document.addEventListener('DOMContentLoaded',attach);
+  document.addEventListener('DOMContentLoaded', buildAndroidAdb);
 </script>
 </body>
 </html>

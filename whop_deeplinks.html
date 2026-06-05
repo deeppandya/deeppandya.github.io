@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Whop Android — Deeplink Verification</title>
+<title>Whop — Deeplink Verification</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   :root{--bg:#0f1115;--card:#171a21;--line:#262b36;--fg:#e6e9ef;--mut:#9aa3b2;--accent:#5b8cff;--good:#34c759;--warn:#ff9f0a;--code:#0b0d12}
@@ -20,36 +20,29 @@
   a.card h3{margin:0 0 4px;font-size:17px;color:var(--accent)}
   a.card .desc{color:var(--mut);font-size:14px;margin:0}
   a.card .urls{color:var(--mut);font-family:ui-monospace,Menlo,monospace;font-size:12px;margin-top:8px;word-break:break-all}
-  .kv{color:var(--mut);font-size:13px}
-  .kv b{color:var(--fg);font-family:ui-monospace,Menlo,monospace}
-  .info{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
   footer{margin-top:32px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:12px}
 </style>
 </head>
 <body>
-  <h1>Whop Android — Deeplink Verification</h1>
-  <p class="mut">On-device QA pages for Whop deeplink parity with iOS. Pick a surface below — each page lists tappable links and copy-to-clipboard <code>adb</code> commands.</p>
-
-  <div class="info">
-    <div class="kv">Build: <b>com.whop.whopapp.develop</b> &nbsp;·&nbsp; Test account: <b>@deeppandya91</b></div>
-  </div>
+  <h1>Whop — Deeplink Verification</h1>
+  <p class="mut">On-device QA pages for Whop deeplinks. The links are platform-independent <code>whop.com</code> URLs that should resolve the same on <b>web</b>, <b>iOS</b>, and <b>Android</b>; each page shows per-row platform support and tucks any platform-specific setup (e.g. Android <code>adb</code> / App Links) into a collapsible section.</p>
 
   <h2>Surfaces</h2>
 
   <a class="card" href="whop_chat_deeplinks.html">
     <h3>Chat / DM deeplinks &rarr;</h3>
-    <p class="desc">DM inbox, feeds, scroll-to-message, open-DM-with-user, support chat, experience chat, global support, AI chat.</p>
+    <p class="desc">DM inbox, feeds, scroll-to-message, open-DM-with-user, support chat, experience chat, AI chat.</p>
     <div class="urls">whop.com/messages &nbsp;·&nbsp; /messages?chat= &nbsp;·&nbsp; /messages?to_user_id= &nbsp;·&nbsp; /{bot}/support?chat=</div>
   </a>
 
   <a class="card" href="whop_home_deeplinks.html">
     <h3>Home feed deeplinks <span class="pill new">new</span> &rarr;</h3>
-    <p class="desc">Home feed tab, and opening an experience (and a forum post) within the home feed.</p>
+    <p class="desc">Home feed, and opening an experience (and a forum post) within the home feed.</p>
     <div class="urls">whop.com/home-feed &nbsp;·&nbsp; /home-feed/exp_… &nbsp;·&nbsp; /home-feed/exp_…/post_…</div>
   </a>
 
   <footer>
-    Whop Android deeplink parity with iOS · parser &rarr; route &rarr; navigation. Generated for on-device QA.
+    Whop deeplink parity across web, iOS, and Android. Generated for on-device QA.
   </footer>
 </body>
 </html>
