@@ -42,7 +42,7 @@
 <body>
   <a class="back" href="whop_deeplinks.html">&larr; All Whop deeplinks</a>
   <h1>Whop — Navigation Deeplink Verification</h1>
-  <p class="mut">Profiles, global support, notifications, discover, and store-section links. The same <code>whop.com</code> URLs resolve on <b>web</b>, <b>iOS</b>, and <b>Android</b>; tap a link (app installed &amp; signed in) to verify. Platform support is shown per row — <span style="color:var(--warn)">⚠️</span> means the platform opens the right screen but not the exact sub-state.</p>
+  <p class="mut">Profiles, global support, notifications, discover, and store-section links. The same <code>whop.com</code> URLs resolve on <b>web</b>, <b>iOS</b>, and <b>Android</b>; tap a link (app installed &amp; signed in) to verify. Platform support is shown per row.</p>
 
   <div class="card">
     <div class="kv">Profile: <b>@deeppandya91</b> &nbsp;·&nbsp; Company route: <b>deep-ai-7c1d</b></div>
@@ -78,32 +78,22 @@
         <td>Opens the Discover tab.</td>
       </tr>
       <tr>
-        <td class="num">6</td><td>Discover &rarr; Explore</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
-        <td><a class="dl" href="https://whop.com/discover/explore">https://whop.com/discover/explore</a></td>
-        <td>Opens Discover at the <b>Explore</b> tab.</td>
+        <td class="num">6</td><td>Discover &rarr; store link</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
+        <td><a class="dl" href="https://whop.com/discover/deep-ai-7c1d">https://whop.com/discover/deep-ai-7c1d</a></td>
+        <td>Opens that company's <b>store page</b> — a discover store link, not the Discover tab.</td>
       </tr>
       <tr>
-        <td class="num">7</td><td>Discover &rarr; Leaderboards</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
-        <td><a class="dl" href="https://whop.com/discover/leaderboards">https://whop.com/discover/leaderboards</a></td>
-        <td>Opens Discover at the <b>Leaderboards</b> tab.</td>
-      </tr>
-      <tr>
-        <td class="num">8</td><td>Discover &rarr; For You</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
-        <td><a class="dl" href="https://whop.com/discover/for-you">https://whop.com/discover/for-you</a></td>
-        <td>Opens Discover at the <b>For You</b> tab.</td>
-      </tr>
-      <tr>
-        <td class="num">9</td><td>Store &rarr; Reviews</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td class="num">7</td><td>Store &rarr; Reviews</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/deep-ai-7c1d/reviews">https://whop.com/deep-ai-7c1d/reviews</a></td>
         <td>Opens the store page's <b>reviews</b> section.</td>
       </tr>
       <tr>
-        <td class="num">10</td><td>Store &rarr; Products</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td class="num">8</td><td>Store &rarr; Products</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/deep-ai-7c1d/products">https://whop.com/deep-ai-7c1d/products</a></td>
         <td>Opens the store page's <b>products</b> section.</td>
       </tr>
       <tr>
-        <td class="num">11</td><td>Store &rarr; App store</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td class="num">9</td><td>Store &rarr; App store</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/deep-ai-7c1d/app-store">https://whop.com/deep-ai-7c1d/app-store</a></td>
         <td>Opens the store page's <b>apps</b> section.</td>
       </tr>
@@ -127,8 +117,8 @@
       <ul class="mut">
         <li><code>/@username</code> and <code>/u/username</code> both resolve to the same native profile, ahead of bot-route parsing.</li>
         <li><code>/discover</code> and <code>/notifications</code> resolve to their top-level tabs before bot-route parsing, so they aren't mistaken for a company route.</li>
-        <li>Discover has <b>no inner tabs</b> on Android — every <code>/discover/*</code> opens the Discover overview.</li>
-        <li>Store sections (<code>reviews</code> / <code>products</code> / <code>app-store</code>) open the <b>company/store page</b> and don't scroll to the specific section.</li>
+        <li><code>/discover/{whop-route}</code> opens that company's store page (a discover store link); bare <code>/discover</code> opens the Discover tab.</li>
+        <li>Store sections open the matching surface: <code>products</code> &rarr; Products tab, <code>app-store</code> &rarr; Apps tab, <code>reviews</code> &rarr; reviews sheet.</li>
         <li>Single-segment store pages (e.g. <code>whop.com/deep-ai-7c1d</code>) are <b>not</b> auto-verified (Android manifest can't claim them without a catch-all) — they open via adb / in-app links only.</li>
       </ul>
     </div>
