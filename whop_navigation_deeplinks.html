@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Whop — Navigation Deeplink Verification</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root{--bg:#0f1115;--card:#171a21;--line:#262b36;--fg:#e6e9ef;--mut:#9aa3b2;--accent:#5b8cff;--good:#34c759;--warn:#ff9f0a;--code:#0b0d12}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5;padding:24px;max-width:1040px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 4px}
+  h2{font-size:17px;margin:28px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  p,li{color:var(--fg)}
+  .mut{color:var(--mut);font-size:14px}
+  code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+  td.num{color:var(--mut);white-space:nowrap}
+  td.p,th.p{text-align:center;white-space:nowrap}
+  .back{display:inline-block;color:var(--mut);text-decoration:none;font-size:13px;margin-bottom:12px}
+  .back:hover{color:var(--fg)}
+  a.dl{color:var(--accent);text-decoration:none;word-break:break-all;font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
+  a.dl:hover{text-decoration:underline}
+  .kv{color:var(--mut);font-size:13px}
+  .kv b{color:var(--fg);font-family:ui-monospace,Menlo,monospace}
+  details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:16px 0}
+  summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:15px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:'\25B8\00a0';color:var(--mut)}
+  details[open] summary::before{content:'\25BE\00a0'}
+  .dbody{padding:0 16px 16px}
+  .copy{cursor:pointer;border:1px solid var(--line);background:#1f2531;color:var(--mut);border-radius:6px;font-size:11px;padding:2px 7px;margin-left:6px;flex:none}
+  .copy:hover{color:var(--fg)}
+  .cmd{margin:8px 0;display:flex;gap:8px;align-items:flex-start;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+  .cmd code{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--mut);white-space:pre-wrap;word-break:break-all;user-select:all}
+  footer{margin-top:32px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:12px}
+</style>
+</head>
+<body>
+  <a class="back" href="whop_deeplinks.html">&larr; All Whop deeplinks</a>
+  <h1>Whop — Navigation Deeplink Verification</h1>
+  <p class="mut">Profiles, global support, notifications, discover, and store-section links. The same <code>whop.com</code> URLs resolve on <b>web</b>, <b>iOS</b>, and <b>Android</b>; tap a link (app installed &amp; signed in) to verify. Platform support is shown per row — <span style="color:var(--warn)">⚠️</span> means it opens the right screen but not the exact sub-state yet.</p>
+
+  <div class="card">
+    <div class="kv">Profile: <b>@deeppandya91</b> &nbsp;·&nbsp; Company route: <b>deep-ai-7c1d</b></div>
+  </div>
+
+  <h2>Deeplinks</h2>
+  <table>
+    <thead><tr><th>#</th><th>Case</th><th class="p">Web</th><th class="p">iOS</th><th class="p">Android</th><th>Deeplink</th><th>Expected result</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="num">1</td><td>Profile (@username)</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
+        <td><a class="dl" href="https://whop.com/@deeppandya91">https://whop.com/@deeppandya91</a></td>
+        <td>Opens <b>@deeppandya91</b>'s profile. <span class="mut">(Android: newly claimed — was opening in the browser.)</span></td>
+      </tr>
+      <tr>
+        <td class="num">2</td><td>Profile (/u/ alias)</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
+        <td><a class="dl" href="https://whop.com/u/deeppandya91">https://whop.com/u/deeppandya91</a></td>
+        <td>Same profile via the <code>/u/</code> alias. <span class="mut">(Android: newly parsed + claimed.)</span></td>
+      </tr>
+      <tr>
+        <td class="num">3</td><td>Global support</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
+        <td><a class="dl" href="https://whop.com/support">https://whop.com/support</a></td>
+        <td>Opens customer support (Intercom). <span class="mut">(Android: newly claimed — bare <code>/support</code> was browser.)</span></td>
+      </tr>
+      <tr>
+        <td class="num">4</td><td>Notifications</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
+        <td><a class="dl" href="https://whop.com/notifications">https://whop.com/notifications</a></td>
+        <td>Opens the notifications screen. <span class="mut">(Android: newly added.)</span></td>
+      </tr>
+      <tr>
+        <td class="num">5</td><td>Discover</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
+        <td><a class="dl" href="https://whop.com/discover">https://whop.com/discover</a></td>
+        <td>Opens the Discover tab. <span class="mut">(Android: newly added.)</span></td>
+      </tr>
+      <tr>
+        <td class="num">6</td><td>Discover &rarr; Explore</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td><a class="dl" href="https://whop.com/discover/explore">https://whop.com/discover/explore</a></td>
+        <td>iOS selects the <b>Explore</b> tab; Android opens the Discover overview (no inner tabs).</td>
+      </tr>
+      <tr>
+        <td class="num">7</td><td>Discover &rarr; Leaderboards</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td><a class="dl" href="https://whop.com/discover/leaderboards">https://whop.com/discover/leaderboards</a></td>
+        <td>iOS selects <b>Leaderboards</b>; Android opens the Discover overview.</td>
+      </tr>
+      <tr>
+        <td class="num">8</td><td>Discover &rarr; For You</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td><a class="dl" href="https://whop.com/discover/for-you">https://whop.com/discover/for-you</a></td>
+        <td>iOS selects <b>For You</b>; Android opens the Discover overview.</td>
+      </tr>
+      <tr>
+        <td class="num">9</td><td>Store &rarr; Reviews</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td><a class="dl" href="https://whop.com/deep-ai-7c1d/reviews">https://whop.com/deep-ai-7c1d/reviews</a></td>
+        <td>Web/iOS open the <b>reviews</b> section; Android opens the store page (section not pre-selected yet).</td>
+      </tr>
+      <tr>
+        <td class="num">10</td><td>Store &rarr; Products</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td><a class="dl" href="https://whop.com/deep-ai-7c1d/products">https://whop.com/deep-ai-7c1d/products</a></td>
+        <td>Web/iOS open the <b>products</b> section; Android opens the store page. <span class="mut">(Android: section newly parsed — was browser.)</span></td>
+      </tr>
+      <tr>
+        <td class="num">11</td><td>Store &rarr; App store</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td><a class="dl" href="https://whop.com/deep-ai-7c1d/app-store">https://whop.com/deep-ai-7c1d/app-store</a></td>
+        <td>Web/iOS open the <b>apps</b> section; Android opens the store page. <span class="mut">(Android: section newly parsed — was browser.)</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="mut">Newly claimed Android App-Links paths: <code>/@</code>, <code>/u/</code>, <code>/support</code>, <code>/notifications</code>, <code>/discover</code>, <code>/&#42;/reviews</code>, <code>/&#42;/products</code>, <code>/&#42;/app-store</code>.</p>
+
+  <details>
+    <summary>Android testing (develop build)</summary>
+    <div class="dbody">
+      <p class="mut">Build: <code>com.whop.whopapp.develop</code> &nbsp;·&nbsp; signed in as <b>@deeppandya91</b>.</p>
+
+      <p><b>Browser tap.</b> Android now auto-verifies the paths added in this change (profiles, support, notifications, discover, and the store sections), so a tapped link opens the app. On the <code>develop</code> build, verification isn't automatic — enable it once in <i>Settings → Apps → Whop (develop) → Open by default → Open supported links → add whop.com</i>.</p>
+
+      <p><b>adb (always works, bypasses link verification).</b> Pushes the URL as the <code>deeplink</code> extra:</p>
+      <pre>adb shell "am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
+  --es deeplink '&lt;URL&gt;'"</pre>
+
+      <p class="mut">Per-case adb commands (work regardless of App-Links state):</p>
+      <div id="android-adb"></div>
+
+      <p class="mut" style="margin-top:14px"><b>Android-specific behavior notes</b></p>
+      <ul class="mut">
+        <li><code>/@username</code> and <code>/u/username</code> both resolve to the same native profile, ahead of bot-route parsing.</li>
+        <li><code>/discover</code> and <code>/notifications</code> resolve to their top-level tabs before bot-route parsing, so they aren't mistaken for a company route.</li>
+        <li>Discover has <b>no inner tabs</b> on Android — every <code>/discover/*</code> opens the Discover overview.</li>
+        <li>Store sections (<code>reviews</code> / <code>products</code> / <code>app-store</code>) open the <b>company/store page</b>; scrolling to the specific section is a follow-up.</li>
+        <li>Single-segment store pages (e.g. <code>whop.com/deep-ai-7c1d</code>) are <b>not</b> auto-verified yet (Android manifest can't claim them without a catch-all) — they open via adb / in-app links only.</li>
+      </ul>
+    </div>
+  </details>
+
+  <footer>Navigation deeplink parity across web, iOS, and Android. Generated for on-device QA.</footer>
+
+<script>
+  // Build per-case adb commands inside the Android section from the table's deeplinks.
+  function buildAndroidAdb(){
+    var host=document.getElementById('android-adb');
+    document.querySelectorAll('table a.dl').forEach(function(a){
+      var cmd="adb shell \"am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity --es deeplink '"+a.href+"'\"";
+      var wrap=document.createElement('div'); wrap.className='cmd';
+      var code=document.createElement('code'); code.textContent=cmd;
+      var btn=document.createElement('button'); btn.className='copy'; btn.textContent='copy';
+      btn.onclick=function(){ navigator.clipboard.writeText(cmd).then(function(){btn.textContent='copied!';setTimeout(function(){btn.textContent='copy';},1200);}); };
+      wrap.appendChild(code); wrap.appendChild(btn); host.appendChild(wrap);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', buildAndroidAdb);
+</script>
+</body>
+</html>
