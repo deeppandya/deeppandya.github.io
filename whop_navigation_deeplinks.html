@@ -80,7 +80,7 @@
       <tr>
         <td class="num">6</td><td>Discover &rarr; store link</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
         <td><a class="dl" href="https://whop.com/discover/whop-wide-internal">https://whop.com/discover/whop-wide-internal</a></td>
-        <td>Opens that company's <b>store page</b> — a discover store link, not the Discover tab.</td>
+        <td>Opens the <b>Discover</b> tab, then the company feed (store) page on top — back returns to Discover.</td>
       </tr>
       <tr>
         <td class="num">7</td><td>Store &rarr; Reviews</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
@@ -101,7 +101,7 @@
   </table>
 
   <h2>Account settings</h2>
-  <p class="mut"><code>/@me/settings/{section}</code> (or <code>/account/{section}</code>) opens that settings screen. <span style="color:var(--warn)">⚠️</span> = opens in an in-app web view (no native screen yet).</p>
+  <p class="mut"><code>/@me/settings/{section}</code> (or <code>/account/{section}</code>) opens the settings overview first, then the specific section on top (back returns to settings). <span style="color:var(--warn)">⚠️</span> = opens in an in-app web view (no native screen yet).</p>
   <table>
     <thead><tr><th>#</th><th>Section</th><th class="p">Web</th><th class="p">iOS</th><th class="p">Android</th><th>Deeplink</th></tr></thead>
     <tbody>
@@ -138,9 +138,9 @@
       <ul class="mut">
         <li><code>/@username</code> and <code>/u/username</code> both resolve to the same native profile, ahead of bot-route parsing.</li>
         <li><code>/discover</code> and <code>/notifications</code> resolve to their top-level tabs before bot-route parsing, so they aren't mistaken for a company route.</li>
-        <li><code>/discover/{whop-route}</code> opens that company's store page (a discover store link); bare <code>/discover</code> opens the Discover tab.</li>
+        <li><code>/discover/{whop-route}</code> opens the Discover tab, then pushes the company store page on top (back returns to Discover); bare <code>/discover</code> opens the Discover tab.</li>
         <li>Store sections open the matching surface: <code>products</code> &rarr; Products tab, <code>app-store</code> &rarr; Apps tab, <code>reviews</code> &rarr; reviews sheet.</li>
-        <li>Settings sections open their native screen; <code>balance</code> / <code>billing-history</code> have no native screen and open in an in-app web view. The membership/invite id in the URL is parsed but Android opens the list (no per-item highlight).</li>
+        <li>Settings section links open the settings overview first, then push the section on top. <code>balance</code> / <code>billing-history</code> have no native screen and open in an in-app web view. The membership/invite id in the URL is parsed but Android opens the list (no per-item highlight).</li>
         <li>Single-segment store pages (e.g. <code>whop.com/whop-wide-internal</code>) are <b>not</b> auto-verified (Android manifest can't claim them without a catch-all) — they open via adb / in-app links only.</li>
       </ul>
     </div>
