@@ -42,7 +42,7 @@
 <body>
   <a class="back" href="whop_deeplinks.html">&larr; All Whop deeplinks</a>
   <h1>Whop — Navigation Deeplink Verification</h1>
-  <p class="mut">Profiles, global support, notifications, discover, and store-section links. The same <code>whop.com</code> URLs resolve on <b>web</b>, <b>iOS</b>, and <b>Android</b>; tap a link (app installed &amp; signed in) to verify. Platform support is shown per row.</p>
+  <p class="mut">Profiles, global support, notifications, discover, store sections, and account settings. The same <code>whop.com</code> URLs resolve on <b>web</b>, <b>iOS</b>, and <b>Android</b>; tap a link (app installed &amp; signed in) to verify. Platform support is shown per row.</p>
 
   <div class="card">
     <div class="kv">Profile: <b>@deeppandya91</b> &nbsp;·&nbsp; Company route: <b>deep-ai-7c1d</b></div>
@@ -99,12 +99,33 @@
       </tr>
     </tbody>
   </table>
+
+  <h2>Account settings</h2>
+  <p class="mut"><code>/@me/settings/{section}</code> (or <code>/account/{section}</code>) opens that settings screen. <span style="color:var(--warn)">⚠️</span> = opens in an in-app web view (no native screen yet).</p>
+  <table>
+    <thead><tr><th>#</th><th>Section</th><th class="p">Web</th><th class="p">iOS</th><th class="p">Android</th><th>Deeplink</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Overview</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/@me/settings">https://whop.com/@me/settings</a></td></tr>
+      <tr><td class="num">2</td><td>Overview (<code>/account</code> alias)</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/account">https://whop.com/account</a></td></tr>
+      <tr><td class="num">3</td><td>General</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/@me/settings/general">https://whop.com/@me/settings/general</a></td></tr>
+      <tr><td class="num">4</td><td>Security</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/@me/settings/security">https://whop.com/@me/settings/security</a></td></tr>
+      <tr><td class="num">5</td><td>Payment methods</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/@me/settings/payment-methods">https://whop.com/@me/settings/payment-methods</a></td></tr>
+      <tr><td class="num">6</td><td>Connected accounts</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/@me/settings/connected-accounts">https://whop.com/@me/settings/connected-accounts</a></td></tr>
+      <tr><td class="num">7</td><td>Memberships</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/@me/settings/memberships">https://whop.com/@me/settings/memberships</a></td></tr>
+      <tr><td class="num">8</td><td>Pending invites</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/@me/settings/invites">https://whop.com/@me/settings/invites</a></td></tr>
+      <tr><td class="num">9</td><td>Resolution center</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/@me/settings/resolution-center">https://whop.com/@me/settings/resolution-center</a></td></tr>
+      <tr><td class="num">10</td><td>Danger zone</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td><td><a class="dl" href="https://whop.com/@me/settings/danger-zone">https://whop.com/@me/settings/danger-zone</a></td></tr>
+      <tr><td class="num">11</td><td>Balance</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td><td><a class="dl" href="https://whop.com/@me/settings/balance">https://whop.com/@me/settings/balance</a></td></tr>
+      <tr><td class="num">12</td><td>Billing history</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td><td><a class="dl" href="https://whop.com/@me/settings/billing-history">https://whop.com/@me/settings/billing-history</a></td></tr>
+    </tbody>
+  </table>
+
   <details>
     <summary>Android testing (develop build)</summary>
     <div class="dbody">
       <p class="mut">Build: <code>com.whop.whopapp.develop</code> &nbsp;·&nbsp; signed in as <b>@deeppandya91</b>.</p>
 
-      <p><b>Browser tap.</b> Android verifies these paths (profiles, support, notifications, discover, and store sections), so a tapped link opens the app. App-Links paths: <code>/@</code>, <code>/u/</code>, <code>/support</code>, <code>/notifications</code>, <code>/discover</code>, <code>/&#42;/reviews</code>, <code>/&#42;/products</code>, <code>/&#42;/app-store</code>. On the <code>develop</code> build, verification isn't automatic — enable it once in <i>Settings → Apps → Whop (develop) → Open by default → Open supported links → add whop.com</i>.</p>
+      <p><b>Browser tap.</b> Android verifies these paths (profiles, support, notifications, discover, and store sections), so a tapped link opens the app. App-Links paths: <code>/@</code>, <code>/u/</code>, <code>/account</code>, <code>/support</code>, <code>/notifications</code>, <code>/discover</code>, <code>/&#42;/reviews</code>, <code>/&#42;/products</code>, <code>/&#42;/app-store</code>. On the <code>develop</code> build, verification isn't automatic — enable it once in <i>Settings → Apps → Whop (develop) → Open by default → Open supported links → add whop.com</i>.</p>
 
       <p><b>adb (always works, bypasses link verification).</b> Pushes the URL as the <code>deeplink</code> extra:</p>
       <pre>adb shell "am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
@@ -119,6 +140,7 @@
         <li><code>/discover</code> and <code>/notifications</code> resolve to their top-level tabs before bot-route parsing, so they aren't mistaken for a company route.</li>
         <li><code>/discover/{whop-route}</code> opens that company's store page (a discover store link); bare <code>/discover</code> opens the Discover tab.</li>
         <li>Store sections open the matching surface: <code>products</code> &rarr; Products tab, <code>app-store</code> &rarr; Apps tab, <code>reviews</code> &rarr; reviews sheet.</li>
+        <li>Settings sections open their native screen; <code>balance</code> / <code>billing-history</code> have no native screen and open in an in-app web view. The membership/invite id in the URL is parsed but Android opens the list (no per-item highlight).</li>
         <li>Single-segment store pages (e.g. <code>whop.com/deep-ai-7c1d</code>) are <b>not</b> auto-verified (Android manifest can't claim them without a catch-all) — they open via adb / in-app links only.</li>
       </ul>
     </div>
