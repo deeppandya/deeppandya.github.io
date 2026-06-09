@@ -45,7 +45,7 @@
   <p class="mut">Profiles, global support, notifications, discover, store sections, and account settings. The same <code>whop.com</code> URLs resolve on <b>web</b>, <b>iOS</b>, and <b>Android</b>; tap a link (app installed &amp; signed in) to verify. Platform support is shown per row.</p>
 
   <div class="card">
-    <div class="kv">Profile: <b>@deeppandya91</b> &nbsp;·&nbsp; Company route: <b>whop-android</b></div>
+    <div class="kv">Profile: <b>@deeppandya91</b> &nbsp;·&nbsp; Company route: <b>whop-wide-internal</b></div>
   </div>
 
   <h2>Deeplinks</h2>
@@ -79,22 +79,22 @@
       </tr>
       <tr>
         <td class="num">6</td><td>Discover &rarr; store link</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
-        <td><a class="dl" href="https://whop.com/discover/whop-android">https://whop.com/discover/whop-android</a></td>
+        <td><a class="dl" href="https://whop.com/discover/whop-wide-internal">https://whop.com/discover/whop-wide-internal</a></td>
         <td>Opens that company's <b>store page</b> — a discover store link, not the Discover tab.</td>
       </tr>
       <tr>
         <td class="num">7</td><td>Store &rarr; Reviews</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
-        <td><a class="dl" href="https://whop.com/whop-android/reviews">https://whop.com/whop-android/reviews</a></td>
+        <td><a class="dl" href="https://whop.com/whop-wide-internal/reviews">https://whop.com/whop-wide-internal/reviews</a></td>
         <td>Opens the store page's <b>reviews</b> section.</td>
       </tr>
       <tr>
         <td class="num">8</td><td>Store &rarr; Products</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
-        <td><a class="dl" href="https://whop.com/whop-android/products">https://whop.com/whop-android/products</a></td>
+        <td><a class="dl" href="https://whop.com/whop-wide-internal/products">https://whop.com/whop-wide-internal/products</a></td>
         <td>Opens the store page's <b>products</b> section.</td>
       </tr>
       <tr>
         <td class="num">9</td><td>Store &rarr; App store</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
-        <td><a class="dl" href="https://whop.com/whop-android/app-store">https://whop.com/whop-android/app-store</a></td>
+        <td><a class="dl" href="https://whop.com/whop-wide-internal/app-store">https://whop.com/whop-wide-internal/app-store</a></td>
         <td>Opens the store page's <b>apps</b> section.</td>
       </tr>
     </tbody>
@@ -141,7 +141,7 @@
         <li><code>/discover/{whop-route}</code> opens that company's store page (a discover store link); bare <code>/discover</code> opens the Discover tab.</li>
         <li>Store sections open the matching surface: <code>products</code> &rarr; Products tab, <code>app-store</code> &rarr; Apps tab, <code>reviews</code> &rarr; reviews sheet.</li>
         <li>Settings sections open their native screen; <code>balance</code> / <code>billing-history</code> have no native screen and open in an in-app web view. The membership/invite id in the URL is parsed but Android opens the list (no per-item highlight).</li>
-        <li>Single-segment store pages (e.g. <code>whop.com/whop-android</code>) are <b>not</b> auto-verified (Android manifest can't claim them without a catch-all) — they open via adb / in-app links only.</li>
+        <li>Single-segment store pages (e.g. <code>whop.com/whop-wide-internal</code>) are <b>not</b> auto-verified (Android manifest can't claim them without a catch-all) — they open via adb / in-app links only.</li>
       </ul>
     </div>
   </details>
