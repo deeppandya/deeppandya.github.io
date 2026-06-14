@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Whop — Android Install Referrer (POC)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root{--bg:#0f1115;--card:#171a21;--line:#262b36;--fg:#e6e9ef;--mut:#9aa3b2;--accent:#5b8cff;--good:#34c759;--warn:#ff9f0a;--bad:#ff453a;--code:#0b0d12}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5;padding:24px;max-width:1040px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 4px}
+  h2{font-size:17px;margin:28px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  p,li{color:var(--fg)}
+  .mut{color:var(--mut);font-size:14px}
+  .pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;vertical-align:middle}
+  .new{background:rgba(52,199,89,.15);color:var(--good);border:1px solid rgba(52,199,89,.4)}
+  code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
+  .warncard{border-color:rgba(255,159,10,.5);background:rgba(255,159,10,.08)}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px;margin:8px 0}
+  .back{display:inline-block;color:var(--mut);text-decoration:none;font-size:13px;margin-bottom:12px}
+  .back:hover{color:var(--fg)}
+  label{display:block;font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.03em;margin:0 0 4px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  input[type=text],select{width:100%;background:var(--code);border:1px solid var(--line);border-radius:7px;color:var(--fg);font-family:ui-monospace,Menlo,monospace;font-size:13px;padding:9px 10px}
+  input[type=text]:focus,select:focus{outline:none;border-color:var(--accent)}
+  .field{margin:0 0 12px}
+  .out{display:flex;gap:8px;align-items:flex-start;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:9px 10px;margin:6px 0}
+  .out code{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--accent);white-space:pre-wrap;word-break:break-all;user-select:all}
+  .out.cmd code{color:var(--mut);font-size:11.5px}
+  .copy{cursor:pointer;border:1px solid var(--line);background:#1f2531;color:var(--mut);border-radius:6px;font-size:11px;padding:3px 9px;flex:none}
+  .copy:hover{color:var(--fg)}
+  .btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;border-radius:7px;font-size:13px;font-weight:600;padding:8px 14px;margin:6px 8px 0 0}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--fg)}
+  .lbl{font-size:12px;color:var(--mut);margin:14px 0 2px}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+  td code{color:var(--fg)}
+  details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:16px 0}
+  summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:15px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:'\25B8\00a0';color:var(--mut)}
+  details[open] summary::before{content:'\25BE\00a0'}
+  .dbody{padding:0 16px 16px}
+  footer{margin-top:32px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:12px}
+</style>
+</head>
+<body>
+  <a class="back" href="whop_deeplinks.html">&larr; All Whop deeplinks</a>
+  <h1>Whop — Android Install Referrer <span class="pill new">POC</span></h1>
+  <p class="mut">Build a Google Play <b>install referrer</b> URL, then verify the app reads the payload back after install. The referrer is a single URL-encoded string Google Play stores at click time and hands to the app on first launch via the Play Install Referrer Library. Use it to carry attribution (UTM) <i>and</i> a post-install deeplink target through the install.</p>
+
+  <div class="card">
+    <div class="mut">App package: <code style="color:var(--fg)">com.whop.whopapp</code> &nbsp;·&nbsp; develop build: <code style="color:var(--fg)">com.whop.whopapp.develop</code></div>
+    <div class="mut" style="margin-top:4px">Mirrors <code style="color:var(--fg)">getAndroidPlayStoreUrl()</code> — UTM defaults <code style="color:var(--fg)">whop_web</code> / <code style="color:var(--fg)">app_banner</code>, plus optional Whop deeplink params.</div>
+  </div>
+
+  <h2>1 · Build the referrer</h2>
+  <div class="card">
+    <div class="grid">
+      <div class="field"><label>utm_source</label><input type="text" id="utm_source" value="whop_web"></div>
+      <div class="field"><label>utm_medium</label><input type="text" id="utm_medium" value="app_banner"></div>
+      <div class="field"><label>utm_campaign</label><input type="text" id="utm_campaign" value="web_get_app_banner"></div>
+      <div class="field"><label>affiliate (a)</label><input type="text" id="a" value="deeppandya91"></div>
+      <div class="field"><label>deeplink route — post-install target</label><input type="text" id="route" value="/whop-wide-internal" placeholder="/whop-route or /hub/biz_…/…/app"></div>
+      <div class="field"><label>access pass / experience (optional)</label><input type="text" id="extra" value="" placeholder="exp_… or prod_…"></div>
+    </div>
+    <p class="mut" style="margin:2px 0 0">Empty fields are dropped. The referrer is capped at ~8 KB by Play; keep it compact.</p>
+  </div>
+
+  <h2>2 · Generated links</h2>
+  <div class="card">
+    <div class="lbl">Raw referrer (decoded — what the app receives back)</div>
+    <div class="out"><code id="raw"></code><button class="copy" data-src="raw">copy</button></div>
+
+    <div class="lbl">URL-encoded referrer</div>
+    <div class="out"><code id="enc"></code><button class="copy" data-src="enc">copy</button></div>
+
+    <div class="lbl">Play Store URL (https — opens Play app or web)</div>
+    <div class="out"><code id="playurl"></code><button class="copy" data-src="playurl">copy</button></div>
+
+    <div class="lbl">market:// URL (forces the Play Store app)</div>
+    <div class="out"><code id="markurl"></code><button class="copy" data-src="markurl">copy</button></div>
+
+    <a class="btn" id="open" href="#" target="_blank" rel="noopener">Open Play Store ↗</a>
+    <a class="btn ghost" id="openmkt" href="#">Open market:// ↗</a>
+  </div>
+
+  <h2>3 · Test on a device build (Firebase / sideload)</h2>
+  <div class="card warncard">
+    <b>⚠️ A Firebase or sideloaded build can't return a real campaign referrer.</b>
+    <p class="mut" style="margin:6px 0 0">Firebase App Distribution installs outside the Play Store, so <code>InstallReferrerClient</code> reports the organic default — <code>utm_source=google-play&amp;utm_medium=organic</code> — exactly like a sideload. A real campaign referrer only comes from a Play <b>internal-testing track</b> install (section 4). To exercise the full path on a Firebase build, use the non-production <code>debug_install_referrer</code> adb hook below.</p>
+  </div>
+  <div class="card">
+    <div class="field" style="max-width:240px">
+      <label>Build variant (sets package)</label>
+      <select id="variant">
+        <option value="develop">develop — com.whop.whopapp.develop</option>
+        <option value="beta">beta (Firebase) — com.whop.whopapp.beta</option>
+        <option value="production">production — com.whop.whopapp</option>
+      </select>
+    </div>
+
+    <div class="lbl">1 · Push/install the build via Firebase App Distribution (App Tester), then watch the log</div>
+    <div class="out cmd"><code id="logcmd">adb logcat -b all -s InstallReferrer</code><button class="copy" data-src="logcmd">copy</button></div>
+
+    <div class="lbl" style="margin-top:12px">2 · Cold-launch — logs the real (organic on Firebase) referrer on app open</div>
+    <div class="out cmd"><code id="launchcmd"></code><button class="copy" data-src="launchcmd">copy</button></div>
+
+    <div class="lbl" style="margin-top:12px">3 · Inject a test referrer through the parse/log path</div>
+    <div class="out cmd"><code id="adb"></code><button class="copy" data-src="adb">copy</button></div>
+    <p class="mut" id="injectnote" style="margin:8px 0 0">Single-quote the value so the device shell keeps the <code>&amp;</code>. Expect: <code>I InstallReferrer: Install referrer (debug inject): &lt;value&gt;</code>. The hook is a no-op on the <code>production</code> flavor.</p>
+  </div>
+
+  <h2>4 · End-to-end test (real Play referrer)</h2>
+  <table>
+    <thead><tr><th>#</th><th>Step</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Upload a <code>beta</code>/<code>production</code> build (package <code>com.whop.whopapp</code>) to that app's <b>internal testing</b> track in Play Console.</td></tr>
+      <tr><td>2</td><td><b>Uninstall</b> any existing build, then open the generated Play Store URL (section 2) on the device and install from there.</td></tr>
+      <tr><td>3</td><td>Launch — confirm the logcat <code>InstallReferrer</code> line shows your campaign referrer instead of the organic default.</td></tr>
+    </tbody>
+  </table>
+
+  <details>
+    <summary>Implementation — current POC (log-only)</summary>
+    <div class="dbody">
+      <p class="mut">The current build captures the referrer and <b>logs</b> it on app open (tag <code>InstallReferrer</code>); the analytics event is intentionally not wired up yet. A non-production adb hook injects a referrer for testing off-Play.</p>
+
+      <p class="mut"><b>Gradle</b></p>
+      <pre>implementation("com.android.installreferrer:installreferrer:2.2")</pre>
+
+      <p class="mut"><b>Capture + log on app open</b> (real path — Play returns the value, organic off-Play)</p>
+      <pre>val client = InstallReferrerClient.newBuilder(context).build()
+client.startConnection(object : InstallReferrerStateListener {
+    override fun onInstallReferrerSetupFinished(responseCode: Int) {
+        if (responseCode == InstallReferrerClient.InstallReferrerResponse.OK) {
+            Timber.tag("InstallReferrer")
+                .i("Install referrer on app open: %s", client.installReferrer.installReferrer)
+        }
+        client.endConnection()
+    }
+    override fun onInstallReferrerServiceDisconnected() {}
+})</pre>
+
+      <p class="mut"><b>Debug-inject hook</b> (non-production only) — read in <code>MainActivity</code> onCreate / onNewIntent</p>
+      <pre>if (BuildConfig.FLAVOR != "production") {
+    intent.getStringExtra("debug_install_referrer")?.let { referrer ->
+        Timber.tag("InstallReferrer").i("Install referrer (debug inject): %s", referrer)
+    }
+}</pre>
+      <p class="mut">Next step (later): swap the log for a Segment <code>app_install</code> event and parse <code>utm_*</code> from the raw string to count installs by campaign.</p>
+    </div>
+  </details>
+
+  <footer>Android install-referrer POC for Whop attribution + post-install deeplinking. Generated for on-device QA.</footer>
+
+<script>
+  var PKG = "com.whop.whopapp";
+  var ACTIVITY = "com.whop.whopapp.MainActivity";
+  var FIELDS = ["utm_source","utm_medium","utm_campaign","a","route","extra"];
+  var SUFFIX = { develop: ".develop", beta: ".beta", production: "" };
+
+  function pkgForVariant(){
+    return PKG + SUFFIX[document.getElementById("variant").value];
+  }
+
+  function build(){
+    var p = new URLSearchParams();
+    FIELDS.forEach(function(k){
+      var v = document.getElementById(k).value.trim();
+      if(!v) return;
+      p.append(k === "extra" ? "id" : k, v);
+    });
+    var raw = p.toString();
+    var enc = encodeURIComponent(raw);
+    var playurl = "https://play.google.com/store/apps/details?id=" + PKG + "&referrer=" + enc;
+    var markurl = "market://details?id=" + PKG + "&referrer=" + enc;
+
+    var variant = document.getElementById("variant").value;
+    var pkg = pkgForVariant();
+    var launchcmd = "adb shell am force-stop " + pkg + " && \\\n  adb shell monkey -p " + pkg + " -c android.intent.category.LAUNCHER 1";
+    var adb = variant === "production"
+      ? "# debug-inject is disabled on the production flavor — use section 4 (Play install)"
+      : "adb shell \"am start -n " + pkg + "/" + ACTIVITY + " --es debug_install_referrer '" + raw + "'\"";
+
+    set("raw", raw); set("enc", enc); set("playurl", playurl); set("markurl", markurl);
+    set("launchcmd", launchcmd); set("adb", adb);
+    document.getElementById("open").href = playurl;
+    document.getElementById("openmkt").href = markurl;
+    document.getElementById("injectnote").style.opacity = variant === "production" ? ".5" : "1";
+  }
+  function set(id, v){ document.getElementById(id).textContent = v; }
+
+  document.querySelectorAll("input[type=text]").forEach(function(el){ el.addEventListener("input", build); });
+  document.getElementById("variant").addEventListener("change", build);
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var t = document.getElementById(btn.dataset.src).textContent;
+      navigator.clipboard.writeText(t).then(function(){ btn.textContent="copied!"; setTimeout(function(){ btn.textContent="copy"; },1200); });
+    });
+  });
+  build();
+</script>
+</body>
+</html>
