@@ -10,7 +10,7 @@
 <style>
   :root {
     --bg: #ffffff;
-    --bg-soft: #f7f8fa;
+    --bg-soft: #f4f5f7;
     --text: #0d0f14;
     --muted: #5a6573;
     --faint: #8b94a3;
@@ -18,6 +18,12 @@
     --line-soft: #f0f2f5;
     --accent: #2b6ef6;
     --accent-press: #195fe0;
+    --brand: #e8512e;          /* whop orange — "Bet on yourself" */
+    --brand-press: #cf4220;
+    --navy: #22458f;           /* type-picker cards */
+    --cta: #1d6ff2;            /* Join raffle button */
+    --ink: #0c0d10;            /* app dark background */
+    --ink-soft: #17181d;       /* dark cards */
     --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
   }
@@ -27,17 +33,7 @@
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
 
-  .nav { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.85); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--line); }
-  .nav__in { max-width: 1080px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .logo { font-weight: 800; font-size: 19px; letter-spacing: -0.02em; color: var(--text); }
-  .logo .dot { color: var(--accent); }
-  .nav__links { display: flex; gap: 22px; align-items: center; font-size: 14.5px; font-weight: 500; }
-  .nav__links a { color: var(--muted); }
-  .nav__cta { background: var(--accent); color: #fff; padding: 8px 16px; border-radius: 10px; font-weight: 600; font-size: 14px; }
-  .nav__cta:hover { background: var(--accent-press); text-decoration: none; }
-  @media (max-width: 640px) { .nav__links a:not(.nav__cta) { display: none; } }
-
-  .article { max-width: 740px; margin: 0 auto; padding: 0 24px; }
+  .article { max-width: 760px; margin: 0 auto; padding: 0 24px; }
 
   .crumb { padding: 30px 0 0; font-size: 13.5px; font-weight: 500; color: var(--faint); }
   .crumb a { color: var(--muted); }
@@ -50,8 +46,8 @@
   .meta { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; padding: 26px 0 22px; }
   .who { display: flex; align-items: center; gap: 11px; }
   .who__img { width: 46px; height: 46px; border-radius: 999px; color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 14px; flex: none; }
-  .who__img.a { background: linear-gradient(135deg, #2b6ef6, #7c4dff); }
-  .who__img.b { background: linear-gradient(135deg, #11b5a5, #2b6ef6); }
+  .who__img.a { background: linear-gradient(135deg, #e8512e, #f59e0b); }
+  .who__img.b { background: linear-gradient(135deg, #1d6ff2, #22458f); }
   .who__role { font-size: 12px; color: var(--faint); }
   .who__name { font-size: 14.5px; font-weight: 600; color: var(--text); }
   .who__bio { font-size: 12px; font-style: italic; color: var(--muted); }
@@ -62,52 +58,80 @@
   .utility { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 0 18px; border-bottom: 1px solid var(--line); }
   .ubtn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 500; color: var(--muted); border: 1px solid var(--line); background: #fff; padding: 7px 13px; border-radius: 999px; cursor: pointer; }
   .ubtn:hover { background: var(--bg-soft); color: var(--text); }
-  .ubtn .ic { width: 7px; height: 7px; border-radius: 999px; background: var(--accent); }
+  .ubtn .ic { width: 7px; height: 7px; border-radius: 999px; background: var(--brand); }
 
-  /* full-width hero, right after author */
-  .hero { margin: 26px 0 6px; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; height: clamp(240px, 46vw, 400px);
-    background: radial-gradient(120% 140% at 12% 8%, rgba(124,77,255,0.55), transparent 55%), radial-gradient(120% 120% at 92% 26%, rgba(43,110,246,0.6), transparent 55%), linear-gradient(140deg, #1a2030, #0d1018);
-    display: grid; place-items: center; }
-  .hero::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 40px 40px; mask-image: radial-gradient(120% 100% at 50% 40%, #000, transparent 75%); }
-  .hero__emojis { position: relative; z-index: 1; font-size: clamp(44px, 10vw, 84px); letter-spacing: 8px; filter: drop-shadow(0 10px 26px rgba(0,0,0,0.4)); }
-  .hero__cap { position: absolute; bottom: 16px; left: 20px; z-index: 1; color: rgba(255,255,255,0.92); font-family: var(--mono); font-size: 12.5px; }
+  /* phone board (mirrors the Figma flow) */
+  .board { margin: 26px 0 6px; border: 1px solid var(--line); border-radius: 20px; background: var(--bg-soft); padding: 26px 0; overflow: hidden; }
+  .board__scroll { display: flex; gap: 18px; overflow-x: auto; padding: 0 26px 8px; scrollbar-width: thin; }
+  .board__cap { padding: 0 26px; margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+  .frame { flex: none; width: 196px; }
+  .frame__label { font-size: 12px; font-weight: 600; color: var(--faint); margin: 0 0 8px 4px; }
+  .phone { width: 196px; height: 400px; border-radius: 30px; background: #000; border: 7px solid #0c0c0e; box-shadow: 0 22px 44px -26px rgba(0,0,0,0.55); overflow: hidden; position: relative; }
+  .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 70px; height: 16px; background: #000; border-radius: 999px; z-index: 3; }
+  .scr { position: absolute; inset: 0; display: flex; flex-direction: column; }
+  .sb { display: flex; justify-content: space-between; align-items: center; padding: 9px 16px 0; font-size: 10px; font-weight: 600; }
+  .sb.light { color: #fff; } .sb.dark { color: #fff; }
+
+  /* home screen */
+  .scr--home { background: var(--brand); }
+  .home { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 22px; gap: 0; }
+  .wmark { width: 52px; height: 34px; margin-bottom: 14px; }
+  .home__tag { color: #fff; font-size: 27px; font-weight: 700; letter-spacing: -0.02em; text-align: center; line-height: 1.1; }
+  .home__btns { position: absolute; left: 18px; right: 18px; bottom: 30px; display: flex; flex-direction: column; gap: 9px; }
+  .pbtn { text-align: center; font-size: 12.5px; font-weight: 600; padding: 11px; border-radius: 11px; }
+  .pbtn.lt { background: #f1ece9; color: #1a1a1a; }
+  .pbtn.dk { background: #111; color: #fff; }
+
+  /* dark app screens */
+  .scr--dark { background: var(--ink); }
+  .scr__top { display: flex; justify-content: space-between; align-items: center; padding: 6px 14px 0; }
+  .chip { width: 26px; height: 26px; border-radius: 999px; background: #23242a; color: #cfd3da; display: grid; place-items: center; font-size: 13px; }
+  .chip.save { width: auto; padding: 0 12px; height: 26px; font-size: 11px; font-weight: 600; }
+  .scr__h { color: #fff; font-weight: 700; letter-spacing: -0.02em; padding: 14px 18px 6px; font-size: 19px; }
+  .scr__h.center { text-align: center; font-size: 18px; padding: 22px 24px 8px; }
+
+  .types { display: flex; flex-direction: column; gap: 8px; padding: 6px 16px; }
+  .type { display: flex; align-items: center; gap: 8px; background: var(--navy); color: #fff; border-radius: 11px; padding: 10px 12px; font-size: 12.5px; font-weight: 600; }
+  .type .plus { opacity: 0.8; font-weight: 700; }
+  .type .emo { margin-left: auto; font-size: 15px; }
+  .type.on { outline: 2px solid #6f9bff; outline-offset: 1px; }
+
+  .promptbox { margin: 10px 16px; background: #18191e; border: 1px solid #26272d; border-radius: 14px; height: 96px; padding: 12px; color: #6b7178; font-size: 12px; position: relative; }
+  .promptbox .mic { position: absolute; right: 10px; bottom: 10px; color: #8b929b; }
+  .kbd { margin-top: auto; background: #1c1d22; height: 150px; border-top: 1px solid #2a2b31; display: grid; place-content: center; color: #4a4d55; font-size: 11px; }
+
+  .pimg { margin: 8px 14px 0; height: 130px; border-radius: 12px; position: relative; overflow: hidden;
+    background: radial-gradient(120% 120% at 30% 10%, #2b6ff2, #0c1f4a 70%); }
+  .pimg .ps { position: absolute; top: 12px; left: 14px; color: #cfe0ff; font-weight: 800; font-size: 15px; letter-spacing: 0.06em; }
+  .pimg .edit { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(20,20,22,0.7); color: #fff; font-size: 10px; padding: 4px 10px; border-radius: 999px; }
+  .ptitle { color: #fff; font-weight: 800; font-size: 17px; padding: 12px 16px 2px; }
+  .pdesc { color: #aeb4bd; font-size: 10.5px; padding: 0 16px; line-height: 1.5; }
+  .pdesc .win { color: #fff; font-weight: 600; display: block; margin-bottom: 4px; }
+  .join { position: absolute; left: 14px; right: 14px; bottom: 16px; background: var(--cta); color: #fff; text-align: center; font-weight: 700; font-size: 13px; padding: 12px; border-radius: 12px; }
+
+  .sharecard { position: absolute; left: 14px; right: 14px; bottom: 16px; background: #fff; border-radius: 16px; padding: 14px; text-align: center; box-shadow: 0 18px 40px -18px rgba(0,0,0,0.6); }
+  .sharecard .thumb { width: 64px; height: 64px; border-radius: 10px; margin: 0 auto 8px; background: radial-gradient(120% 120% at 30% 10%, #2b6ff2, #0c1f4a 70%); position: relative; }
+  .sharecard .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 700; color: #1d6ff2; background: #e6efff; padding: 2px 8px; border-radius: 999px; }
+  .sharecard .nm { font-weight: 800; font-size: 13px; color: #111; margin: 6px 0 2px; }
+  .sharecard .by { font-size: 10.5px; color: #6b7178; }
+  .sharecard .sh { margin-top: 10px; background: #111; color: #fff; font-size: 11.5px; font-weight: 600; padding: 9px; border-radius: 10px; }
+  .pimg.dim { opacity: 0.5; }
 
   .body { padding: 26px 0 8px; }
   .body h2 { font-size: clamp(23px, 3.2vw, 31px); font-weight: 700; letter-spacing: -0.02em; margin: 50px 0 8px; }
-  .body h3 { font-size: 19px; font-weight: 700; margin: 30px 0 4px; letter-spacing: -0.01em; }
   .body p { font-size: 17.5px; color: #1c2129; margin: 18px 0; }
   .body p.lead { font-size: 20px; color: #2a313c; }
   .body strong { font-weight: 600; color: var(--text); }
-  .body ul { margin: 16px 0; padding-left: 22px; }
-  .body li { font-size: 17px; color: #1c2129; margin: 9px 0; }
   .body code { font-family: var(--mono); font-size: 14.5px; background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 6px; }
 
-  /* video card */
-  .video { margin: 24px 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); position: relative; height: clamp(200px, 40vw, 320px);
-    background: radial-gradient(100% 120% at 30% 20%, rgba(43,110,246,0.35), transparent 60%), linear-gradient(135deg, #11151d, #0c0f16); display: grid; place-items: center; }
-  .video .play { width: 64px; height: 64px; border-radius: 999px; background: rgba(255,255,255,0.96); display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
-  .video .play::before { content: ""; border-left: 18px solid #14223f; border-top: 11px solid transparent; border-bottom: 11px solid transparent; margin-left: 4px; }
-  .video .dur { position: absolute; bottom: 12px; right: 14px; font-family: var(--mono); font-size: 12px; color: #fff; background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 6px; }
-
-  /* screenshot placeholder */
-  .shot { margin: 22px 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--bg-soft); }
-  .shot__frame { height: clamp(170px, 32vw, 240px); background: radial-gradient(120% 140% at 20% 10%, rgba(43,110,246,0.18), transparent 60%), linear-gradient(135deg, #eef2f8, #e7ecf4); display: grid; place-items: center; color: var(--faint); font-size: 13px; font-family: var(--mono); }
-  .shot__cap { padding: 11px 16px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
-
-  /* option block */
-  .opt { border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; margin: 16px 0; background: #fff; }
-  .opt h3 { margin: 0 0 4px; }
-  .opt p { margin: 8px 0 0; font-size: 16px; }
-  .avail { display: inline-block; margin-top: 14px; font-size: 12px; font-weight: 600; color: var(--accent); background: rgba(43,110,246,0.10); padding: 4px 11px; border-radius: 999px; }
-
-  .figrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 24px 0; }
+  .figrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin: 24px 0; }
   .fig { border: 1px solid var(--line); border-radius: 14px; background: var(--bg-soft); padding: 18px 14px; text-align: center; }
   .fig .e { font-size: 28px; }
   .fig .t { font-size: 14px; font-weight: 600; margin-top: 8px; color: var(--text); }
 
   .steps { display: grid; gap: 12px; margin: 24px 0; counter-reset: s; }
   .pstep { display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: #fff; }
-  .pstep .pn { counter-increment: s; width: 40px; height: 40px; border-radius: 11px; background: rgba(43,110,246,0.10); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 15px; }
+  .pstep .pn { counter-increment: s; width: 40px; height: 40px; border-radius: 11px; background: rgba(232,81,46,0.12); color: var(--brand); display: grid; place-items: center; font-weight: 700; font-size: 15px; }
   .pstep .pn::before { content: counter(s); }
   .pstep h3 { font-size: 16px; font-weight: 600; margin: 4px 0 0; }
   .pstep p { font-size: 15px; color: var(--muted); margin: 5px 0 0; }
@@ -115,24 +139,21 @@
   .callout { border: 1px solid var(--line); border-left: 4px solid #e8843c; border-radius: 12px; background: #fff7ef; padding: 18px 20px; margin: 28px 0; font-size: 16.5px; color: #1c2129; }
   .callout b { color: var(--text); }
 
-  /* feature CTA (Your raffle, your way) */
   .featcta { display: grid; grid-template-columns: 1fr auto; gap: 22px; align-items: center; border: 1px solid var(--line); border-radius: 18px; background: var(--bg-soft); padding: 26px 28px; margin: 44px 0 8px; }
   .featcta h2 { margin: 0 0 6px; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
   .featcta p { margin: 0; font-size: 16px; color: var(--muted); }
-  .featcta a.btn2 { background: var(--accent); color: #fff; font-weight: 700; font-size: 15px; padding: 12px 22px; border-radius: 11px; white-space: nowrap; }
+  .featcta a.btn2 { background: var(--cta); color: #fff; font-weight: 700; font-size: 15px; padding: 12px 22px; border-radius: 11px; white-space: nowrap; }
   .featcta a.btn2:hover { background: var(--accent-press); text-decoration: none; }
   @media (max-width: 560px) { .featcta { grid-template-columns: 1fr; } }
 
-  .endcta { margin: 30px 0 12px; border-radius: 22px; padding: 46px 34px; text-align: center; color: #fff; position: relative; overflow: hidden; background: radial-gradient(120% 160% at 0% 0%, rgba(124,77,255,0.6), transparent 55%), linear-gradient(135deg, #2b6ef6, #1b3fd1); }
-  .endcta h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 12px; }
-  .endcta p { color: rgba(255,255,255,0.9); font-size: 17px; margin: 0 auto 24px; max-width: 50ch; }
+  /* Bet on yourself end CTA — orange, echoes the home screen */
+  .endcta { margin: 30px 0 12px; border-radius: 22px; padding: 50px 34px; text-align: center; color: #fff; position: relative; overflow: hidden;
+    background: radial-gradient(120% 150% at 0% 0%, #f6a23c, transparent 55%), linear-gradient(135deg, #e8512e, #cf3f1e); }
+  .endcta .mark { width: 56px; height: 36px; margin: 0 auto 14px; }
+  .endcta h2 { font-size: clamp(28px, 4.4vw, 40px); font-weight: 800; letter-spacing: -0.025em; margin: 0 0 12px; }
+  .endcta p { color: rgba(255,255,255,0.92); font-size: 17px; margin: 0 auto 24px; max-width: 48ch; }
   .endcta a.btn { background: #fff; color: #14223f; font-weight: 700; font-size: 16px; padding: 14px 28px; border-radius: 12px; display: inline-block; }
   .endcta a.btn:hover { text-decoration: none; }
-
-  .foot { border-top: 1px solid var(--line); margin-top: 56px; }
-  .foot__in { max-width: 740px; margin: 0 auto; padding: 32px 24px 72px; color: var(--muted); font-size: 14.5px; }
-  .foot__in .more { font-weight: 600; color: var(--text); margin-bottom: 10px; }
-  .foot__in a { display: block; margin: 6px 0; }
 </style>
 </head>
 <body>
@@ -143,7 +164,7 @@
 
     <header class="header">
       <h1 class="title">Introducing Raffles on Whop</h1>
-      <p class="dek">Whop Raffles gives sellers a new way to turn a single great item into a crowd — ticketing, a countdown, a provably-fair draw, and payouts, all handled automatically.</p>
+      <p class="dek">Bet on yourself. Pick Raffle, describe what you're giving away, and Whop builds the product page, sells the tickets, and draws a winner — all from your phone.</p>
     </header>
 
     <div class="meta">
@@ -173,87 +194,131 @@
       <button class="ubtn"><span class="ic"></span> Summary</button>
     </div>
 
-    <div class="hero">
-      <div class="hero__emojis">🎟️ 🃏 🚲 🧸</div>
-      <div class="hero__cap">Whop Raffles · now in beta</div>
+    <!-- phone board: the real flow -->
+    <div class="board">
+      <div class="board__scroll">
+
+        <div class="frame">
+          <p class="frame__label">Home</p>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr scr--home">
+              <div class="sb light"><span>9:41</span><span>●●●</span></div>
+              <div class="home">
+                <svg class="wmark" viewBox="0 0 60 38" fill="none"><path d="M4 6 L16 30 L24 14" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 6 L42 30 L56 8" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="home__tag">Bet on<br>yourself</div>
+              </div>
+              <div class="home__btns">
+                <div class="pbtn lt">Create account</div>
+                <div class="pbtn dk">I have an account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frame">
+          <p class="frame__label">Types</p>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr scr--dark">
+              <div class="sb dark"><span>9:41</span><span>●●●</span></div>
+              <div class="scr__h">What are you building?</div>
+              <div class="types">
+                <div class="type"><span class="plus">+</span> Merch shop <span class="emo">🛍️</span></div>
+                <div class="type"><span class="plus">+</span> Service offering <span class="emo">🛹</span></div>
+                <div class="type"><span class="plus">+</span> Video game <span class="emo">🎮</span></div>
+                <div class="type"><span class="plus">+</span> Course <span class="emo">🎓</span></div>
+                <div class="type on"><span class="plus">+</span> Raffle <span class="emo">🐷</span></div>
+                <div class="type"><span class="plus">+</span> Fintech app <span class="emo">🧾</span></div>
+                <div class="type"><span class="plus">+</span> Paid community <span class="emo">💬</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frame">
+          <p class="frame__label">Prompt</p>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr scr--dark">
+              <div class="scr__top"><span class="chip">✕</span><span class="chip save">Save</span></div>
+              <div class="scr__h center">Describe what you're raffling</div>
+              <div class="promptbox">I want to raffle off…<span class="mic">🎙️</span></div>
+              <div class="kbd">⌨︎</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frame">
+          <p class="frame__label">Product page</p>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr scr--dark">
+              <div class="scr__top"><span class="chip">✕</span><span class="chip save">Save</span></div>
+              <div class="pimg"><span class="ps">PS4</span><span class="edit">✎ Edit</span></div>
+              <div class="ptitle">PS4 (like new)</div>
+              <div class="pdesc"><span class="win">🎮 WIN TIMMY'S LEGENDARY PS4! 🎮</span>Ever wanted a console with character? Now's your chance — Timmy's battle-tested PS4…</div>
+              <div class="join">Join raffle&nbsp;&nbsp;$5</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frame">
+          <p class="frame__label">Share</p>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr scr--dark">
+              <div class="scr__top"><span class="chip">✕</span><span class="chip save">Save</span></div>
+              <div class="pimg dim"><span class="ps">PS4</span></div>
+              <div class="ptitle" style="opacity:.4">PS4 (like new)</div>
+              <div class="sharecard">
+                <div class="thumb"></div>
+                <span class="badge">◆ Raffle</span>
+                <div class="nm">PS4 (like new)</div>
+                <div class="by">👤 Lil Timmy</div>
+                <div class="sh">↗ Share</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p class="board__cap">The full flow, from "Bet on yourself" to a shareable raffle — five taps on your phone.</p>
     </div>
 
     <article class="body">
       <p class="lead">
         Raffles have always been one of the internet's best ways to turn a single great item into a crowd. Today
-        we're making them a first-class way to sell on Whop — so you can list a prize, sell tickets, and draw a
-        winner without spreadsheets, DMs, or "trust me" screenshots.
+        we're making them a first-class way to sell on Whop — no spreadsheets, no DMs, no "trust me" screenshots.
+        Open the app, bet on yourself, and your raffle is live in minutes.
       </p>
 
-      <div class="video">
-        <div class="play"></div>
-        <span class="dur">0:25</span>
-      </div>
-
-      <p>
-        Set a ticket price, set a deadline, share one link. Whop handles the tickets, the countdown, the draw, and
-        getting you paid — physical prizes ship with tracking built in.
-      </p>
-
-      <h2>Three ways to run a raffle</h2>
-      <p>Every raffle is different. Pick the model that fits what you're giving away.</p>
-
-      <div class="opt">
-        <h3>Option 1 — One big prize</h3>
-        <p>A single hero item — a graded card, a console, an e-bike. Sell a fixed number of tickets and draw one winner at the deadline. The classic drop.</p>
-        <span class="avail">Available in beta</span>
-      </div>
-      <div class="opt">
-        <h3>Option 2 — Multi-winner bundle</h3>
-        <p>Several prizes from one pool of tickets. Set a winner count and Whop draws them all at once, fairly, from the same verified entry list.</p>
-        <span class="avail">Available in beta</span>
-      </div>
-      <div class="opt">
-        <h3>Option 3 — Digital &amp; instant</h3>
-        <p>Robux, gift cards, in-game items — no shipping. Winners are notified and delivered instantly the moment the draw closes.</p>
-        <span class="avail">Available in beta</span>
-      </div>
-
-      <div class="shot">
-        <div class="shot__frame">raffle dashboard — tickets sold, live odds, countdown</div>
-        <div class="shot__cap">Track ticket sales, live odds, and the countdown from one place.</div>
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="pstep"><div class="pn"></div><div><h3>Bet on yourself</h3><p>Create your account from the home screen and you're in — no store setup, no approval queue to start.</p></div></div>
+        <div class="pstep"><div class="pn"></div><div><h3>Pick "Raffle"</h3><p>On "What are you building?", choose Raffle alongside merch shops, courses, and communities.</p></div></div>
+        <div class="pstep"><div class="pn"></div><div><h3>Describe what you're raffling</h3><p>Type "I want to raffle off…" and our AI drafts the whole product page — title, hype copy, and layout.</p></div></div>
+        <div class="pstep"><div class="pn"></div><div><h3>Review your product page</h3><p>Add a photo, tweak the copy, set the ticket price. The page ships with a "Join raffle $5" button built in.</p></div></div>
+        <div class="pstep"><div class="pn"></div><div><h3>Share</h3><p>Send the raffle card anywhere — group chats, stories, posts. Buyers tap in and grab a ticket.</p></div></div>
       </div>
 
       <h2>What you can raffle</h2>
       <div class="figrow">
+        <div class="fig"><div class="e">🎮</div><div class="t">Consoles</div></div>
         <div class="fig"><div class="e">🃏</div><div class="t">Graded cards</div></div>
         <div class="fig"><div class="e">🚲</div><div class="t">E-bikes &amp; gear</div></div>
-        <div class="fig"><div class="e">🎮</div><div class="t">Digital goods</div></div>
         <div class="fig"><div class="e">🧸</div><div class="t">Collectibles</div></div>
         <div class="fig"><div class="e">👟</div><div class="t">Sneakers</div></div>
       </div>
-      <p>Physical or digital, one-of-one or a bundle — if you can put a price on a ticket, you can raffle it.</p>
-
-      <h2>How it works</h2>
-      <div class="steps">
-        <div class="pstep"><div class="pn"></div><div><h3>Pick your prize</h3><p>Choose a template or start blank, upload a photo, and our AI drafts a clean prize page in seconds.</p></div></div>
-        <div class="pstep"><div class="pn"></div><div><h3>Set price &amp; tickets</h3><p>Decide what a ticket costs and how many exist. Cap how many one person can buy to keep it fair.</p></div></div>
-        <div class="pstep"><div class="pn"></div><div><h3>Set the deadline</h3><p>Pick when the raffle closes. Sales stop automatically — you don't have to babysit it.</p></div></div>
-        <div class="pstep"><div class="pn"></div><div><h3>Share one link</h3><p>Drop your raffle link in chats, stories, and posts. Recruit affiliates to push it for a cut.</p></div></div>
-        <div class="pstep"><div class="pn"></div><div><h3>Draw &amp; deliver</h3><p>At the deadline we pick a winner fairly, you get paid, and shipping with tracking is built in.</p></div></div>
-      </div>
+      <p>Physical or digital, one-of-one or a bundle — if you can put a price on a ticket, you can raffle it. Like Timmy's legendary PS4.</p>
 
       <h2>A draw people can actually trust</h2>
       <p>
         The moment that makes or breaks a raffle is the draw. Whop picks the winner using
         <strong>verifiable randomness</strong> — every drawing comes with a published proof anyone can check. No
-        "trust me," no off-camera spin. Buyers see the odds before they enter and the receipt after you draw.
+        "trust me," no off-camera spin. Buyers see the odds before they join and the receipt after you draw.
       </p>
-      <div class="shot">
-        <div class="shot__frame">draw result — winner + verifiable proof (seed · hash)</div>
-        <div class="shot__cap">Every draw publishes a proof your audience can verify.</div>
-      </div>
 
       <h2>Get paid the moment it ends</h2>
       <p>
         Ticket revenue lands in your Whop balance as sales happen. Connect your bank once, and payouts run on the
         same rails creators already use across the platform. When you draw a winner for a physical prize, you
-        collect their address and ship with tracking right from the dashboard.
+        collect their address and ship with tracking right from the app.
       </p>
 
       <div class="callout">
@@ -265,15 +330,16 @@
       <div class="featcta">
         <div>
           <h2>Your raffle, your way</h2>
-          <p>One big prize, a bundle, or an instant digital drop — run it your way on Whop.</p>
+          <p>One big prize or a multi-winner drop — describe it, and Whop builds the page.</p>
         </div>
         <a class="btn2" href="https://whop.com/new/">Sell with Whop</a>
       </div>
 
       <div class="endcta">
-        <h2>Start with an idea — we'll handle the rest</h2>
-        <p>One platform for creating, hosting, and selling. Whop runs everything that powers your business.</p>
-        <a class="btn" href="https://whop.com/new/">Start selling today →</a>
+        <svg class="mark" viewBox="0 0 60 38" fill="none"><path d="M4 6 L16 30 L24 14" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 6 L42 30 L56 8" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h2>Bet on yourself</h2>
+        <p>One platform for creating, hosting, and selling. Whop runs everything that powers your raffle.</p>
+        <a class="btn" href="https://whop.com/new/">Start your raffle →</a>
       </div>
     </article>
   </main>
