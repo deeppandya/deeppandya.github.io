@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Raffle Business — Public API vs REST, Step by Step</title>
+<title>Raffle Business — API Endpoints, Step by Step</title>
 <style>
   :root {
     --ground: #10151c;
@@ -66,30 +66,14 @@
   .pill.proxy { color: var(--proxy); border-color: var(--proxy-dim); background: var(--proxy-dim); }
   .pill.build { color: var(--build); border-color: var(--build-dim); background: var(--build-dim); }
 
-  .hero { padding: 50px 0 26px; }
+  .hero { padding: 52px 0 30px; }
   .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
   .hero h1 { font-family: var(--mono); font-size: clamp(28px, 5vw, 48px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 650; margin: 0 0 16px; max-width: 20ch; }
   .hero h1 .glow { color: var(--build); }
   .hero p.lede { font-size: clamp(14px, 1.9vw, 17px); color: var(--muted); max-width: 72ch; margin: 0; }
   .hero code { font-family: var(--mono); background: var(--code-bg); padding: 1px 7px; border-radius: 6px; color: var(--text); font-size: 0.92em; }
 
-  /* toggle */
-  .toggle { display: inline-flex; padding: 4px; gap: 4px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--code-bg); margin: 26px 0 0; }
-  .toggle__btn {
-    font-family: var(--mono); font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
-    color: var(--muted); background: transparent; border: 0; cursor: pointer;
-    padding: 9px 16px; border-radius: 9px; transition: background .15s ease, color .15s ease;
-  }
-  .toggle__btn:hover { color: var(--text); }
-  .toggle__btn.is-active { background: var(--accent); color: #0b0f16; }
-  .toggle__hint { font-family: var(--mono); font-size: 12px; color: var(--faint); margin: 12px 0 0; }
-
-  /* view switching */
-  .view--rest { display: none; }
-  body.mode-rest .view--rest { display: revert; }
-  body.mode-rest .view--sdk { display: none; }
-
-  .steps { display: flex; flex-direction: column; gap: 26px; padding: 32px 0 8px; border-top: 1px solid var(--line); margin-top: 28px; }
+  .steps { display: flex; flex-direction: column; gap: 26px; padding: 36px 0 8px; border-top: 1px solid var(--line); }
   .step__head { display: grid; grid-template-columns: 44px 1fr auto; gap: 16px; align-items: center; margin-bottom: 12px; }
   .step__n {
     width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--accent-dim);
@@ -97,7 +81,6 @@
     font-family: var(--mono); font-size: 16px; font-weight: 600; color: var(--accent);
   }
   .step__title { font-family: var(--mono); font-size: 18px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
-  .step__tags { justify-self: end; }
   .step.is-build .step__n { border-color: var(--build-dim); color: var(--build); }
 
   .ide { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--code-bg); box-shadow: 0 18px 40px -28px rgba(0,0,0,0.9); }
@@ -129,14 +112,16 @@
     padding-right: 12px; text-align: right; color: var(--faint);
     border-right: 1px solid var(--line); user-select: none; -webkit-user-select: none;
   }
-  .c-kw { color: #c98ad9; }   /* js keyword */
-  .c-fn { color: #7cc7ff; }   /* method */
-  .c-m  { color: #c98ad9; }   /* http verb */
+  .c-m  { color: #c98ad9; }
   .c-k { color: var(--accent); }
   .c-s { color: #d9b27c; }
   .c-n { color: #6fd0c0; }
   .c-d { color: var(--faint); }
   .c-r { color: var(--build); }
+
+  .note { margin: 12px 0 0; padding: 12px 14px; border-radius: 12px; border: 1px dashed var(--line-strong); background: rgba(255,255,255,0.02); font-size: 13px; color: var(--muted); }
+  .note b { color: var(--text); font-weight: 600; }
+  .note code { font-family: var(--mono); background: var(--code-bg); padding: 1px 6px; border-radius: 5px; color: var(--text); font-size: 12px; }
 
   .foot { padding: 44px 0 72px; border-top: 1px solid var(--line); margin-top: 34px; color: var(--muted); font-size: 13.5px; }
   .foot .nav { font-family: var(--mono); font-size: 13px; line-height: 2; }
@@ -148,42 +133,32 @@
   @media (max-width: 560px) {
     .wrap { padding: 0 16px; }
     .step__head { grid-template-columns: 36px 1fr; }
-    .step__tags { grid-column: 2; justify-self: start; margin-top: 2px; }
+    .step__head .pill { grid-column: 2; justify-self: start; margin-top: 2px; }
     .step__n { width: 36px; height: 36px; font-size: 14px; }
     .cl::before { width: 22px; margin-right: 12px; padding-right: 8px; }
-    .toggle { width: 100%; }
-    .toggle__btn { flex: 1; }
   }
   @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 </style>
 </head>
-<body class="page mode-sdk">
+<body class="page">
 <div class="wrap">
 
   <header class="topbar">
     <div class="brand"><b>WHOP</b> · DEVELOPERS &nbsp;/&nbsp; RAFFLE BUSINESS</div>
     <div class="legend">
-      <span class="view view--sdk pill have">Public API</span>
-      <span class="view view--rest pill have">Native /api/v1</span>
-      <span class="view view--rest pill proxy">GraphQL→REST proxy</span>
+      <span class="pill have">Native /api/v1</span>
+      <span class="pill proxy">GraphQL→REST proxy</span>
       <span class="pill build">Build</span>
     </div>
   </header>
 
   <section class="hero">
-    <p class="eyebrow">raffle business · two ways to call it</p>
-    <h1>The same journey, the <span class="glow">SDK</span> or the <span class="glow">raw endpoints</span>.</h1>
+    <p class="eyebrow">API endpoints · raffle business</p>
+    <h1>From an item to a <span class="glow">live raffle</span> — endpoint by endpoint.</h1>
     <p class="lede">
-      Seven design steps. Flip between the public <code>@whop/sdk</code> and the REST endpoints behind it. Six of
-      seven already ship; step 06 (the raffle deadline &amp; draw) is the one resource still to build.
+      The REST calls behind the raffle flow, in order. Green ships from the native <code>/api/v1</code> layer, blue
+      from the GraphQL→REST proxy, and step 05 (the raffle deadline &amp; draw) is the one resource still to build.
     </p>
-
-    <div class="toggle" role="tablist" aria-label="API view">
-      <button class="toggle__btn is-active" data-mode="sdk" role="tab" aria-selected="true">Public API · @whop/sdk</button>
-      <button class="toggle__btn" data-mode="rest" role="tab" aria-selected="false">REST endpoints</button>
-    </div>
-    <p class="toggle__hint view view--sdk">// the typed client developers install — <code>npm i @whop/sdk</code></p>
-    <p class="toggle__hint view view--rest">// the HTTP surface underneath · native <code>/api/v1</code> + GraphQL→REST proxy</p>
   </section>
 
   <div class="steps">
@@ -192,39 +167,32 @@
     <section class="step reveal">
       <div class="step__head">
         <span class="step__n">01</span>
-        <h3 class="step__title">Create account on Whop</h3>
-        <span class="step__tags">
-          <span class="view view--sdk pill have">public API</span>
-          <span class="view view--rest pill have">native</span>
-        </span>
+        <h3 class="step__title">Start a raffle business</h3>
+        <span class="pill proxy">proxy</span>
       </div>
-      <div class="ide view view--sdk">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">01_account<span class="dot">.ts</span></span><span class="ide__spacer"></span><span class="ide__where">whop.accounts.create</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-kw">import</span> { whop } <span class="c-kw">from</span> <span class="c-s">"@whop/sdk"</span>;</span><span class="cl"></span><span class="cl"><span class="c-kw">const</span> account = <span class="c-kw">await</span> whop.accounts.<span class="c-fn">create</span>({ <span class="c-k">email</span>: <span class="c-s">"jack@example.com"</span> });</span><span class="cl"><span class="c-d">// → account.id  "biz_8s2Kd…"</span></span></div></div>
+      <div class="ide">
+        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">01_business<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /companies</span></div>
+        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /companies</span><span class="cl">{ <span class="c-k">"title"</span>: <span class="c-s">"Jack's Raffles"</span>, <span class="c-k">"email"</span>: <span class="c-s">"jack@example.com"</span> }</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"biz_8s2Kd…"</span> }</span></div></div>
       </div>
-      <div class="ide view view--rest">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">01_account<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /api/v1/accounts</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /api/v1/accounts</span><span class="cl">{ <span class="c-k">"email"</span>: <span class="c-s">"jack@example.com"</span> }</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"biz_8s2Kd…"</span> }</span></div></div>
-      </div>
+      <p class="note">
+        <b>One call, not two.</b> The public <code>accounts</code> and <code>companies</code> endpoints are the same
+        underlying <code>Bot</code> model — the native <code>/api/v1/accounts</code> controller literally exposes
+        bots as "accounts," and both route through <code>Companies::CreateCompany</code>. Use
+        <code>companies.create</code> as the canonical call. (End-user sign-in is separate — that's OAuth, not a
+        business object.)
+      </p>
     </section>
 
     <!-- 02 -->
     <section class="step reveal">
       <div class="step__head">
         <span class="step__n">02</span>
-        <h3 class="step__title">Start a raffle business</h3>
-        <span class="step__tags">
-          <span class="view view--sdk pill have">public API</span>
-          <span class="view view--rest pill proxy">proxy</span>
-        </span>
+        <h3 class="step__title">What item to raffle</h3>
+        <span class="pill have">native</span>
       </div>
-      <div class="ide view view--sdk">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">02_company<span class="dot">.ts</span></span><span class="ide__spacer"></span><span class="ide__where">whop.companies.create</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-kw">const</span> company = <span class="c-kw">await</span> whop.companies.<span class="c-fn">create</span>({</span><span class="cl">  <span class="c-k">title</span>: <span class="c-s">"Jack's Raffles"</span>,</span><span class="cl">  <span class="c-k">email</span>: <span class="c-s">"jack@example.com"</span>,</span><span class="cl">});</span><span class="cl"><span class="c-d">// → company.id  "biz_8s2Kd…"</span></span></div></div>
-      </div>
-      <div class="ide view view--rest">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">02_company<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /companies</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /companies</span><span class="cl">{ <span class="c-k">"title"</span>: <span class="c-s">"Jack's Raffles"</span>, <span class="c-k">"email"</span>: <span class="c-s">"jack@example.com"</span> }</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"biz_8s2Kd…"</span> }</span><span class="cl"><span class="c-d"># GraphQL→REST proxy resource</span></span></div></div>
+      <div class="ide">
+        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">02_product<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /api/v1/products</span></div>
+        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /api/v1/products</span><span class="cl">{</span><span class="cl">  <span class="c-k">"company_id"</span>: <span class="c-s">"biz_8s2Kd…"</span>,</span><span class="cl">  <span class="c-k">"title"</span>: <span class="c-s">"PS4 (like new) — Raffle"</span>,</span><span class="cl">  <span class="c-k">"collect_shipping_address"</span>: <span class="c-n">true</span></span><span class="cl">}</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"prod_…"</span> }</span></div></div>
       </div>
     </section>
 
@@ -232,19 +200,12 @@
     <section class="step reveal">
       <div class="step__head">
         <span class="step__n">03</span>
-        <h3 class="step__title">What item to raffle</h3>
-        <span class="step__tags">
-          <span class="view view--sdk pill have">public API</span>
-          <span class="view view--rest pill have">native</span>
-        </span>
+        <h3 class="step__title">Upload pic of your item</h3>
+        <span class="pill proxy">proxy</span>
       </div>
-      <div class="ide view view--sdk">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">03_product<span class="dot">.ts</span></span><span class="ide__spacer"></span><span class="ide__where">whop.products.create</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-kw">const</span> raffle = <span class="c-kw">await</span> whop.products.<span class="c-fn">create</span>({</span><span class="cl">  <span class="c-k">company_id</span>: company.id,</span><span class="cl">  <span class="c-k">title</span>: <span class="c-s">"Charizard PSA 10 — Raffle"</span>,</span><span class="cl">  <span class="c-k">collect_shipping_address</span>: <span class="c-n">true</span>,</span><span class="cl">});</span><span class="cl"><span class="c-d">// → raffle.id  "prod_…"</span></span></div></div>
-      </div>
-      <div class="ide view view--rest">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">03_product<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /api/v1/products</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /api/v1/products</span><span class="cl">{</span><span class="cl">  <span class="c-k">"company_id"</span>: <span class="c-s">"biz_8s2Kd…"</span>,</span><span class="cl">  <span class="c-k">"title"</span>: <span class="c-s">"Charizard PSA 10 — Raffle"</span>,</span><span class="cl">  <span class="c-k">"collect_shipping_address"</span>: <span class="c-n">true</span></span><span class="cl">}</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"prod_…"</span> }</span></div></div>
+      <div class="ide">
+        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">03_photo<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /files + PUT</span></div>
+        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /files</span><span class="cl">{ <span class="c-k">"filename"</span>: <span class="c-s">"ps4.png"</span>, <span class="c-k">"visibility"</span>: <span class="c-s">"public"</span> }</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"file_…"</span>, <span class="c-k">"upload_url"</span>: <span class="c-s">"https://s3…"</span> }</span><span class="cl"><span class="c-m">PUT</span> {upload_url}   <span class="c-d">(image bytes)</span></span></div></div>
       </div>
     </section>
 
@@ -252,77 +213,37 @@
     <section class="step reveal">
       <div class="step__head">
         <span class="step__n">04</span>
-        <h3 class="step__title">Upload pic of your item</h3>
-        <span class="step__tags">
-          <span class="view view--sdk pill have">public API</span>
-          <span class="view view--rest pill proxy">proxy</span>
-        </span>
-      </div>
-      <div class="ide view view--sdk">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">04_photo<span class="dot">.ts</span></span><span class="ide__spacer"></span><span class="ide__where">whop.files.create</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-kw">const</span> file = <span class="c-kw">await</span> whop.files.<span class="c-fn">create</span>({</span><span class="cl">  <span class="c-k">filename</span>: <span class="c-s">"charizard.png"</span>,</span><span class="cl">  <span class="c-k">visibility</span>: <span class="c-s">"public"</span>,</span><span class="cl">});</span><span class="cl"><span class="c-d">// PUT bytes to file.upload_url, poll retrieve(file.id) until "ready"</span></span></div></div>
-      </div>
-      <div class="ide view view--rest">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">04_photo<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /files + PUT</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /files</span><span class="cl">{ <span class="c-k">"filename"</span>: <span class="c-s">"charizard.png"</span>, <span class="c-k">"visibility"</span>: <span class="c-s">"public"</span> }</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"file_…"</span>, <span class="c-k">"upload_url"</span>: <span class="c-s">"https://s3…"</span> }</span><span class="cl"><span class="c-m">PUT</span> {upload_url}   <span class="c-d">(image bytes)</span></span></div></div>
-      </div>
-    </section>
-
-    <!-- 05 -->
-    <section class="step reveal">
-      <div class="step__head">
-        <span class="step__n">05</span>
         <h3 class="step__title">Choose min ticket $ amount</h3>
-        <span class="step__tags">
-          <span class="view view--sdk pill have">public API</span>
-          <span class="view view--rest pill have">native</span>
-        </span>
+        <span class="pill have">native</span>
       </div>
-      <div class="ide view view--sdk">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">05_ticket<span class="dot">.ts</span></span><span class="ide__spacer"></span><span class="ide__where">whop.plans.create</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-kw">const</span> ticket = <span class="c-kw">await</span> whop.plans.<span class="c-fn">create</span>({</span><span class="cl">  <span class="c-k">product_id</span>: raffle.id,</span><span class="cl">  <span class="c-k">plan_type</span>: <span class="c-s">"one_time"</span>,</span><span class="cl">  <span class="c-k">initial_price</span>: <span class="c-s">"5"</span>,</span><span class="cl">  <span class="c-k">currency</span>: <span class="c-s">"usd"</span>,</span><span class="cl">  <span class="c-k">stock</span>: <span class="c-n">1000</span>,</span><span class="cl">  <span class="c-k">image</span>: { <span class="c-k">id</span>: file.id },</span><span class="cl">});</span><span class="cl"><span class="c-d">// → ticket.id  "plan_…"  ·  ticket.purchase_url</span></span></div></div>
-      </div>
-      <div class="ide view view--rest">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">05_ticket<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /api/v1/plans</span></div>
+      <div class="ide">
+        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">04_ticket<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /api/v1/plans</span></div>
         <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /api/v1/plans</span><span class="cl">{</span><span class="cl">  <span class="c-k">"product_id"</span>: <span class="c-s">"prod_…"</span>,</span><span class="cl">  <span class="c-k">"plan_type"</span>: <span class="c-s">"one_time"</span>,</span><span class="cl">  <span class="c-k">"initial_price"</span>: <span class="c-s">"5"</span>, <span class="c-k">"currency"</span>: <span class="c-s">"usd"</span>,</span><span class="cl">  <span class="c-k">"stock"</span>: <span class="c-n">1000</span></span><span class="cl">}</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"plan_…"</span>, <span class="c-k">"purchase_url"</span>: <span class="c-s">"…"</span> }</span></div></div>
       </div>
     </section>
 
-    <!-- 06 -->
+    <!-- 05 -->
     <section class="step is-build reveal">
       <div class="step__head">
-        <span class="step__n">06</span>
+        <span class="step__n">05</span>
         <h3 class="step__title">Choose raffle deadline</h3>
-        <span class="step__tags">
-          <span class="pill build">build</span>
-        </span>
+        <span class="pill build">build</span>
       </div>
-      <div class="ide is-build view view--sdk">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">06_deadline<span class="dot">.ts · PROPOSED</span></span><span class="ide__spacer"></span><span class="ide__where">whop.raffles.create</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-d">// no public resource exists — the one endpoint to build.</span></span><span class="cl"><span class="c-kw">const</span> run = <span class="c-kw">await</span> whop.raffles.<span class="c-fn">create</span>({   <span class="c-r">// proposed</span></span><span class="cl">  <span class="c-k">company_id</span>: company.id,</span><span class="cl">  <span class="c-k">plan_id</span>: ticket.id,</span><span class="cl">  <span class="c-k">ends_at</span>: <span class="c-s">"2026-07-01T00:00:00Z"</span>,</span><span class="cl">  <span class="c-k">winner_count</span>: <span class="c-n">1</span>,</span><span class="cl">  <span class="c-k">draw_mode</span>: <span class="c-s">"auto_on_close"</span>,</span><span class="cl">});</span><span class="cl"><span class="c-d">// → { id: "raf_…", status: "open" } + worker closes & draws</span></span></div></div>
-      </div>
-      <div class="ide is-build view view--rest">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">06_deadline<span class="dot">.http · NEW</span></span><span class="ide__spacer"></span><span class="ide__where">POST /raffles</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-d"># NEW · no native or proxy resource today — must be built</span></span><span class="cl"><span class="c-m">POST</span> /raffles</span><span class="cl">{</span><span class="cl">  <span class="c-k">"company_id"</span>: <span class="c-s">"biz_…"</span>, <span class="c-k">"plan_id"</span>: <span class="c-s">"plan_…"</span>,</span><span class="cl">  <span class="c-k">"ends_at"</span>: <span class="c-s">"2026-07-01T00:00:00Z"</span>,</span><span class="cl">  <span class="c-k">"winner_count"</span>: <span class="c-n">1</span>, <span class="c-k">"draw_mode"</span>: <span class="c-s">"auto_on_close"</span></span><span class="cl">}</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"raf_…"</span>, <span class="c-k">"status"</span>: <span class="c-s">"open"</span> }</span></div></div>
+      <div class="ide is-build">
+        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">05_deadline<span class="dot">.http · NEW</span></span><span class="ide__spacer"></span><span class="ide__where">POST /raffles</span></div>
+        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-d"># NEW · no native or proxy resource today — must be built.</span></span><span class="cl"><span class="c-d"># expiration_days is post-purchase membership expiry, not a sales cutoff.</span></span><span class="cl"><span class="c-m">POST</span> /raffles</span><span class="cl">{</span><span class="cl">  <span class="c-k">"company_id"</span>: <span class="c-s">"biz_…"</span>, <span class="c-k">"plan_id"</span>: <span class="c-s">"plan_…"</span>,</span><span class="cl">  <span class="c-k">"ends_at"</span>: <span class="c-s">"2026-07-01T00:00:00Z"</span>,</span><span class="cl">  <span class="c-k">"winner_count"</span>: <span class="c-n">1</span>, <span class="c-k">"draw_mode"</span>: <span class="c-s">"auto_on_close"</span></span><span class="cl">}</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"raf_…"</span>, <span class="c-k">"status"</span>: <span class="c-s">"open"</span> }   <span class="c-d"># + worker closes & draws</span></span></div></div>
       </div>
     </section>
 
-    <!-- 07 -->
+    <!-- 06 -->
     <section class="step reveal">
       <div class="step__head">
-        <span class="step__n">07</span>
+        <span class="step__n">06</span>
         <h3 class="step__title">Send link to product raffle</h3>
-        <span class="step__tags">
-          <span class="view view--sdk pill have">public API</span>
-          <span class="view view--rest pill have">native</span>
-        </span>
+        <span class="pill have">native</span>
       </div>
-      <div class="ide view view--sdk">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">07_share<span class="dot">.ts</span></span><span class="ide__spacer"></span><span class="ide__where">whop.checkoutConfigurations.create</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-kw">const</span> checkout = <span class="c-kw">await</span> whop.checkoutConfigurations.<span class="c-fn">create</span>({</span><span class="cl">  <span class="c-k">plan_id</span>: ticket.id,</span><span class="cl">});</span><span class="cl"><span class="c-d">// → checkout.purchase_url  → share in the group chat / socials</span></span></div></div>
-      </div>
-      <div class="ide view view--rest">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">07_share<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /api/v1/checkout_configurations</span></div>
+      <div class="ide">
+        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">06_share<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /api/v1/checkout_configurations</span></div>
         <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /api/v1/checkout_configurations</span><span class="cl">{ <span class="c-k">"plan_id"</span>: <span class="c-s">"plan_…"</span> }</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"purchase_url"</span>: <span class="c-s">"https://whop.com/c/…"</span> }</span></div></div>
       </div>
     </section>
@@ -334,13 +255,10 @@
       → Product overview: <a href="raffle_product_blog.html">Introducing Raffles on Whop</a><br>
       → Engineering notes: <a href="raffle_blog.html">Making raffles a real business type on Whop</a>
     </p>
-    <p class="src view view--sdk">
-      // public via @whop/sdk: accounts · companies · products · files · plans · checkoutConfigurations<br>
-      // not in the public SDK / OpenAPI: raffles (deadline + draw) — the single resource to build
-    </p>
-    <p class="src view view--rest">
-      // native /api/v1: accounts · products · plans · checkout_configurations<br>
-      // GraphQL→REST proxy: companies · files &nbsp;·&nbsp; build: POST /raffles (+ close worker)
+    <p class="src">
+      // native /api/v1: products · plans · checkout_configurations<br>
+      // GraphQL→REST proxy: companies (== accounts, same Bot model) · files<br>
+      // build: POST /raffles (deadline + draw + close worker) — no resource exists today
     </p>
   </footer>
 
@@ -348,20 +266,6 @@
 
 <script>
   (function () {
-    var body = document.body;
-    document.querySelectorAll(".toggle__btn").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var mode = btn.getAttribute("data-mode");
-        body.classList.remove("mode-sdk", "mode-rest");
-        body.classList.add("mode-" + mode);
-        document.querySelectorAll(".toggle__btn").forEach(function (b) {
-          var on = b === btn;
-          b.classList.toggle("is-active", on);
-          b.setAttribute("aria-selected", on ? "true" : "false");
-        });
-      });
-    });
-
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
       return;
