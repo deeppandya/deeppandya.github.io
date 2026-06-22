@@ -33,7 +33,8 @@
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
 
-  .nav { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,0.85); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--line); }
+  /* nav */
+  .nav { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.85); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--line); }
   .nav__in { max-width: 1080px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   .logo { font-weight: 800; font-size: 19px; letter-spacing: -0.02em; color: var(--text); }
   .logo .dot { color: var(--accent); }
@@ -43,26 +44,57 @@
   .nav__cta:hover { background: var(--accent-press); text-decoration: none; }
   @media (max-width: 640px) { .nav__links a:not(.nav__cta) { display: none; } }
 
-  .article { max-width: 720px; margin: 0 auto; padding: 0 24px; }
-  .header { padding: 56px 0 28px; }
-  .tag { display: inline-block; font-size: 13px; font-weight: 600; color: var(--accent); background: rgba(43,110,246,0.10); padding: 5px 12px; border-radius: 999px; }
-  .title { font-size: clamp(31px, 5vw, 50px); line-height: 1.08; letter-spacing: -0.025em; font-weight: 800; margin: 20px 0 16px; }
-  .dek { font-size: clamp(17px, 2.2vw, 21px); color: var(--muted); margin: 0; font-weight: 400; }
-  .byline { display: flex; align-items: center; gap: 12px; margin: 28px 0 0; }
-  .avatar { width: 42px; height: 42px; border-radius: 999px; background: linear-gradient(135deg, #2b6ef6, #11b5a5); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
-  .byline__who b { font-weight: 600; color: var(--text); }
-  .byline__meta { color: var(--faint); font-size: 13.5px; }
+  .article { max-width: 740px; margin: 0 auto; padding: 0 24px; }
 
-  .cover { margin: 32px 0 8px; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; height: clamp(200px, 38vw, 300px);
+  /* breadcrumb */
+  .crumb { padding: 30px 0 0; font-size: 13.5px; font-weight: 500; color: var(--faint); }
+  .crumb a { color: var(--muted); }
+  .crumb .sep { margin: 0 8px; color: var(--faint); }
+
+  /* header */
+  .header { padding: 18px 0 8px; }
+  .title { font-size: clamp(31px, 5vw, 48px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; margin: 8px 0 16px; }
+  .dek { font-size: clamp(17px, 2.1vw, 20px); color: var(--muted); margin: 0; font-weight: 400; }
+
+  /* author / meta */
+  .meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 26px 0 22px; border-bottom: 1px solid var(--line); }
+  .author { display: flex; align-items: center; gap: 12px; }
+  .author__img { width: 52px; height: 52px; border-radius: 999px; background: linear-gradient(135deg, #2b6ef6, #11b5a5); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 15px; flex: none; }
+  .author__name { font-size: 14.5px; font-weight: 600; color: var(--text); }
+  .author__name a { color: var(--text); }
+  .author__bio { font-size: 13px; color: var(--muted); max-width: 42ch; line-height: 1.5; }
+  .meta__spacer { flex: 1 1 0; min-width: 8px; }
+  .meta__date { font-size: 13.5px; color: var(--faint); white-space: nowrap; }
+  .review { font-size: 12.5px; color: var(--faint); margin-top: 4px; }
+  .review a { color: var(--muted); }
+  .share { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: var(--text); border: 1px solid var(--line); background: #fff; padding: 8px 14px; border-radius: 10px; cursor: pointer; }
+  .share:hover { background: var(--bg-soft); }
+
+  /* utility bar */
+  .utility { display: flex; gap: 8px; flex-wrap: wrap; padding: 16px 0 4px; }
+  .ubtn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 500; color: var(--muted); border: 1px solid var(--line); background: #fff; padding: 7px 13px; border-radius: 999px; cursor: pointer; }
+  .ubtn:hover { background: var(--bg-soft); color: var(--text); }
+  .ubtn .ic { width: 7px; height: 7px; border-radius: 999px; background: var(--accent); }
+
+  /* contents */
+  .toc { border: 1px solid var(--line); border-radius: 14px; background: var(--bg-soft); padding: 18px 20px; margin: 20px 0 4px; }
+  .toc__h { font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin: 0 0 10px; }
+  .toc ol { margin: 0; padding-left: 20px; }
+  .toc li { font-size: 15px; margin: 7px 0; color: var(--muted); }
+  .toc li a { color: #2a313c; font-weight: 500; }
+
+  /* cover */
+  .cover { margin: 28px 0 8px; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; height: clamp(220px, 42vw, 360px);
     background: radial-gradient(120% 140% at 12% 10%, rgba(17,181,165,0.45), transparent 55%), radial-gradient(120% 120% at 92% 30%, rgba(43,110,246,0.5), transparent 55%), linear-gradient(140deg, #141a26, #0c0f16);
     display: grid; place-items: center; }
   .cover::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 40px 40px; mask-image: radial-gradient(120% 100% at 50% 40%, #000, transparent 75%); }
-  .cover__code { position: relative; z-index: 1; font-family: var(--mono); color: rgba(255,255,255,0.94); font-size: clamp(15px, 2.6vw, 22px); letter-spacing: 0.02em; }
+  .cover__code { position: relative; z-index: 1; font-family: var(--mono); color: rgba(255,255,255,0.94); font-size: clamp(16px, 2.8vw, 24px); letter-spacing: 0.02em; }
   .cover__code .p { color: #f6a23c; }
   .cover__caption { position: absolute; bottom: 16px; left: 20px; z-index: 1; color: rgba(255,255,255,0.9); font-family: var(--mono); font-size: 12.5px; }
 
-  .body { padding: 24px 0 8px; }
-  .body h2 { font-size: clamp(23px, 3.2vw, 30px); font-weight: 700; letter-spacing: -0.02em; margin: 48px 0 8px; }
+  /* body */
+  .body { padding: 26px 0 8px; }
+  .body h2 { font-size: clamp(23px, 3.2vw, 30px); font-weight: 700; letter-spacing: -0.02em; margin: 50px 0 8px; scroll-margin-top: 80px; }
   .body h3 { font-size: 18px; font-weight: 600; margin: 28px 0 2px; }
   .body p { font-size: 17.5px; color: #1c2129; margin: 18px 0; }
   .body p.lead { font-size: 20px; color: #2a313c; }
@@ -71,8 +103,13 @@
   .body li { font-size: 17px; color: #1c2129; margin: 9px 0; }
   .body code { font-family: var(--mono); font-size: 14.5px; background: var(--code-bg); border: 1px solid var(--code-line); padding: 1px 6px; border-radius: 6px; }
 
-  .codeblock { background: var(--code-bg); border: 1px solid var(--code-line); border-radius: 14px; overflow-x: auto; margin: 24px 0; }
-  .codeblock pre { margin: 0; padding: 18px 20px; }
+  /* code block with filename + copy */
+  .codeblock { border: 1px solid var(--code-line); border-radius: 14px; overflow: hidden; margin: 24px 0; background: var(--code-bg); }
+  .codeblock__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 14px; background: #eef1f5; border-bottom: 1px solid var(--code-line); }
+  .codeblock__name { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .copy { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--muted); background: #fff; border: 1px solid var(--code-line); padding: 4px 11px; border-radius: 8px; cursor: pointer; }
+  .copy:hover { color: var(--text); border-color: var(--line); }
+  .codeblock pre { margin: 0; padding: 16px 18px; overflow-x: auto; }
   .codeblock code { font-family: var(--mono); font-size: 13.5px; line-height: 1.7; white-space: pre; color: #1c2129; background: none; border: none; padding: 0; display: block; }
   .c-m { color: #8250df; }
   .c-k { color: #0a66d6; }
@@ -81,29 +118,39 @@
   .c-d { color: #8b94a3; }
   .c-r { color: #c9701a; }
 
+  /* table */
+  .tbl { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .tbl th, .tbl td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  .tbl th { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); background: var(--bg-soft); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl td.mono { font-family: var(--mono); font-size: 13px; }
+  .lt { font-size: 12px; font-weight: 600; padding: 3px 11px; border-radius: 999px; white-space: nowrap; }
+  .lt.have { color: var(--have); background: var(--have-bg); }
+  .lt.build { color: var(--build); background: var(--build-bg); }
+
   .callout { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 12px; background: var(--bg-soft); padding: 18px 20px; margin: 28px 0; font-size: 16.5px; color: #1c2129; }
   .callout.build { border-left-color: var(--build); background: var(--build-bg); }
   .callout.warn { border-left-color: #e8843c; background: #fff7ef; }
   .callout b { color: var(--text); }
 
+  .ai { border: 1px solid #cfe0d6; background: linear-gradient(180deg, #f0fbf4, #f7fbf8); border-radius: 16px; padding: 22px 24px; margin: 30px 0; }
+  .ai h3 { margin: 0 0 6px; font-size: 17px; font-weight: 700; }
+  .ai p { margin: 0; font-size: 15.5px; color: #2a313c; }
+
   .pull { font-size: clamp(21px, 3vw, 27px); line-height: 1.35; font-weight: 600; letter-spacing: -0.02em; color: var(--text); border-left: 4px solid var(--build); padding: 6px 0 6px 22px; margin: 38px 0; }
 
-  .ledger { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 26px 0; }
-  .lrow { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 13px 18px; border-bottom: 1px solid var(--line-soft); align-items: center; }
-  .lrow:last-child { border-bottom: none; }
-  .lrow span:first-child { font-family: var(--mono); font-size: 14px; color: #1c2129; }
-  .lt { font-size: 12px; font-weight: 600; padding: 3px 11px; border-radius: 999px; white-space: nowrap; }
-  .lt.have { color: var(--have); background: var(--have-bg); }
-  .lt.build { color: var(--build); background: var(--build-bg); }
+  /* what's next */
+  .whatsnext { border-top: 1px solid var(--line); margin-top: 44px; padding-top: 12px; }
 
-  .endcta { margin: 52px 0 12px; border-radius: 22px; padding: 44px 32px; text-align: center; color: #fff; position: relative; overflow: hidden; background: radial-gradient(120% 160% at 0% 0%, rgba(17,181,165,0.55), transparent 55%), linear-gradient(135deg, #2b6ef6, #1b3fd1); }
-  .endcta h2 { font-size: clamp(25px, 4vw, 34px); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 10px; }
-  .endcta p { color: rgba(255,255,255,0.88); font-size: 17px; margin: 0 auto 22px; max-width: 48ch; }
-  .endcta a.btn { background: #fff; color: #14223f; font-weight: 700; font-size: 16px; padding: 13px 26px; border-radius: 12px; display: inline-block; }
+  /* end CTA */
+  .endcta { margin: 40px 0 12px; border-radius: 22px; padding: 46px 34px; text-align: center; color: #fff; position: relative; overflow: hidden; background: radial-gradient(120% 160% at 0% 0%, rgba(17,181,165,0.55), transparent 55%), linear-gradient(135deg, #2b6ef6, #1b3fd1); }
+  .endcta h2 { font-size: clamp(25px, 4vw, 36px); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 12px; }
+  .endcta p { color: rgba(255,255,255,0.9); font-size: 17px; margin: 0 auto 24px; max-width: 50ch; }
+  .endcta a.btn { background: #fff; color: #14223f; font-weight: 700; font-size: 16px; padding: 14px 28px; border-radius: 12px; display: inline-block; }
   .endcta a.btn:hover { text-decoration: none; }
 
   .foot { border-top: 1px solid var(--line); margin-top: 56px; }
-  .foot__in { max-width: 720px; margin: 0 auto; padding: 32px 24px 72px; color: var(--muted); font-size: 14.5px; }
+  .foot__in { max-width: 740px; margin: 0 auto; padding: 32px 24px 72px; color: var(--muted); font-size: 14.5px; }
   .foot__in .more { font-weight: 600; color: var(--text); margin-bottom: 10px; }
   .foot__in a { display: block; margin: 6px 0; }
 </style>
@@ -123,18 +170,49 @@
   </nav>
 
   <main class="article">
+
+    <div class="crumb"><a href="#">Blog</a><span class="sep">›</span><a href="#">Engineering</a></div>
+
     <header class="header">
-      <span class="tag">Engineering</span>
-      <h1 class="title">Making raffles a real business type on Whop.</h1>
-      <p class="dek">How much of a brand-new business type can we stand up on the APIs we already have — and where do we have to build?</p>
-      <div class="byline">
-        <div class="avatar">EN</div>
+      <h1 class="title">Making raffles a real business type on Whop</h1>
+      <p class="dek">How much of a brand-new business type can we stand up on the APIs we already have — and where do we have to build? We traced the raffle seller's path call by call.</p>
+    </header>
+
+    <div class="meta">
+      <div class="author">
+        <div class="author__img">EN</div>
         <div>
-          <div class="byline__who"><b>Whop Engineering</b></div>
-          <div class="byline__meta">June 22, 2026 · 6 min read</div>
+          <div class="author__name"><a href="#">Whop Engineering</a></div>
+          <div class="author__bio">Notes from the platform team on extending Whop's API surface to new business types.</div>
+          <div class="review">Reviewed by <a href="#">Developer Platform</a></div>
         </div>
       </div>
-    </header>
+      <div class="meta__spacer"></div>
+      <div style="text-align:right">
+        <div class="meta__date">June 22, 2026 · 6 min read</div>
+        <button class="share" onclick="(navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>{this.textContent='Link copied'}))">↗ Share</button>
+      </div>
+    </div>
+
+    <div class="utility">
+      <button class="ubtn"><span class="ic"></span> Ask AI</button>
+      <button class="ubtn"><span class="ic"></span> Listen</button>
+      <a class="ubtn" href="#contents"><span class="ic"></span> Contents</a>
+      <a class="ubtn" href="#recommendation"><span class="ic"></span> Summary</a>
+    </div>
+
+    <nav class="toc" id="contents">
+      <p class="toc__h">In this article</p>
+      <ol>
+        <li><a href="#surface">The surface we're building on</a></li>
+        <li><a href="#works">What already works</a></li>
+        <li><a href="#breaks">Where it breaks</a></li>
+        <li><a href="#ledger">The build ledger</a></li>
+        <li><a href="#deps">The two genuinely new dependencies</a></li>
+        <li><a href="#legal">The thing that isn't an endpoint</a></li>
+        <li><a href="#recommendation">Recommendation</a></li>
+      </ol>
+    </nav>
 
     <div class="cover">
       <div class="cover__code"><span class="c-m">POST</span> /raffles <span class="p">→</span> raf_…</div>
@@ -154,7 +232,7 @@
         that makes a raffle a <em>raffle</em>.
       </p>
 
-      <h2>The surface we're building on</h2>
+      <h2 id="surface">The surface we're building on</h2>
       <p>
         Whop exposes its public API two ways, both backed by one internal GraphQL core. There's a native
         <code>/api/v1</code> layer of hand-written Rails controllers (products, plans, accounts, users, checkout
@@ -168,7 +246,7 @@
         The raffle journey touches all three.
       </p>
 
-      <h2>What already works</h2>
+      <h2 id="works">What already works</h2>
       <p>Most of the scaffolding a raffle needs is just commerce, and Whop is good at commerce. The seller can:</p>
       <ul>
         <li>create an account and a company (<code>accounts.create</code>, <code>companies.create</code>);</li>
@@ -179,22 +257,24 @@
         <li>onboard for payouts, receive entry webhooks, and ship the prize with EasyPost-backed tracking.</li>
       </ul>
 
-      <div class="codeblock"><pre><code><span class="c-d">// a "ticket" today: a capped one-time plan</span>
-<span class="c-m">POST</span> /api/v1/plans
-{
-  <span class="c-k">"product_id"</span>: <span class="c-s">"prod_…"</span>,
-  <span class="c-k">"plan_type"</span>: <span class="c-s">"one_time"</span>,
-  <span class="c-k">"initial_price"</span>: <span class="c-s">"5"</span>,
-  <span class="c-k">"currency"</span>: <span class="c-s">"usd"</span>,
-  <span class="c-k">"stock"</span>: <span class="c-n">1000</span>
-}</code></pre></div>
+      <div class="codeblock">
+        <div class="codeblock__bar"><span class="codeblock__name">ticket.ts</span><button class="copy">Copy</button></div>
+        <pre><code><span class="c-d">// a "ticket" today: a capped one-time plan</span>
+<span class="c-k">const</span> ticket = <span class="c-k">await</span> whop.plans.create({
+  product_id: <span class="c-s">"prod_…"</span>,
+  plan_type: <span class="c-s">"one_time"</span>,
+  initial_price: <span class="c-s">"5"</span>,
+  currency: <span class="c-s">"usd"</span>,
+  stock: <span class="c-n">1000</span>,
+});</code></pre>
+      </div>
 
       <p>
         Run down that list and it reads like a working raffle. It isn't — it's a working <em>store</em> that sells
         1,000 identical $5 items. The difference is everything a buyer cares about.
       </p>
 
-      <h2>Where it breaks</h2>
+      <h2 id="breaks">Where it breaks</h2>
       <p>Three things make a raffle a raffle, and Whop models none of them today.</p>
 
       <h3>1. A deadline that actually does something</h3>
@@ -229,30 +309,38 @@
         <code>GET /raffles/{id}/entries</code> makes the odds public.
       </div>
 
-      <div class="codeblock"><pre><code><span class="c-d">// the primitive that gives the deadline and the draw a home</span>
-<span class="c-m">POST</span> /raffles
-{
-  <span class="c-k">"company_id"</span>: <span class="c-s">"biz_…"</span>, <span class="c-k">"image_id"</span>: <span class="c-s">"file_…"</span>,
-  <span class="c-k">"ticket_price"</span>: <span class="c-s">"5"</span>, <span class="c-k">"total_tickets"</span>: <span class="c-n">1000</span>,
-  <span class="c-k">"max_tickets_per_user"</span>: <span class="c-n">50</span>,
-  <span class="c-k">"ends_at"</span>: <span class="c-s">"2026-07-01T00:00:00Z"</span>,
-  <span class="c-k">"winner_count"</span>: <span class="c-n">1</span>, <span class="c-k">"draw_mode"</span>: <span class="c-s">"auto_on_close"</span>
-}
-<span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"raf_…"</span>, <span class="c-k">"checkout_url"</span>: <span class="c-s">"…"</span>, <span class="c-k">"status"</span>: <span class="c-s">"open"</span> }</code></pre></div>
+      <div class="codeblock">
+        <div class="codeblock__bar"><span class="codeblock__name">raffle.ts · proposed</span><button class="copy">Copy</button></div>
+        <pre><code><span class="c-d">// the primitive that gives the deadline and the draw a home</span>
+<span class="c-k">const</span> raffle = <span class="c-k">await</span> whop.raffles.create({
+  company_id: <span class="c-s">"biz_…"</span>,
+  image_id: <span class="c-s">"file_…"</span>,
+  ticket_price: <span class="c-s">"5"</span>,
+  total_tickets: <span class="c-n">1000</span>,
+  max_tickets_per_user: <span class="c-n">50</span>,
+  ends_at: <span class="c-s">"2026-07-01T00:00:00Z"</span>,
+  winner_count: <span class="c-n">1</span>,
+  draw_mode: <span class="c-s">"auto_on_close"</span>,
+});
+<span class="c-r">// → { id: "raf_…", checkout_url: "…", status: "open" }</span></code></pre>
+      </div>
 
       <p class="pull">Three-quarters of a raffle is commerce we already ship. The last quarter — deadline, odds, a fair draw — is the whole reason anyone calls it a raffle.</p>
 
-      <h2>The build ledger</h2>
-      <div class="ledger">
-        <div class="lrow"><span>Account, company, files, product, plans</span><span class="lt have">reuse</span></div>
-        <div class="lrow"><span>Checkout link, affiliates, payouts, webhooks, shipments</span><span class="lt have">reuse</span></div>
-        <div class="lrow"><span>POST /raffles — the primitive + close worker</span><span class="lt build">build</span></div>
-        <div class="lrow"><span>POST /raffles/{id}/tickets — multi-entry buys + odds</span><span class="lt build">build</span></div>
-        <div class="lrow"><span>POST /raffles/{id}/draw — provably-fair selection</span><span class="lt build">build</span></div>
-        <div class="lrow"><span>GET /raffles/{id}/entries — odds transparency</span><span class="lt build">build</span></div>
-      </div>
+      <h2 id="ledger">The build ledger</h2>
+      <table class="tbl">
+        <thead><tr><th>Capability</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">accounts · companies · files · products · plans</td><td><span class="lt have">reuse</span></td></tr>
+          <tr><td class="mono">checkout link · affiliates · payouts · webhooks · shipments</td><td><span class="lt have">reuse</span></td></tr>
+          <tr><td class="mono">POST /raffles — primitive + close worker</td><td><span class="lt build">build</span></td></tr>
+          <tr><td class="mono">POST /raffles/{id}/tickets — multi-entry + odds</td><td><span class="lt build">build</span></td></tr>
+          <tr><td class="mono">POST /raffles/{id}/draw — provably-fair selection</td><td><span class="lt build">build</span></td></tr>
+          <tr><td class="mono">GET /raffles/{id}/entries — odds transparency</td><td><span class="lt build">build</span></td></tr>
+        </tbody>
+      </table>
 
-      <h2>The two genuinely new dependencies</h2>
+      <h2 id="deps">The two genuinely new dependencies</h2>
       <p>
         Most of what a raffle needs externally, we already pay for: PSPs for payments, Sumsub for KYC, EasyPost
         for shipping, the ads image-and-copy AI pipeline for the prize page. The draw is the exception. Verifiable
@@ -262,7 +350,7 @@
         if compliance requires it per region.
       </p>
 
-      <h2>The thing that isn't an endpoint</h2>
+      <h2 id="legal">The thing that isn't an endpoint</h2>
       <div class="callout warn">
         <b>Raffles are legally regulated, and the platform already knows it.</b> The matching classification,
         <code>sweepstakes_raffles</code>, is flagged <code>FINANCING_RESTRICTED</code> and
@@ -277,7 +365,7 @@
         ticket.
       </p>
 
-      <h2>Recommendation</h2>
+      <h2 id="recommendation">Recommendation</h2>
       <p>
         Build the raffle as a first-class resource rather than bolting metadata onto plans. The deadline and the
         draw have nowhere else to live, and faking them in <code>metadata</code> pushes core behavior off-platform
@@ -286,10 +374,25 @@
         everything else exactly as-is.
       </p>
 
+      <div class="ai">
+        <h3>✨ Build this with AI</h3>
+        <p>Point an agent at <code>@whop/sdk</code> and the six shipped resources stand up the whole raffle storefront in one prompt — account, company, product, prize photo, ticket plan, and a shareable checkout link. Only the deadline and draw wait on the new <code>raffles</code> resource.</p>
+      </div>
+
+      <div class="whatsnext">
+        <h2>What's next</h2>
+        <p>
+          Raffles are one of many business types you can approximate on Whop's existing primitives before they earn
+          a first-class resource. The same trace — map the journey to the public SDK, find the gap, build the one
+          thing that's missing — is how every new business type gets onto the platform. See the full call sequence
+          in the <a href="raffle_business_api_flow_2.html">raffle API journey</a>.
+        </p>
+      </div>
+
       <div class="endcta">
-        <h2>See the full call sequence</h2>
-        <p>Every endpoint in the raffle journey, mapped step by step — what ships today and what we build.</p>
-        <a class="btn" href="raffle_business_api_flow_2.html">Open the API journey →</a>
+        <h2>Start with an idea — we'll handle the rest</h2>
+        <p>One platform for creating, hosting, and selling. Whop runs everything that powers your business.</p>
+        <a class="btn" href="https://whop.com/new/">Start selling today →</a>
       </div>
     </article>
   </main>
@@ -302,5 +405,17 @@
     </div>
   </footer>
 
+<script>
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var code = btn.closest('.codeblock').querySelector('code');
+      var text = code ? code.innerText : '';
+      navigator.clipboard.writeText(text).then(function () {
+        var prev = btn.textContent; btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = prev; }, 1300);
+      });
+    });
+  });
+</script>
 </body>
 </html>
