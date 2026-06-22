@@ -4,197 +4,215 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Raffles on Whop — turn one item into a thousand fans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ground: #10151c;
-    --surface: #19212b;
-    --code-bg: #0c1118;
-    --text: #e9ecf2;
-    --muted: #8a96a8;
-    --faint: #5a6678;
-    --line: rgba(255,255,255,0.09);
-    --line-strong: rgba(255,255,255,0.16);
-    --accent: #7c93ff;
-    --accent-dim: rgba(124,147,255,0.28);
-    --have: #44c998;
-    --have-dim: rgba(68,201,152,0.16);
-    --build: #f6a23c;
-    --build-dim: rgba(246,162,60,0.16);
-    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, "Cascadia Code", Consolas, monospace;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --bg: #ffffff;
+    --bg-soft: #f7f8fa;
+    --text: #0d0f14;
+    --muted: #5a6573;
+    --faint: #8b94a3;
+    --line: #e8eaef;
+    --line-soft: #f0f2f5;
+    --accent: #2b6ef6;
+    --accent-press: #195fe0;
+    --code-bg: #f6f8fa;
+    --code-line: #e9edf2;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
   }
   * { box-sizing: border-box; }
-  body.page {
-    margin: 0;
-    background-color: var(--ground);
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 64px 64px, 64px 64px;
-    background-position: -1px -1px;
-    color: var(--text);
-    font-family: var(--sans);
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
-  }
-  body.page::before {
-    content: "";
-    position: fixed; inset: 0;
-    background: radial-gradient(120% 80% at 50% -10%, rgba(246,162,60,0.12), transparent 60%);
-    pointer-events: none; z-index: 0;
-  }
-  .wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 0 24px; }
-  a { color: var(--accent); }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
 
-  .topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; flex-wrap: wrap; padding: 22px 0 18px; border-bottom: 1px solid var(--line);
-  }
-  .brand { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
-  .brand b { color: var(--text); font-weight: 600; }
-  .backlink { font-family: var(--mono); font-size: 12px; }
+  /* nav */
+  .nav { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,0.85); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--line); }
+  .nav__in { max-width: 1080px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { font-weight: 800; font-size: 19px; letter-spacing: -0.02em; color: var(--text); }
+  .logo .dot { color: var(--accent); }
+  .nav__links { display: flex; gap: 22px; align-items: center; font-size: 14.5px; font-weight: 500; }
+  .nav__links a { color: var(--muted); }
+  .nav__cta { background: var(--accent); color: #fff; padding: 8px 16px; border-radius: 10px; font-weight: 600; font-size: 14px; }
+  .nav__cta:hover { background: var(--accent-press); text-decoration: none; }
+  @media (max-width: 640px) { .nav__links a:not(.nav__cta) { display: none; } }
 
-  .hero { padding: 64px 0 26px; }
-  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--build); margin: 0 0 18px; }
-  .hero h1 { font-family: var(--mono); font-size: clamp(32px, 5.4vw, 52px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 650; margin: 0 0 20px; }
-  .hero h1 .glow { color: var(--build); }
-  .hero p.dek { font-size: clamp(17px, 2.2vw, 20px); color: var(--muted); margin: 0 0 28px; max-width: 58ch; }
-  .meta-line { font-family: var(--mono); font-size: 12.5px; color: var(--faint); letter-spacing: 0.04em; }
+  /* article shell */
+  .article { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+  .header { padding: 56px 0 28px; }
+  .tag { display: inline-block; font-size: 13px; font-weight: 600; color: var(--accent); background: rgba(43,110,246,0.10); padding: 5px 12px; border-radius: 999px; letter-spacing: 0.01em; }
+  .title { font-size: clamp(32px, 5.2vw, 52px); line-height: 1.08; letter-spacing: -0.025em; font-weight: 800; margin: 20px 0 16px; }
+  .dek { font-size: clamp(17px, 2.2vw, 21px); color: var(--muted); margin: 0; font-weight: 400; }
 
-  .stats { display: flex; flex-wrap: wrap; gap: 14px; margin: 30px 0 6px; }
-  .stat { flex: 1 1 150px; min-width: 140px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); padding: 16px 18px; }
-  .stat .n { font-family: var(--mono); font-size: 30px; line-height: 1; font-weight: 650; color: var(--build); }
-  .stat .l { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+  .byline { display: flex; align-items: center; gap: 12px; margin: 28px 0 0; }
+  .avatar { width: 42px; height: 42px; border-radius: 999px; background: linear-gradient(135deg, #2b6ef6, #7c4dff); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 15px; }
+  .byline__who { font-size: 14.5px; }
+  .byline__who b { font-weight: 600; color: var(--text); }
+  .byline__meta { color: var(--faint); font-size: 13.5px; }
 
-  article { padding: 18px 0 10px; }
-  article h2 { font-family: var(--mono); font-weight: 600; font-size: clamp(20px, 3vw, 26px); letter-spacing: -0.01em; margin: 46px 0 4px; }
-  article p { font-size: 16.5px; color: #cfd6e2; margin: 16px 0; }
-  article p.lede { font-size: 19px; color: var(--muted); }
-  article strong { color: var(--text); }
-  article code { font-family: var(--mono); font-size: 13.5px; background: var(--code-bg); padding: 2px 7px; border-radius: 6px; color: var(--text); }
+  /* cover */
+  .cover { margin: 32px 0 8px; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; height: clamp(220px, 42vw, 340px);
+    background:
+      radial-gradient(120% 140% at 12% 10%, rgba(124,77,255,0.5), transparent 55%),
+      radial-gradient(120% 120% at 92% 30%, rgba(43,110,246,0.55), transparent 55%),
+      linear-gradient(140deg, #1a2030, #0d1018);
+    display: grid; place-items: center; }
+  .cover::after { content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 40px 40px; mask-image: radial-gradient(120% 100% at 50% 40%, #000, transparent 75%); }
+  .cover__emojis { position: relative; z-index: 1; font-size: clamp(40px, 9vw, 72px); letter-spacing: 6px; filter: drop-shadow(0 8px 22px rgba(0,0,0,0.35)); }
+  .cover__caption { position: absolute; bottom: 16px; left: 20px; z-index: 1; color: rgba(255,255,255,0.92); font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.04em; }
 
-  .steps { display: grid; gap: 12px; margin: 26px 0; }
-  .pstep { display: grid; grid-template-columns: 42px 1fr; gap: 16px; align-items: start; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 16px 18px; }
-  .pstep .pn { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--build); width: 42px; height: 42px; border-radius: 11px; border: 1px solid var(--build-dim); background: var(--build-dim); display: grid; place-items: center; }
-  .pstep h3 { font-family: var(--mono); font-size: 15.5px; margin: 4px 0 0; }
-  .pstep p { font-size: 14.5px; color: var(--muted); margin: 6px 0 0; }
+  /* body */
+  .body { padding: 24px 0 8px; }
+  .body h2 { font-size: clamp(23px, 3.2vw, 30px); font-weight: 700; letter-spacing: -0.02em; margin: 48px 0 8px; }
+  .body h3 { font-size: 18.5px; font-weight: 600; margin: 30px 0 4px; }
+  .body p { font-size: 17.5px; color: #1c2129; margin: 18px 0; }
+  .body p.lead { font-size: 20px; color: #2a313c; }
+  .body strong { font-weight: 600; color: var(--text); }
+  .body ul { margin: 18px 0; padding-left: 22px; }
+  .body li { font-size: 17px; color: #1c2129; margin: 10px 0; }
+  .body code { font-family: var(--mono); font-size: 14.5px; background: var(--code-bg); border: 1px solid var(--code-line); padding: 1px 6px; border-radius: 6px; }
 
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 24px 0; }
-  .icard { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 16px; text-align: center; }
-  .icard .e { font-size: 26px; }
-  .icard .t { font-family: var(--mono); font-size: 13px; margin-top: 8px; }
+  .figrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 26px 0; }
+  .fig { border: 1px solid var(--line); border-radius: 14px; background: var(--bg-soft); padding: 18px 14px; text-align: center; }
+  .fig .e { font-size: 28px; }
+  .fig .t { font-size: 14px; font-weight: 600; margin-top: 8px; color: var(--text); }
 
-  .callout { border: 1px solid var(--line-strong); border-left: 3px solid var(--have); border-radius: 12px; background: var(--have-dim); padding: 16px 18px; margin: 26px 0; font-size: 15.5px; color: #cfd6e2; }
-  .callout.warn { border-left-color: #e8736b; background: rgba(232,115,107,0.10); }
+  .steps { display: grid; gap: 12px; margin: 26px 0; counter-reset: s; }
+  .pstep { display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: #fff; }
+  .pstep .pn { counter-increment: s; width: 40px; height: 40px; border-radius: 11px; background: rgba(43,110,246,0.10); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 15px; }
+  .pstep .pn::before { content: counter(s); }
+  .pstep h3 { font-size: 16px; font-weight: 600; margin: 4px 0 0; }
+  .pstep p { font-size: 15px; color: var(--muted); margin: 5px 0 0; }
+
+  .callout { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 12px; background: var(--bg-soft); padding: 18px 20px; margin: 28px 0; font-size: 16.5px; color: #1c2129; }
+  .callout.warn { border-left-color: #e8843c; background: #fff7ef; }
   .callout b { color: var(--text); }
 
-  .pull { font-family: var(--mono); font-size: clamp(18px, 2.6vw, 23px); line-height: 1.35; color: var(--text); border-left: 3px solid var(--build); padding: 4px 0 4px 20px; margin: 36px 0; letter-spacing: -0.01em; }
+  .pull { font-size: clamp(21px, 3vw, 27px); line-height: 1.35; font-weight: 600; letter-spacing: -0.02em; color: var(--text); border-left: 4px solid var(--accent); padding: 6px 0 6px 22px; margin: 38px 0; }
 
-  .cta { border: 1px solid var(--build-dim); border-radius: 16px; background: var(--build-dim); padding: 26px 24px; margin: 40px 0 8px; text-align: center; }
-  .cta h3 { font-family: var(--mono); font-size: 20px; margin: 0 0 8px; }
-  .cta p { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
-  .cta a.btn { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--ground); background: var(--build); padding: 11px 22px; border-radius: 10px; text-decoration: none; display: inline-block; }
+  /* end CTA */
+  .endcta { margin: 52px 0 12px; border-radius: 22px; padding: 44px 32px; text-align: center; color: #fff; position: relative; overflow: hidden;
+    background: radial-gradient(120% 160% at 0% 0%, rgba(124,77,255,0.6), transparent 55%), linear-gradient(135deg, #2b6ef6, #1b3fd1); }
+  .endcta h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .endcta p { color: rgba(255,255,255,0.88); font-size: 17px; margin: 0 auto 22px; max-width: 46ch; }
+  .endcta a.btn { background: #fff; color: #14223f; font-weight: 700; font-size: 16px; padding: 13px 26px; border-radius: 12px; display: inline-block; }
+  .endcta a.btn:hover { text-decoration: none; transform: translateY(-1px); }
 
-  .foot { padding: 40px 0 72px; border-top: 1px solid var(--line); margin-top: 40px; color: var(--muted); font-size: 13.5px; }
-  .foot .nav { font-family: var(--mono); font-size: 13px; line-height: 2; }
-
-  @media (max-width: 560px) { .wrap { padding: 0 16px; } }
+  /* footer */
+  .foot { border-top: 1px solid var(--line); margin-top: 56px; }
+  .foot__in { max-width: 720px; margin: 0 auto; padding: 32px 24px 72px; color: var(--muted); font-size: 14.5px; }
+  .foot__in .more { font-weight: 600; color: var(--text); margin-bottom: 10px; }
+  .foot__in a { display: block; margin: 6px 0; }
 </style>
 </head>
-<body class="page">
-<div class="wrap">
+<body>
 
-  <header class="topbar">
-    <div class="brand"><b>WHOP</b> · PRODUCT</div>
-    <div class="backlink"><a href="raffle_business_api_flow_2.html">API journey →</a></div>
-  </header>
-
-  <section class="hero">
-    <p class="eyebrow">Product · now in beta</p>
-    <h1>Turn one item into <span class="glow">a thousand fans</span>.</h1>
-    <p class="dek">
-      Got something people want — a graded card, an e-bike, a pile of Labubus? Raffle it on Whop. Set a ticket
-      price, set a deadline, share one link. We handle the tickets, the countdown, the draw, and getting you paid.
-    </p>
-    <p class="meta-line">Product update · raffles on Whop</p>
-    <div class="stats">
-      <div class="stat"><div class="n">5 min</div><div class="l">to launch a raffle</div></div>
-      <div class="stat"><div class="n">1 link</div><div class="l">to share everywhere</div></div>
-      <div class="stat"><div class="n">0%</div><div class="l">spreadsheets &amp; DMs</div></div>
+  <nav class="nav">
+    <div class="nav__in">
+      <span class="logo">whop<span class="dot">.</span></span>
+      <div class="nav__links">
+        <a href="#">Discover</a>
+        <a href="#">Pricing</a>
+        <a href="raffle_business_api_flow_2.html">Developers</a>
+        <a class="nav__cta" href="https://whop.com">Start selling</a>
+      </div>
     </div>
-  </section>
+  </nav>
 
-  <article>
-    <p class="lede">
-      Raffles have always been one of the internet's best ways to turn a single great item into a crowd. The
-      problem was the plumbing: collecting money in DMs, tracking entries in a spreadsheet, picking a winner in a
-      way nobody fully trusts, then chasing down a shipping address. We're folding all of that into Whop.
-    </p>
+  <main class="article">
+    <header class="header">
+      <span class="tag">Product</span>
+      <h1 class="title">Turn one item into a thousand fans.</h1>
+      <p class="dek">Got something people want — a graded card, an e-bike, a pile of Labubus? Raffle it on Whop. Set a price, set a deadline, share one link.</p>
+      <div class="byline">
+        <div class="avatar">W</div>
+        <div>
+          <div class="byline__who"><b>Whop Team</b></div>
+          <div class="byline__meta">June 22, 2026 · 4 min read</div>
+        </div>
+      </div>
+    </header>
 
-    <h2>What you can raffle</h2>
-    <div class="cards">
-      <div class="icard"><div class="e">🃏</div><div class="t">Graded cards</div></div>
-      <div class="icard"><div class="e">🚲</div><div class="t">E-bikes &amp; gear</div></div>
-      <div class="icard"><div class="e">🎮</div><div class="t">Digital goods</div></div>
-      <div class="icard"><div class="e">🧸</div><div class="t">Collectibles</div></div>
-      <div class="icard"><div class="e">👟</div><div class="t">Sneakers &amp; merch</div></div>
-    </div>
-    <p>
-      Physical or digital, one-of-one or a bundle — if you can put a price on a ticket, you can raffle it. Pick a
-      template, drop in a photo, and your prize page builds itself.
-    </p>
-
-    <h2>How it works</h2>
-    <div class="steps">
-      <div class="pstep"><div class="pn">1</div><div><h3>Pick your prize</h3><p>Choose a template or start blank, upload a photo, and our AI drafts a clean prize page in seconds.</p></div></div>
-      <div class="pstep"><div class="pn">2</div><div><h3>Set price &amp; tickets</h3><p>Decide what a ticket costs and how many exist. Cap how many one person can buy to keep it fair.</p></div></div>
-      <div class="pstep"><div class="pn">3</div><div><h3>Set the deadline</h3><p>Pick when the raffle closes. Sales stop automatically — you don't have to babysit it.</p></div></div>
-      <div class="pstep"><div class="pn">4</div><div><h3>Share one link</h3><p>Drop your raffle link in chats, stories, and posts. Recruit affiliates to push it for a cut.</p></div></div>
-      <div class="pstep"><div class="pn">5</div><div><h3>Draw &amp; deliver</h3><p>At the deadline we pick a winner fairly, you get paid, and shipping with tracking is built in.</p></div></div>
+    <div class="cover">
+      <div class="cover__emojis">🎟️ 🃏 🚲 🧸</div>
+      <div class="cover__caption">Raffles · now in beta</div>
     </div>
 
-    <p class="pull">
-      You bring the prize and the audience. Whop brings the tickets, the timer, the fair draw, and the payout.
-    </p>
+    <article class="body">
+      <p class="lead">
+        Raffles have always been one of the internet's best ways to turn a single great item into a crowd. The
+        problem was the plumbing: collecting money in DMs, tracking entries in a spreadsheet, picking a winner in
+        a way nobody fully trusts, then chasing down a shipping address. We're folding all of that into Whop.
+      </p>
 
-    <h2>A draw people can actually trust</h2>
-    <p>
-      The moment that makes or breaks a raffle is the draw. Whop picks the winner using
-      <strong>verifiable randomness</strong> — every drawing comes with a published proof anyone can check. No
-      "trust me," no off-camera spin. Your buyers can see the odds before they enter and the receipt after you draw.
-    </p>
-    <div class="callout">
-      <b>Built-in, end to end:</b> live odds and entry counts, automatic close at your deadline, a provably-fair
-      winner, instant payout onboarding, and prize shipping with tracking — all without leaving Whop.
-    </div>
+      <h2>What you can raffle</h2>
+      <div class="figrow">
+        <div class="fig"><div class="e">🃏</div><div class="t">Graded cards</div></div>
+        <div class="fig"><div class="e">🚲</div><div class="t">E-bikes &amp; gear</div></div>
+        <div class="fig"><div class="e">🎮</div><div class="t">Digital goods</div></div>
+        <div class="fig"><div class="e">🧸</div><div class="t">Collectibles</div></div>
+        <div class="fig"><div class="e">👟</div><div class="t">Sneakers</div></div>
+      </div>
+      <p>
+        Physical or digital, one-of-one or a bundle — if you can put a price on a ticket, you can raffle it. Pick
+        a template, drop in a photo, and your prize page builds itself.
+      </p>
 
-    <h2>Get paid the moment it ends</h2>
-    <p>
-      Ticket revenue lands in your Whop balance as sales happen. Connect your bank once, and payouts run on the
-      same rails creators already use across the platform. When you draw a winner for a physical prize, you collect
-      their address and ship with tracking right from the dashboard.
-    </p>
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="pstep"><div class="pn"></div><div><h3>Pick your prize</h3><p>Choose a template or start blank, upload a photo, and our AI drafts a clean prize page in seconds.</p></div></div>
+        <div class="pstep"><div class="pn"></div><div><h3>Set price &amp; tickets</h3><p>Decide what a ticket costs and how many exist. Cap how many one person can buy to keep it fair.</p></div></div>
+        <div class="pstep"><div class="pn"></div><div><h3>Set the deadline</h3><p>Pick when the raffle closes. Sales stop automatically — you don't have to babysit it.</p></div></div>
+        <div class="pstep"><div class="pn"></div><div><h3>Share one link</h3><p>Drop your raffle link in chats, stories, and posts. Recruit affiliates to push it for a cut.</p></div></div>
+        <div class="pstep"><div class="pn"></div><div><h3>Draw &amp; deliver</h3><p>At the deadline we pick a winner fairly, you get paid, and shipping with tracking is built in.</p></div></div>
+      </div>
 
-    <div class="callout warn">
-      <b>One important note:</b> raffles and sweepstakes are legally regulated, and the rules vary by region.
-      During beta we're rolling out carefully and reviewing eligibility — check that raffles are available and
-      permitted where you and your audience are before you launch.
-    </div>
+      <p class="pull">You bring the prize and the audience. Whop brings the tickets, the timer, the fair draw, and the payout.</p>
 
-    <div class="cta">
-      <h3>Run your first raffle</h3>
-      <p>Beta is open. Set one up in about five minutes.</p>
-      <a class="btn" href="https://whop.com">Start on Whop →</a>
-    </div>
-  </article>
+      <h2>A draw people can actually trust</h2>
+      <p>
+        The moment that makes or breaks a raffle is the draw. Whop picks the winner using
+        <strong>verifiable randomness</strong> — every drawing comes with a published proof anyone can check. No
+        "trust me," no off-camera spin. Buyers see the odds before they enter and the receipt after you draw.
+      </p>
+      <div class="callout">
+        <b>Built-in, end to end:</b> live odds and entry counts, automatic close at your deadline, a provably-fair
+        winner, instant payout onboarding, and prize shipping with tracking — all without leaving Whop.
+      </div>
+
+      <h2>Get paid the moment it ends</h2>
+      <p>
+        Ticket revenue lands in your Whop balance as sales happen. Connect your bank once, and payouts run on the
+        same rails creators already use across the platform. When you draw a winner for a physical prize, you
+        collect their address and ship with tracking right from the dashboard.
+      </p>
+
+      <div class="callout warn">
+        <b>One important note:</b> raffles and sweepstakes are legally regulated, and the rules vary by region.
+        During beta we're rolling out carefully and reviewing eligibility — check that raffles are available and
+        permitted where you and your audience are before you launch.
+      </div>
+
+      <div class="endcta">
+        <h2>Run your first raffle</h2>
+        <p>Beta is open. Set one up in about five minutes.</p>
+        <a class="btn" href="https://whop.com">Start selling today →</a>
+      </div>
+    </article>
+  </main>
 
   <footer class="foot">
-    <p class="nav">
-      → Builder's view: <a href="raffle_business_api_flow_2.html">Raffle business — API journey</a><br>
-      → Engineering notes: <a href="raffle_blog.html">Making raffles a real business type on Whop</a>
-    </p>
+    <div class="foot__in">
+      <div class="more">Keep reading</div>
+      <a href="raffle_blog.html">Making raffles a real business type on Whop — engineering notes</a>
+      <a href="raffle_business_api_flow_2.html">Raffle business — API endpoints, step by step</a>
+    </div>
   </footer>
 
-</div>
 </body>
 </html>
