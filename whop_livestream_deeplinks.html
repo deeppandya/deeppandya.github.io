@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Whop — Livestream Deeplink Verification</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root{--bg:#0f1115;--card:#171a21;--line:#262b36;--fg:#e6e9ef;--mut:#9aa3b2;--accent:#5b8cff;--good:#34c759;--warn:#ff9f0a;--bad:#ff453a;--code:#0b0d12}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5;padding:24px;max-width:1040px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 4px}
+  h2{font-size:17px;margin:28px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  p,li{color:var(--fg)}
+  .mut{color:var(--mut);font-size:14px}
+  code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+  .warncard{border-color:rgba(255,159,10,.5);background:rgba(255,159,10,.08)}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+  td.num{color:var(--mut);white-space:nowrap}
+  td.p,th.p{text-align:center;white-space:nowrap}
+  .back{display:inline-block;color:var(--mut);text-decoration:none;font-size:13px;margin-bottom:12px}
+  .back:hover{color:var(--fg)}
+  a.dl{color:var(--accent);text-decoration:none;word-break:break-all;font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
+  a.dl:hover{text-decoration:underline}
+  .kv{color:var(--mut);font-size:13px}
+  .kv b{color:var(--fg);font-family:ui-monospace,Menlo,monospace}
+  details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:16px 0}
+  summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:15px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:'\25B8\00a0';color:var(--mut)}
+  details[open] summary::before{content:'\25BE\00a0'}
+  .dbody{padding:0 16px 16px}
+  .copy{cursor:pointer;border:1px solid var(--line);background:#1f2531;color:var(--mut);border-radius:6px;font-size:11px;padding:2px 7px;margin-left:6px;flex:none}
+  .copy:hover{color:var(--fg)}
+  .cmd{margin:8px 0;display:flex;gap:8px;align-items:flex-start;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+  .cmd code{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--mut);white-space:pre-wrap;word-break:break-all;user-select:all}
+  footer{margin-top:32px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:12px}
+</style>
+</head>
+<body>
+  <a class="back" href="whop_deeplinks.html">&larr; All Whop deeplinks</a>
+  <h1>Whop — Livestream Deeplink Verification</h1>
+  <p class="mut">Opening a livestream from a <code>whop.com</code> URL on <b>web</b>, <b>iOS</b>, and <b>Android</b>. Tap a link (with the app installed &amp; signed in) to verify. Platform support is shown per row.</p>
+
+  <div class="card">
+    <div class="kv">Company: <b>biz_PGJNLBob5Fui43</b> &nbsp;·&nbsp; Livestream experience: <b>exp_ABC123</b> &nbsp;·&nbsp; Feed: <b>lfeed_XYZ789</b> &nbsp;·&nbsp; Affiliate: <b>deeppandya91</b></div>
+    <div class="kv" style="margin-top:6px">Replace the IDs above with a real live company / experience / feed before testing.</div>
+  </div>
+
+  <div class="card warncard">
+    <b>⚠️ The shared link doesn't open the Android app.</b>
+    <p class="mut" style="margin:6px 0 0">All three Share buttons emit the same URL — <code>https://whop.com/live/{feedId}</code> (web <code>share-livestream-modal.tsx</code>, iOS <code>LivestreamViewModel.swift</code>, Android <code>LivestreamViewModel.kt</code>). <b>Web</b> resolves it (<code>/live/[feedId]</code> → experience) and <b>iOS</b> resolves it (parses <code>lfeed_</code>, fetches the shared experience), but <b>Android</b> has no <code>/live/</code> parser case or App-Links entry, so a tapped <code>/live/…</code> link opens the <b>browser</b>. Android only deep-links the hub form <code>/hub/{company}/livestreaming-{experienceId}/app</code>. See row&nbsp;3.</p>
+  </div>
+
+  <h2>Deeplinks</h2>
+  <table>
+    <thead><tr><th>#</th><th>Case</th><th class="p">Web</th><th class="p">iOS</th><th class="p">Android</th><th>Deeplink</th><th>Expected result</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="num">1</td><td>Open livestream (hub route)</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
+        <td><a class="dl" href="https://whop.com/hub/biz_PGJNLBob5Fui43/livestreaming-exp_ABC123/app">https://whop.com/hub/biz_PGJNLBob5Fui43/livestreaming-exp_ABC123/app</a></td>
+        <td>Launches the livestream for experience <code>exp_ABC123</code>. Web redirects hub&rarr;experience; iOS launches when the experience's app is the livestreaming app; Android parses <code>livestreaming-{experienceId}</code> and fires <code>StartLiveStreamEvent</code>.</td>
+      </tr>
+      <tr>
+        <td class="num">2</td><td>Hub route + affiliate</td><td class="p">✅</td><td class="p">✅</td><td class="p">✅</td>
+        <td><a class="dl" href="https://whop.com/hub/biz_PGJNLBob5Fui43/livestreaming-exp_ABC123/app?a=deeppandya91">https://whop.com/hub/biz_PGJNLBob5Fui43/livestreaming-exp_ABC123/app?a=deeppandya91</a></td>
+        <td>Same as #1, carrying affiliate <code>deeppandya91</code> (captured by all three parsers).</td>
+      </tr>
+      <tr>
+        <td class="num">3</td><td>Public share link <span class="mono">(/live/)</span></td><td class="p">✅</td><td class="p">✅</td><td class="p">❌</td>
+        <td><a class="dl" href="https://whop.com/live/lfeed_XYZ789">https://whop.com/live/lfeed_XYZ789</a></td>
+        <td><b>This is the URL all three Share buttons emit.</b> Web resolves the feed&rarr;experience and redirects; iOS parses <code>lfeed_</code> and fetches the shared experience; Android has no <code>/live/</code> parser or App-Links entry, so it falls through to the browser.</td>
+      </tr>
+      <tr>
+        <td class="num">4</td><td>Company route (livestream experience)</td><td class="p">✅</td><td class="p">✅</td><td class="p">⚠️</td>
+        <td><a class="dl" href="https://whop.com/some-company/livestreaming-exp_ABC123/app">https://whop.com/some-company/livestreaming-exp_ABC123/app</a></td>
+        <td>Web &amp; iOS open the livestream (iOS checks the experience's app id). Android's livestream parser requires the literal <code>hub/</code> segment, so this falls to the generic experience parser rather than the livestream launch path.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="mut">Android path shape: <code>/hub/{companyId}/livestreaming-{experienceId}/app</code> (the <code>hub/</code> segment + <code>livestreaming-</code> prefix on the 3rd segment are what the parser keys on). A push notification can override the target by sending <code>clientData.livestream_feed_id</code>; otherwise the parsed experience id is used as the fallback. iOS &amp; web additionally resolve the bare <code>/live/{feedId}</code> share link.</p>
+
+  <details>
+    <summary>Android testing (develop build)</summary>
+    <div class="dbody">
+      <p class="mut">Build: <code>com.whop.whopapp.develop</code> &nbsp;·&nbsp; signed in as <b>@deeppandya91</b>.</p>
+
+      <p><b>Browser tap.</b> The hub route matches the manifest App-Links pattern <code>/.*/.*/app</code>, so a tapped <code>/hub/…/livestreaming-…/app</code> link opens the app. On the <code>develop</code> build, verification isn't automatic — enable it once in <i>Settings → Apps → Whop (develop) → Open by default → Open supported links → add whop.com</i>. The <code>/live/{feedId}</code> share link is <b>not</b> registered, so it always opens the browser.</p>
+
+      <p><b>adb (always works, bypasses link verification).</b> Pushes the URL as the <code>deeplink</code> extra. Only the hub route resolves to a livestream launch; <code>/live/…</code> is parsed as <code>null</code> and no activity is started:</p>
+      <pre>adb shell "am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity \
+  --es deeplink '&lt;URL&gt;'"</pre>
+
+      <p class="mut">Per-case adb commands (work regardless of App-Links state):</p>
+      <div id="android-adb"></div>
+
+      <p class="mut" style="margin-top:14px"><b>Android-specific behavior notes</b></p>
+      <ul class="mut">
+        <li>Livestream deep links don't navigate via a route — the handler fires <code>Event.StartLiveStreamEvent</code> to launch <code>LivestreamActivity</code>.</li>
+        <li>Target resolution: <code>clientData.livestream_feed_id</code> (push payload) wins; otherwise the parsed <code>experienceId</code> is the fallback.</li>
+        <li>Deep links delivered while the app is <b>backgrounded/cold</b> are replayed once the UI is ready.</li>
+        <li>The <code>/live/{feedId}</code> share link is not handled — to deep-link a specific feed today, use the hub route or a notification carrying <code>livestream_feed_id</code>.</li>
+      </ul>
+    </div>
+  </details>
+
+  <footer>Livestream deeplink parity across web, iOS, and Android. Generated for on-device QA.</footer>
+
+<script>
+  // Build per-case adb commands inside the Android section from the table's deeplinks.
+  function buildAndroidAdb(){
+    var host=document.getElementById('android-adb');
+    document.querySelectorAll('table a.dl').forEach(function(a){
+      var cmd="adb shell \"am start -n com.whop.whopapp.develop/com.whop.whopapp.MainActivity --es deeplink '"+a.href+"'\"";
+      var wrap=document.createElement('div'); wrap.className='cmd';
+      var code=document.createElement('code'); code.textContent=cmd;
+      var btn=document.createElement('button'); btn.className='copy'; btn.textContent='copy';
+      btn.onclick=function(){ navigator.clipboard.writeText(cmd).then(function(){btn.textContent='copied!';setTimeout(function(){btn.textContent='copy';},1200);}); };
+      wrap.appendChild(code); wrap.appendChild(btn); host.appendChild(wrap);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', buildAndroidAdb);
+</script>
+</body>
+</html>
