@@ -167,19 +167,19 @@
     <section class="step reveal">
       <div class="step__head">
         <span class="step__n">01</span>
-        <h3 class="step__title">Start a raffle business</h3>
-        <span class="pill proxy">proxy</span>
+        <h3 class="step__title">Create your account</h3>
+        <span class="pill have">native</span>
       </div>
       <div class="ide">
-        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">01_business<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /companies</span></div>
-        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /companies</span><span class="cl">{ <span class="c-k">"title"</span>: <span class="c-s">"Jack's Raffles"</span>, <span class="c-k">"email"</span>: <span class="c-s">"jack@example.com"</span> }</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"biz_8s2Kd…"</span> }</span></div></div>
+        <div class="ide__bar"><span class="dots"><i></i><i></i><i></i></span><span class="ide__tab">01_account<span class="dot">.http</span></span><span class="ide__spacer"></span><span class="ide__where">POST /api/v1/accounts</span></div>
+        <div class="ide__body"><div class="code-lines"><span class="cl"><span class="c-m">POST</span> /api/v1/accounts</span><span class="cl">{ <span class="c-k">"email"</span>: <span class="c-s">"jack@example.com"</span> }</span><span class="cl"><span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"biz_8s2Kd…"</span> }</span></div></div>
       </div>
       <p class="note">
-        <b>One call, not two.</b> The public <code>accounts</code> and <code>companies</code> endpoints are the same
-        underlying <code>Bot</code> model — the native <code>/api/v1/accounts</code> controller literally exposes
-        bots as "accounts," and both route through <code>Companies::CreateCompany</code>. Use
-        <code>companies.create</code> as the canonical call. (End-user sign-in is separate — that's OAuth, not a
-        business object.)
+        <b>"account" = the business.</b> The native <code>/api/v1/accounts</code> controller exposes the
+        <code>Bot</code> model publicly as an "account" — a business account is a parent bot. It's the newest,
+        dated-versioned surface and matches the app's "Create account" step. The proxy <code>companies</code>
+        resource is the same Bot by another name (platforms use it to enroll connected accounts under themselves),
+        so pick one — no need for both. End-user sign-in is separate — that's OAuth.
       </p>
     </section>
 
@@ -256,8 +256,8 @@
       → Engineering notes: <a href="raffle_blog.html">Making raffles a real business type on Whop</a>
     </p>
     <p class="src">
-      // native /api/v1: products · plans · checkout_configurations<br>
-      // GraphQL→REST proxy: companies (== accounts, same Bot model) · files<br>
+      // native /api/v1: accounts · products · plans · checkout_configurations<br>
+      // GraphQL→REST proxy: files · companies (same Bot as accounts — proxy alias)<br>
       // build: POST /raffles (deadline + draw + close worker) — no resource exists today
     </p>
   </footer>
