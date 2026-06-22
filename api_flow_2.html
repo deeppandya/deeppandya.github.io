@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raffle Business — API Journey</title>
+<style>
+  :root {
+    --ground: #10151c;
+    --surface: #19212b;
+    --surface-2: #1d2732;
+    --code-bg: #0c1118;
+    --text: #e9ecf2;
+    --muted: #8a96a8;
+    --faint: #5a6678;
+    --line: rgba(255,255,255,0.09);
+    --line-strong: rgba(255,255,255,0.16);
+    --accent: #7c93ff;        /* structural / internal */
+    --accent-dim: rgba(124,147,255,0.28);
+    --have: #44c998;          /* exists / reuse */
+    --have-dim: rgba(68,201,152,0.16);
+    --build: #f6a23c;         /* must build — the boldness */
+    --build-dim: rgba(246,162,60,0.16);
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, "Cascadia Code", Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body.page {
+    margin: 0;
+    background-color: var(--ground);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px, 64px 64px;
+    background-position: -1px -1px;
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* keep the grid whisper-quiet */
+  body.page::before {
+    content: "";
+    position: fixed; inset: 0;
+    background: radial-gradient(120% 80% at 50% -10%, rgba(124,147,255,0.10), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  a { color: var(--accent); }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    padding: 22px 0 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .brand b { color: var(--text); font-weight: 600; }
+  .legend { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .pill {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+    padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+    border: 1px solid var(--line-strong);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .pill::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: currentColor; }
+  .pill.have { color: var(--have); border-color: var(--have-dim); background: var(--have-dim); }
+  .pill.internal { color: var(--accent); border-color: var(--accent-dim); background: rgba(124,147,255,0.10); }
+  .pill.build { color: var(--build); border-color: var(--build-dim); background: var(--build-dim); }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 64px 0 40px; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 20px;
+  }
+  .hero h1 {
+    font-family: var(--mono);
+    font-size: clamp(34px, 6vw, 62px);
+    line-height: 1.02; letter-spacing: -0.02em; font-weight: 650;
+    margin: 0 0 22px; max-width: 16ch;
+  }
+  .hero h1 .glow { color: var(--build); }
+  .hero p.lede { font-size: clamp(16px, 2.2vw, 20px); color: var(--muted); max-width: 60ch; margin: 0 0 40px; }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 14px; }
+  .stat {
+    flex: 1 1 150px; min-width: 140px;
+    border: 1px solid var(--line); border-radius: 16px;
+    background: var(--surface); padding: 18px 18px 16px;
+  }
+  .stat .n { font-family: var(--mono); font-size: 34px; line-height: 1; font-weight: 650; }
+  .stat .n.go { color: var(--have); }
+  .stat .n.todo { color: var(--build); }
+  .stat .l { font-size: 12.5px; color: var(--muted); margin-top: 8px; letter-spacing: 0.01em; }
+
+  /* ---------- section scaffolding ---------- */
+  .section { padding: 44px 0; border-top: 1px solid var(--line); }
+  .section > .head { margin-bottom: 28px; }
+  .section .kicker {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 10px;
+  }
+  .section h2 {
+    font-family: var(--mono); font-weight: 600; letter-spacing: -0.01em;
+    font-size: clamp(22px, 3vw, 30px); margin: 0; max-width: 24ch;
+  }
+  .section .sub { color: var(--muted); margin: 12px 0 0; max-width: 64ch; }
+
+  /* ---------- api shape trio ---------- */
+  .trio { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .trio .card { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); padding: 20px; }
+  .trio .card h3 { font-family: var(--mono); font-size: 15px; margin: 0 0 6px; }
+  .trio .card .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.08em; }
+  .trio .card p { font-size: 13.5px; color: var(--muted); margin: 12px 0 0; }
+  .trio .card code { font-family: var(--mono); font-size: 12px; color: var(--text); background: var(--code-bg); padding: 1px 6px; border-radius: 6px; }
+  .trio-note { font-size: 13.5px; color: var(--faint); margin: 18px 0 0; font-family: var(--mono); }
+
+  /* ---------- journey trace ---------- */
+  .journey { display: flex; flex-direction: column; gap: 38px; }
+  .step { display: grid; grid-template-columns: 56px 1fr; gap: 22px; position: relative; }
+  .step__marker { display: flex; justify-content: center; position: relative; }
+  .step:not(:last-child) .step__marker::before {
+    content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+    top: 50px; bottom: -42px; width: 2px; background: var(--line-strong);
+  }
+  .step__num {
+    width: 50px; height: 50px; border-radius: 14px;
+    border: 1px solid var(--accent-dim); background: var(--ground);
+    display: grid; place-items: center; position: relative; z-index: 1;
+    font-family: var(--mono); font-size: 17px; font-weight: 600; color: var(--accent);
+  }
+  .step__body { min-width: 0; padding-top: 4px; }
+  .step__title { font-family: var(--mono); font-size: 19px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .step__phase { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+  .step__what { color: var(--muted); margin: 8px 0 18px; max-width: 64ch; font-size: 14.5px; }
+
+  .calls { display: flex; flex-direction: column; gap: 12px; }
+  .call { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+  .call.is-build { border-color: var(--build-dim); }
+  .call__head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 13px 16px; }
+  .call__op { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text); }
+  .call.is-build .call__op { color: var(--build); }
+  .call__where { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .call__spacer { flex: 1 1 0; min-width: 12px; }
+  .code { background: var(--code-bg); border-top: 1px solid var(--line); overflow-x: auto; }
+  .code pre { margin: 0; padding: 14px 16px; }
+  .code code { font-family: var(--mono); font-size: 12.5px; line-height: 1.65; white-space: pre; color: var(--text); display: block; }
+  .c-k { color: var(--accent); }      /* keyword / verb / field key */
+  .c-s { color: #d9b27c; }            /* string */
+  .c-n { color: #6fd0c0; }            /* number */
+  .c-d { color: var(--faint); }       /* comment / dim */
+  .c-r { color: var(--build); }       /* arrow / result */
+  .step__note {
+    margin: 14px 0 0; padding: 12px 14px; border-radius: 12px;
+    border: 1px dashed var(--line-strong); background: rgba(255,255,255,0.02);
+    font-size: 13px; color: var(--muted);
+  }
+  .step__note b { color: var(--text); font-weight: 600; }
+
+  /* ---------- build cards ---------- */
+  .builds { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+  .bcard { border: 1px solid var(--build-dim); border-radius: 16px; background: var(--surface); padding: 20px; position: relative; }
+  .bcard .num { font-family: var(--mono); font-size: 12px; color: var(--build); letter-spacing: 0.1em; }
+  .bcard h3 { font-family: var(--mono); font-size: 15.5px; margin: 8px 0 0; }
+  .bcard .api { font-family: var(--mono); font-size: 12px; color: var(--text); background: var(--code-bg); padding: 3px 8px; border-radius: 7px; display: inline-block; margin: 10px 0 0; }
+  .bcard p { font-size: 13.5px; color: var(--muted); margin: 12px 0 0; }
+  .bcard .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .chip { font-family: var(--mono); font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--muted); }
+  .chip.opt { color: var(--faint); }
+
+  /* ---------- table ---------- */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 13.5px; }
+  th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); font-weight: 500; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.svc { font-family: var(--mono); color: var(--text); white-space: nowrap; }
+  .tg { font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .tg.new { color: var(--build); background: var(--build-dim); }
+  .tg.reuse { color: var(--have); background: var(--have-dim); }
+
+  /* ---------- order manifest ---------- */
+  .manifest { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); overflow: hidden; }
+  .mrow { display: grid; grid-template-columns: 44px 1fr auto; gap: 14px; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+  .mrow:last-child { border-bottom: none; }
+  .mrow .mn { font-family: var(--mono); color: var(--faint); font-size: 13px; }
+  .mrow .mop { font-family: var(--mono); font-size: 13.5px; }
+  .mrow .mop small { color: var(--muted); font-family: var(--mono); }
+  .mrow.build .mop b { color: var(--build); }
+
+  /* ---------- footer ---------- */
+  .foot { padding: 40px 0 72px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13.5px; }
+  .foot h2 { font-family: var(--mono); font-size: 16px; color: var(--text); margin: 0 0 14px; }
+  .foot ul { margin: 0; padding-left: 18px; }
+  .foot li { margin: 7px 0; }
+  .foot .src { margin-top: 24px; font-family: var(--mono); font-size: 11.5px; color: var(--faint); line-height: 1.8; }
+  .foot .nav { margin-top: 22px; font-family: var(--mono); font-size: 12.5px; }
+
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 560px) {
+    .step { grid-template-columns: 40px 1fr; gap: 14px; }
+    .step__num { width: 38px; height: 38px; border-radius: 11px; font-size: 14px; }
+    .step:not(:last-child) .step__marker::before { top: 42px; }
+    .wrap { padding: 0 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+
+</head>
+<body class="page">
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="brand"><b>WHOP</b> · ENGINEERING &nbsp;/&nbsp; RAFFLE-BUSINESS LAUNCH</div>
+    <div class="legend">
+      <span class="pill have">Have · public REST</span>
+      <span class="pill internal">Have · internal GraphQL</span>
+      <span class="pill build">Build</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">API journey · raffle business</p>
+    <h1>From an item to a <span class="glow">live raffle</span>.</h1>
+    <p class="lede">
+      A seller lands on whop.com with one Charizard card, an e-bike, or a pile of Labubus and walks
+      seven steps to a live, ticketed raffle. Here is that journey rebuilt as the exact sequence of API
+      calls — what already ships and how to call it, and the raffle-shaped endpoints we still need to build.
+    </p>
+    <div class="stats">
+      <div class="stat"><div class="n">7</div><div class="l">journey steps</div></div>
+      <div class="stat"><div class="n">~13</div><div class="l">API calls, happy path</div></div>
+      <div class="stat"><div class="n go">9</div><div class="l">already shipped — reuse</div></div>
+      <div class="stat"><div class="n todo">5</div><div class="l">new endpoints to build</div></div>
+      <div class="stat"><div class="n todo">2</div><div class="l">new integrations</div></div>
+    </div>
+  </section>
+
+  <!-- API SHAPE -->
+  <section class="section reveal">
+    <div class="head">
+      <p class="kicker">First, how the surface is shaped</p>
+      <h2>Three ways an endpoint reaches a caller</h2>
+      <p class="sub">
+        Confirmed in the repo: Whop has one internal GraphQL API, and the public REST API is produced two ways.
+        A "new endpoint" means picking one of these lanes. The raffle journey leans on all three — and a few
+        steps don't need to be public at all.
+      </p>
+    </div>
+    <div class="trio">
+      <div class="card">
+        <span class="tag">LANE 1</span>
+        <h3>Native /api/v1</h3>
+        <p>Hand-written Rails controllers with dated versioning (<code>Api-Version-Date</code>). The newest, fastest path.</p>
+        <p><code>/products</code> · <code>/plans</code> · <code>/accounts</code> · <code>/users</code> · <code>/checkout_configurations</code></p>
+      </div>
+      <div class="card">
+        <span class="tag">LANE 2</span>
+        <h3>GraphQL → REST proxy</h3>
+        <p>~59 GraphQL resources are auto-translated to REST by <code>api_definition.rb</code>. Add a resource/action, get a path for free.</p>
+        <p><code>/companies</code> · <code>/files</code> · <code>/affiliates</code> · <code>/account_links</code> · <code>/webhooks</code> · <code>/shipments</code></p>
+      </div>
+      <div class="card">
+        <span class="tag">LANE 3</span>
+        <h3>Internal core GraphQL</h3>
+        <p>whop.com-only mutations, never published. Perfect for onboarding flows that don't need a developer contract.</p>
+        <p><code>createCompanyFromPrompt</code> · AI "design my page" · classification setters</p>
+      </div>
+    </div>
+    <p class="trio-note">// the public <span class="c-k">@whop/sdk</span> is generated from the OpenAPI that lanes 1 &amp; 2 produce — 65 resources, no raffle</p>
+  </section>
+
+  <!-- JOURNEY -->
+  <section class="section">
+    <div class="head">
+      <p class="kicker">The journey, call by call</p>
+      <h2>Seven steps, in order</h2>
+    </div>
+
+    <div class="journey">
+
+      <!-- STEP 1 -->
+      <article class="step reveal">
+        <div class="step__marker"><div class="step__num">01</div></div>
+        <div class="step__body">
+          <p class="step__phase">whop.com → sign up</p>
+          <h3 class="step__title">Create your seller account</h3>
+          <p class="step__what">
+            Self-serve sellers authenticate with OAuth and skip this. The platform path — building a raffle on
+            behalf of a seller — provisions an account directly.
+          </p>
+          <div class="calls">
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">accounts.create</span>
+                <span class="call__where">POST /api/v1/accounts</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · native</span>
+              </div>
+              <div class="code"><pre><code><span class="c-k">POST</span> /api/v1/accounts
+{
+  <span class="c-k">"email"</span>: <span class="c-s">"jack@example.com"</span>
+}
+<span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"biz_8s2Kd…"</span> }
+<span class="c-d"># native /api/v1 — not in the proxy. Self-serve users OAuth instead.</span></code></pre></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- STEP 2 -->
+      <article class="step reveal">
+        <div class="step__marker"><div class="step__num">02</div></div>
+        <div class="step__body">
+          <p class="step__phase">start a business</p>
+          <h3 class="step__title">Spin up the raffle business</h3>
+          <p class="step__what">
+            One call creates the company. The catch is the business <em>classification</em>:
+            <code>sweepstakes_raffles</code> exists, but it is flagged restricted — there's no clean public
+            field to set it, and it changes what the account is allowed to do.
+          </p>
+          <div class="calls">
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">companies.create</span>
+                <span class="call__where">POST /companies</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · proxy</span>
+              </div>
+              <div class="code"><pre><code><span class="c-k">POST</span> /companies
+{
+  <span class="c-k">"title"</span>: <span class="c-s">"Jack's Raffles"</span>,
+  <span class="c-k">"email"</span>: <span class="c-s">"jack@example.com"</span>
+}
+<span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"biz_8s2Kd…"</span> }</code></pre></div>
+            </div>
+          </div>
+          <p class="step__note">
+            <b>Compliance gate (blocker, not just an endpoint):</b> the matching classification
+            <code>sweepstakes_raffles</code> is <code>FINANCING_RESTRICTED</code> + <code>NON_DISCOVERABLE</code>
+            — hidden from Discover, no buy-now-pay-later — and raffles are legally regulated. It can't be set
+            through public REST today, and legal must sign off before launch.
+          </p>
+        </div>
+      </article>
+
+      <!-- STEP 3 -->
+      <article class="step reveal">
+        <div class="step__marker"><div class="step__num">03</div></div>
+        <div class="step__body">
+          <p class="step__phase">pick the prize</p>
+          <h3 class="step__title">Choose &amp; photograph the item</h3>
+          <p class="step__what">
+            The picker (Pokémon cards / e-bike / Robux / socks / Labubus) just pre-fills a title. Upload a photo,
+            then create the storefront — an access pass / "product". For physical prizes, turn on shipping-address
+            collection right here.
+          </p>
+          <div class="calls">
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">files.create → S3</span>
+                <span class="call__where">POST /files + PUT</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · proxy</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># 1 · ask for a presigned URL</span>
+<span class="c-k">POST</span> /files
+{ <span class="c-k">"filename"</span>: <span class="c-s">"charizard-psa10.png"</span>, <span class="c-k">"visibility"</span>: <span class="c-s">"public"</span> }
+<span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"file_…"</span>, <span class="c-k">"upload_url"</span>: <span class="c-s">"https://s3…"</span>, <span class="c-k">"upload_headers"</span>: {…} }
+<span class="c-d"># 2 · PUT the bytes, then poll until upload_status == "ready"</span>
+<span class="c-k">PUT</span> {upload_url}   <span class="c-d">(body: image bytes)</span></code></pre></div>
+            </div>
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">products.create</span>
+                <span class="call__where">POST /api/v1/products</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · native</span>
+              </div>
+              <div class="code"><pre><code><span class="c-k">POST</span> /api/v1/products
+{
+  <span class="c-k">"company_id"</span>: <span class="c-s">"biz_8s2Kd…"</span>,
+  <span class="c-k">"title"</span>: <span class="c-s">"Charizard PSA 10 — Raffle"</span>,
+  <span class="c-k">"headline"</span>: <span class="c-s">"1,000 tickets · winner drawn live"</span>,
+  <span class="c-k">"route"</span>: <span class="c-s">"charizard-raffle"</span>,
+  <span class="c-k">"collect_shipping_address"</span>: <span class="c-n">true</span>
+}
+<span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"prod_…"</span> }
+<span class="c-d"># false for digital prizes (Robux). collect_shipping_address is real.</span></code></pre></div>
+            </div>
+            <div class="call is-build">
+              <div class="call__head">
+                <span class="call__op">coreDesignProductPage</span>
+                <span class="call__where">internal GraphQL · NEW</span>
+                <span class="call__spacer"></span>
+                <span class="pill build">build</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># NEW · the "prompt to design my product page" step has no endpoint</span>
+<span class="c-k">mutation</span> { coreDesignProductPage(
+  productId: <span class="c-s">"prod_…"</span>,
+  prompt: <span class="c-s">"clean trading-card hype page, gold + black"</span>,
+  referenceFileIds: [<span class="c-s">"file_…"</span>]
+) { fileIds copy { headline body } } }
+<span class="c-d"># reuses the ads image+copy pipeline (Gemini/Flux + Claude) already wired</span></code></pre></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- STEP 4 -->
+      <article class="step reveal">
+        <div class="step__marker"><div class="step__num">04</div></div>
+        <div class="step__body">
+          <p class="step__phase">price the entry</p>
+          <h3 class="step__title">Set ticket price &amp; supply</h3>
+          <p class="step__what">
+            A "ticket" is approximated by a one-time plan with limited stock. Price and inventory are real and
+            shipped — but a plan models <em>one fixed-price entry</em>, not odds, per-user caps, or "buy 10 tickets."
+          </p>
+          <div class="calls">
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">plans.create</span>
+                <span class="call__where">POST /api/v1/plans</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · native</span>
+              </div>
+              <div class="code"><pre><code><span class="c-k">POST</span> /api/v1/plans
+{
+  <span class="c-k">"product_id"</span>: <span class="c-s">"prod_…"</span>,
+  <span class="c-k">"plan_type"</span>: <span class="c-s">"one_time"</span>,
+  <span class="c-k">"initial_price"</span>: <span class="c-s">"5"</span>,        <span class="c-d">// ← ticket price</span>
+  <span class="c-k">"currency"</span>: <span class="c-s">"usd"</span>,
+  <span class="c-k">"stock"</span>: <span class="c-n">1000</span>,              <span class="c-d">// ← total tickets</span>
+  <span class="c-k">"image"</span>: { <span class="c-k">"id"</span>: <span class="c-s">"file_…"</span> }
+}
+<span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"plan_…"</span>, <span class="c-k">"purchase_url"</span>: <span class="c-s">"…"</span> }</code></pre></div>
+            </div>
+            <div class="call is-build">
+              <div class="call__head">
+                <span class="call__op">raffles.tickets.create</span>
+                <span class="call__where">POST /raffles/{id}/tickets · NEW</span>
+                <span class="call__spacer"></span>
+                <span class="pill build">build</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># NEW · "buy N tickets" in one purchase — plans only do 1 fixed entry</span>
+<span class="c-k">POST</span> /raffles/raf_…/tickets
+{ <span class="c-k">"quantity"</span>: <span class="c-n">10</span>, <span class="c-k">"max_per_user"</span>: <span class="c-n">50</span> }
+<span class="c-r">→</span> { <span class="c-k">"entries"</span>: <span class="c-n">10</span>, <span class="c-k">"payment_id"</span>: <span class="c-s">"pay_…"</span>, <span class="c-k">"odds"</span>: <span class="c-s">"10 / 1000"</span> }
+<span class="c-d"># plans have allow_multiple_quantity, but no per-user cap or odds</span></code></pre></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- STEP 5 -->
+      <article class="step reveal">
+        <div class="step__marker"><div class="step__num">05</div></div>
+        <div class="step__body">
+          <p class="step__phase">set the deadline · the core gap</p>
+          <h3 class="step__title">Choose when the raffle closes</h3>
+          <p class="step__what">
+            This is where existing primitives run out. A plan's <code>expiration_days</code> is a membership expiry
+            <em>after</em> purchase — not a sales cutoff. There is no "entries close at" concept anywhere, and
+            nothing auto-stops sales or triggers a draw.
+          </p>
+          <div class="calls">
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">plans.update (stopgap)</span>
+                <span class="call__where">PATCH /api/v1/plans/{id}</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · but fake</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># works, but Whop will NOT act on it — you'd run your own scheduler</span>
+<span class="c-k">PATCH</span> /api/v1/plans/plan_…
+{ <span class="c-k">"metadata"</span>: { <span class="c-k">"raffle_ends_at"</span>: <span class="c-s">"2026-07-01T00:00:00Z"</span> } }
+<span class="c-r">→</span> stored as a string · no enforcement, no auto-close</code></pre></div>
+            </div>
+            <div class="call is-build">
+              <div class="call__head">
+                <span class="call__op">raffles.create</span>
+                <span class="call__where">POST /raffles · NEW</span>
+                <span class="call__spacer"></span>
+                <span class="pill build">build</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># NEW · the raffle primitive — collapses steps 3–5, owns the deadline</span>
+<span class="c-k">POST</span> /raffles
+{
+  <span class="c-k">"company_id"</span>: <span class="c-s">"biz_…"</span>, <span class="c-k">"image_id"</span>: <span class="c-s">"file_…"</span>,
+  <span class="c-k">"ticket_price"</span>: <span class="c-s">"5"</span>, <span class="c-k">"currency"</span>: <span class="c-s">"usd"</span>,
+  <span class="c-k">"total_tickets"</span>: <span class="c-n">1000</span>, <span class="c-k">"max_tickets_per_user"</span>: <span class="c-n">50</span>,
+  <span class="c-k">"ends_at"</span>: <span class="c-s">"2026-07-01T00:00:00Z"</span>,
+  <span class="c-k">"winner_count"</span>: <span class="c-n">1</span>, <span class="c-k">"draw_mode"</span>: <span class="c-s">"auto_on_close"</span>
+}
+<span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"raf_…"</span>, <span class="c-k">"checkout_url"</span>: <span class="c-s">"…"</span>, <span class="c-k">"status"</span>: <span class="c-s">"open"</span> }
+<span class="c-d"># a worker closes sales + draws at ends_at — the missing backbone</span></code></pre></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- STEP 6 -->
+      <article class="step reveal">
+        <div class="step__marker"><div class="step__num">06</div></div>
+        <div class="step__body">
+          <p class="step__phase">share the raffle</p>
+          <h3 class="step__title">Send the link &amp; recruit partners</h3>
+          <p class="step__what">
+            Sharing a checkout link and paying affiliates are both shipped and public. The raw link is free — it's
+            just the product route from step 03.
+          </p>
+          <div class="calls">
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">checkoutConfigurations.create</span>
+                <span class="call__where">POST /api/v1/checkout_configurations</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · native</span>
+              </div>
+              <div class="code"><pre><code><span class="c-k">POST</span> /api/v1/checkout_configurations
+{ <span class="c-k">"plan_id"</span>: <span class="c-s">"plan_…"</span>, <span class="c-k">"redirect_url"</span>: <span class="c-s">"https://jacks-raffles.com/thanks"</span> }
+<span class="c-r">→</span> { <span class="c-k">"purchase_url"</span>: <span class="c-s">"https://whop.com/c/…"</span> }
+<span class="c-d"># a ready-to-share ticket-checkout link</span></code></pre></div>
+            </div>
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">affiliates.create</span>
+                <span class="call__where">POST /affiliates</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · proxy</span>
+              </div>
+              <div class="code"><pre><code><span class="c-k">POST</span> /affiliates
+{ <span class="c-k">"username"</span>: <span class="c-s">"hype_partner"</span>, <span class="c-k">"payout_type"</span>: <span class="c-s">"percentage"</span>,
+  <span class="c-k">"fee"</span>: <span class="c-s">"10"</span>, <span class="c-k">"access_pass_ids"</span>: [<span class="c-s">"prod_…"</span>] }
+<span class="c-r">→</span> share link: whop.com/charizard-raffle?a=hype_partner</code></pre></div>
+            </div>
+          </div>
+          <p class="step__note">
+            <b>Web link = no API call.</b> <code>whop.com/charizard-raffle</code> is just the product route.
+            Geo-targeted promo (Meta / TikTok) reuses the existing ads stack if the seller wants paid reach.
+          </p>
+        </div>
+      </article>
+
+      <!-- STEP 7 -->
+      <article class="step reveal">
+        <div class="step__marker"><div class="step__num">07</div></div>
+        <div class="step__body">
+          <p class="step__phase">after the drop · draw &amp; deliver</p>
+          <h3 class="step__title">Pick a winner, get paid, ship the prize</h3>
+          <p class="step__what">
+            The deadline hits. Three of these are shipped (payouts, entry tracking, shipping); the two that
+            <em>make it a raffle</em> — a provably-fair draw and entry transparency — don't exist yet.
+          </p>
+          <div class="calls">
+            <div class="call is-build">
+              <div class="call__head">
+                <span class="call__op">raffles.draw</span>
+                <span class="call__where">POST /raffles/{id}/draw · NEW</span>
+                <span class="call__spacer"></span>
+                <span class="pill build">build</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># NEW · pick winner(s), provably fair — RNG seed + audit record</span>
+<span class="c-k">POST</span> /raffles/raf_…/draw
+{ <span class="c-k">"winner_count"</span>: <span class="c-n">1</span> }
+<span class="c-r">→</span> { <span class="c-k">"winners"</span>: [{ <span class="c-k">"user_id"</span>: <span class="c-s">"user_…"</span> }],
+     <span class="c-k">"proof"</span>: { <span class="c-k">"seed"</span>: <span class="c-s">"beacon:#4521…"</span>, <span class="c-k">"hash"</span>: <span class="c-s">"sha256:…"</span> } }</code></pre></div>
+            </div>
+            <div class="call is-build">
+              <div class="call__head">
+                <span class="call__op">raffles.entries.list</span>
+                <span class="call__where">GET /raffles/{id}/entries · NEW</span>
+                <span class="call__spacer"></span>
+                <span class="pill build">build</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># NEW · odds / entry transparency before and after the draw</span>
+<span class="c-k">GET</span> /raffles/raf_…/entries
+<span class="c-r">→</span> { <span class="c-k">"total_entries"</span>: <span class="c-n">1000</span>,
+     <span class="c-k">"entrants"</span>: [{ <span class="c-k">"user_id"</span>: <span class="c-s">"user_…"</span>, <span class="c-k">"tickets"</span>: <span class="c-n">10</span> }] }</code></pre></div>
+            </div>
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">accountLinks.create</span>
+                <span class="call__where">POST /account_links</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · proxy</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># KYC + bank so ticket revenue can land</span>
+<span class="c-k">POST</span> /account_links
+{ <span class="c-k">"company_id"</span>: <span class="c-s">"biz_…"</span>, <span class="c-k">"use_case"</span>: <span class="c-s">"account_onboarding"</span>,
+  <span class="c-k">"refresh_url"</span>: <span class="c-s">"…/refresh"</span>, <span class="c-k">"return_url"</span>: <span class="c-s">"…/done"</span> }
+<span class="c-r">→</span> { <span class="c-k">"url"</span>: <span class="c-s">"https://…onboarding…"</span> }</code></pre></div>
+            </div>
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">webhooks.create</span>
+                <span class="call__where">POST /webhooks</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · proxy</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># each payment.succeeded = a new ticket / entry</span>
+<span class="c-k">POST</span> /webhooks
+{ <span class="c-k">"url"</span>: <span class="c-s">"https://jacks-raffles.com/webhooks"</span>,
+  <span class="c-k">"events"</span>: [<span class="c-s">"payment.succeeded"</span>] }</code></pre></div>
+            </div>
+            <div class="call">
+              <div class="call__head">
+                <span class="call__op">shipments.create</span>
+                <span class="call__where">POST /shipments</span>
+                <span class="call__spacer"></span>
+                <span class="pill have">have · proxy</span>
+              </div>
+              <div class="code"><pre><code><span class="c-d"># ship the prize + attach tracking (EasyPost-backed)</span>
+<span class="c-k">POST</span> /shipments
+{ <span class="c-k">"company_id"</span>: <span class="c-s">"biz_…"</span>, <span class="c-k">"payment_id"</span>: <span class="c-s">"pay_winner_…"</span>,
+  <span class="c-k">"tracking_code"</span>: <span class="c-s">"1Z999AA10123456784"</span> }</code></pre></div>
+            </div>
+          </div>
+          <p class="step__note">
+            <b>The draw is the heart of it.</b> A raffle people trust needs verifiable randomness — a signed
+            external beacon (random.org / drand) or on-chain VRF — plus an immutable audit record. That's the one
+            genuinely new <em>integration</em>, not just a new endpoint.
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- BUILD -->
+  <section class="section reveal">
+    <div class="head">
+      <p class="kicker">The build list</p>
+      <h2>New endpoints we need</h2>
+      <p class="sub">One primitive carries the journey; four actions hang off it. The AI page-design call is an optional accelerator. Everything else is reuse.</p>
+    </div>
+    <div class="builds">
+      <div class="bcard">
+        <span class="num">B1 · core</span>
+        <h3>Raffle primitive</h3>
+        <span class="api">POST /raffles</span>
+        <p>The first-class object. Owns ticket price, supply, per-user caps, <code>ends_at</code>, winner count &amp; draw mode. Collapses today's product + plan + metadata hack.</p>
+        <div class="meta"><span class="chip">native /api/v1</span><span class="chip">+ close worker</span><span class="chip">size: L</span></div>
+      </div>
+      <div class="bcard">
+        <span class="num">B2 · core</span>
+        <h3>Ticket purchase</h3>
+        <span class="api">POST /raffles/{id}/tickets</span>
+        <p>Buy N entries in one payment with a per-user cap and live odds. Plans can't model multi-entry odds.</p>
+        <div class="meta"><span class="chip">reuses payments</span><span class="chip">size: M</span></div>
+      </div>
+      <div class="bcard">
+        <span class="num">B3 · core</span>
+        <h3>Provably-fair draw</h3>
+        <span class="api">POST /raffles/{id}/draw</span>
+        <p>Pick winner(s) from a verifiable random seed and write an immutable audit record. No drawing service exists today.</p>
+        <div class="meta"><span class="chip">+ RNG beacon</span><span class="chip">async</span><span class="chip">size: M</span></div>
+      </div>
+      <div class="bcard">
+        <span class="num">B4 · core</span>
+        <h3>Entry transparency</h3>
+        <span class="api">GET /raffles/{id}/entries</span>
+        <p>Entrants, ticket counts &amp; current odds — what makes a raffle feel legitimate to buyers.</p>
+        <div class="meta"><span class="chip">read-only</span><span class="chip">size: S</span></div>
+      </div>
+      <div class="bcard">
+        <span class="num">B5 · optional</span>
+        <h3>AI page design</h3>
+        <span class="api">coreDesignProductPage</span>
+        <p>The "prompt to design my product page" step. Wraps the ads image + copy pipeline that already exists. Internal GraphQL.</p>
+        <div class="meta"><span class="chip opt">internal</span><span class="chip opt">reuses ads AI</span><span class="chip opt">size: S</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS -->
+  <section class="section reveal">
+    <div class="head">
+      <p class="kicker">External services</p>
+      <h2>What to integrate vs. reuse</h2>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Need</th><th>Status</th><th>Pick / source</th><th>Used for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="svc">Verifiable randomness</td><td><span class="tg new">new</span></td><td>random.org (signed) · drand beacon · Chainlink VRF</td><td>provably-fair winner draw + proof</td></tr>
+          <tr><td class="svc">Eligibility / age check</td><td><span class="tg new">new</span></td><td>Persona / Veriff <em>(optional, jurisdiction-gated)</em></td><td>raffle legal eligibility by region</td></tr>
+          <tr><td class="svc">Identity / KYC</td><td><span class="tg reuse">reuse</span></td><td>Sumsub (already wired for payouts)</td><td>seller payout onboarding</td></tr>
+          <tr><td class="svc">Payments</td><td><span class="tg reuse">reuse</span></td><td>Whop checkout + PSPs (live)</td><td>ticket sales</td></tr>
+          <tr><td class="svc">Shipping &amp; tracking</td><td><span class="tg reuse">reuse</span></td><td>EasyPost (via /shipments)</td><td>deliver physical prizes</td></tr>
+          <tr><td class="svc">Image generation</td><td><span class="tg reuse">reuse</span></td><td>Gemini · OpenAI · Flux (wired in ads)</td><td>prize page imagery</td></tr>
+          <tr><td class="svc">Copywriting</td><td><span class="tg reuse">reuse</span></td><td>Claude (already wired)</td><td>headlines, hype copy</td></tr>
+          <tr><td class="svc">Storage</td><td><span class="tg reuse">reuse</span></td><td>S3 / Files module</td><td>prize photos &amp; assets</td></tr>
+          <tr><td class="svc">Paid reach</td><td><span class="tg reuse">reuse</span></td><td>Meta + TikTok (live)</td><td>geo-targeted promotion</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ORDER MANIFEST -->
+  <section class="section reveal">
+    <div class="head">
+      <p class="kicker">The ordering, condensed</p>
+      <h2>End-to-end call sequence</h2>
+      <p class="sub">The happy path a seller triggers, in order. Consumer-side ticket buying sits between launch and the draw.</p>
+    </div>
+    <div class="manifest">
+      <div class="mrow"><span class="mn">01</span><span class="mop"><b>accounts.create</b> <small>· seller account (or OAuth)</small></span><span class="pill have">have</span></div>
+      <div class="mrow"><span class="mn">02</span><span class="mop"><b>companies.create</b> <small>· raffle business + classification</small></span><span class="pill have">have</span></div>
+      <div class="mrow"><span class="mn">03</span><span class="mop"><b>files.create</b> + PUT <small>· prize photo</small></span><span class="pill have">have</span></div>
+      <div class="mrow"><span class="mn">04</span><span class="mop"><b>products.create</b> <small>· storefront + shipping toggle</small></span><span class="pill have">have</span></div>
+      <div class="mrow build"><span class="mn">05</span><span class="mop"><b>raffles.create</b> <small>· price · supply · deadline · draw mode</small></span><span class="pill build">build</span></div>
+      <div class="mrow"><span class="mn">06</span><span class="mop"><b>checkoutConfigurations.create</b> <small>· shareable ticket link</small></span><span class="pill have">have</span></div>
+      <div class="mrow"><span class="mn">07</span><span class="mop"><b>affiliates.create</b> <small>· partner share link</small></span><span class="pill have">have</span></div>
+      <div class="mrow build"><span class="mn">08</span><span class="mop"><b>raffles.tickets.create</b> <small>· buyer purchases N entries</small></span><span class="pill build">build</span></div>
+      <div class="mrow"><span class="mn">09</span><span class="mop"><b>accountLinks.create</b> <small>· payout KYC</small></span><span class="pill have">have</span></div>
+      <div class="mrow"><span class="mn">10</span><span class="mop"><b>webhooks.create</b> <small>· track entries</small></span><span class="pill have">have</span></div>
+      <div class="mrow build"><span class="mn">11</span><span class="mop"><b>raffles.draw</b> <small>· provably-fair winner</small></span><span class="pill build">build</span></div>
+      <div class="mrow"><span class="mn">12</span><span class="mop"><b>shipments.create</b> <small>· deliver the prize</small></span><span class="pill have">have</span></div>
+    </div>
+  </section>
+
+  <!-- FOOT -->
+  <footer class="foot">
+    <h2>Open questions to settle</h2>
+    <ul>
+      <li>Is a raffle a first-class <code>/raffles</code> resource, or a thin façade over product + plan? (Recommend first-class — the deadline + draw have no home otherwise.)</li>
+      <li>Randomness source — signed random.org / drand beacon (cheap, off-chain) vs on-chain VRF (maximal trust, more ops)?</li>
+      <li>Compliance: who owns the legal review for <code>sweepstakes_raffles</code>, and which jurisdictions ship in v1?</li>
+      <li>Do third-party developers get <code>/raffles</code> in public REST, or is it whop.com-only at launch?</li>
+    </ul>
+    <p class="nav">→ Companion writeup: <a href="raffle_blog.html">Making raffles a real business type on Whop</a> · sibling journey: <a href="local_service_api.html">Local service business</a></p>
+    <p class="src">
+      // verified in repo · graphql_rest_proxy/api_definition.rb (59 resources) · api_v1_context_middleware.rb (native resources)<br>
+      // models/plan.rb (stock, one_time, expiration_days) · access_pass_metadata.rb (collect_shipping_address) · bot_metadata.rb + business_models.rb (sweepstakes_raffles flags)<br>
+      // confirmed: no raffle/sweepstakes/draw model, table, service, or endpoint exists today · @whop/sdk = 65 resources, none raffle
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making raffles a real business type on Whop</title>
+<style>
+  :root {
+    --ground: #10151c;
+    --surface: #19212b;
+    --code-bg: #0c1118;
+    --text: #e9ecf2;
+    --muted: #8a96a8;
+    --faint: #5a6678;
+    --line: rgba(255,255,255,0.09);
+    --line-strong: rgba(255,255,255,0.16);
+    --accent: #7c93ff;
+    --accent-dim: rgba(124,147,255,0.28);
+    --have: #44c998;
+    --have-dim: rgba(68,201,152,0.16);
+    --build: #f6a23c;
+    --build-dim: rgba(246,162,60,0.16);
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, "Cascadia Code", Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body.page {
+    margin: 0;
+    background-color: var(--ground);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px, 64px 64px;
+    background-position: -1px -1px;
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  body.page::before {
+    content: "";
+    position: fixed; inset: 0;
+    background: radial-gradient(120% 80% at 50% -10%, rgba(124,147,255,0.10), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  .wrap { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--accent); }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; padding: 22px 0 18px; border-bottom: 1px solid var(--line);
+  }
+  .brand { font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  .brand b { color: var(--text); font-weight: 600; }
+  .backlink { font-family: var(--mono); font-size: 12px; }
+
+  .hero { padding: 60px 0 30px; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
+  .hero h1 { font-family: var(--mono); font-size: clamp(30px, 5vw, 48px); line-height: 1.06; letter-spacing: -0.02em; font-weight: 650; margin: 0 0 18px; }
+  .hero h1 .glow { color: var(--build); }
+  .meta-line { font-family: var(--mono); font-size: 12.5px; color: var(--faint); letter-spacing: 0.04em; }
+
+  article { padding: 18px 0 10px; }
+  article h2 { font-family: var(--mono); font-weight: 600; font-size: clamp(20px, 3vw, 26px); letter-spacing: -0.01em; margin: 46px 0 4px; }
+  article h3 { font-family: var(--mono); font-weight: 600; font-size: 16px; color: var(--text); margin: 30px 0 0; }
+  article p { font-size: 16.5px; color: #cfd6e2; margin: 16px 0; }
+  article p.lede { font-size: 19px; color: var(--muted); }
+  article strong { color: var(--text); }
+  article ul { margin: 16px 0; padding-left: 22px; }
+  article li { font-size: 16px; color: #cfd6e2; margin: 9px 0; }
+  article code { font-family: var(--mono); font-size: 13.5px; background: var(--code-bg); padding: 2px 7px; border-radius: 6px; color: var(--text); }
+  .divider { height: 1px; background: var(--line); border: 0; margin: 8px 0; }
+
+  .callout {
+    border: 1px solid var(--line-strong); border-left: 3px solid var(--accent);
+    border-radius: 12px; background: rgba(124,147,255,0.06);
+    padding: 16px 18px; margin: 26px 0; font-size: 15.5px; color: #cfd6e2;
+  }
+  .callout.build { border-left-color: var(--build); background: var(--build-dim); }
+  .callout.warn { border-left-color: #e8736b; background: rgba(232,115,107,0.10); }
+  .callout b { color: var(--text); }
+
+  .code { background: var(--code-bg); border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; margin: 22px 0; }
+  .code pre { margin: 0; padding: 16px 18px; }
+  .code code { font-family: var(--mono); font-size: 13px; line-height: 1.7; white-space: pre; color: var(--text); display: block; background: none; padding: 0; }
+  .c-k { color: var(--accent); }
+  .c-s { color: #d9b27c; }
+  .c-n { color: #6fd0c0; }
+  .c-d { color: var(--faint); }
+  .c-r { color: var(--build); }
+
+  .ledger { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 26px 0; }
+  .lrow { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); align-items: center; }
+  .lrow:last-child { border-bottom: none; }
+  .lrow span:first-child { font-family: var(--mono); font-size: 13.5px; }
+  .tag { font-family: var(--mono); font-size: 11px; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+  .tag.have { color: var(--have); background: var(--have-dim); }
+  .tag.build { color: var(--build); background: var(--build-dim); }
+
+  .pull { font-family: var(--mono); font-size: clamp(18px, 2.6vw, 22px); line-height: 1.35; color: var(--text); border-left: 3px solid var(--build); padding: 4px 0 4px 20px; margin: 34px 0; letter-spacing: -0.01em; }
+
+  .foot { padding: 40px 0 72px; border-top: 1px solid var(--line); margin-top: 40px; color: var(--muted); font-size: 13.5px; }
+  .foot .nav { font-family: var(--mono); font-size: 13px; }
+  .foot .src { margin-top: 18px; font-family: var(--mono); font-size: 11.5px; color: var(--faint); line-height: 1.8; }
+
+  @media (max-width: 560px) { .wrap { padding: 0 16px; } }
+</style>
+</head>
+<body class="page">
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="brand"><b>WHOP</b> · ENGINEERING NOTES</div>
+    <div class="backlink"><a href="api_flow_2.html">← API journey</a></div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Product engineering · new business type</p>
+    <h1>Making raffles a <span class="glow">real business type</span> on Whop</h1>
+    <p class="meta-line">Draft · what it actually takes to ship a self-serve raffle seller</p>
+  </section>
+
+  <article>
+    <p class="lede">
+      Someone has one Charizard PSA 10, a spare e-bike, or a box of Labubus, and they want to raffle it: sell
+      1,000 tickets at $5, draw a winner live, ship the prize. On paper that's a tiny product. In practice it
+      asks a sharp question of our platform — <strong>how much of a brand-new business type can we stand up on the
+      APIs we already have, and where do we have to build?</strong>
+    </p>
+
+    <p>
+      We traced the seller's path call by call against the live codebase. The encouraging headline: roughly
+      three-quarters of the journey is reuse. The honest headline: the quarter that's missing is the quarter that
+      makes a raffle a <em>raffle</em>.
+    </p>
+
+    <h2>The surface we're building on</h2>
+    <p>
+      Whop exposes its public API two ways, both backed by one internal GraphQL core. There's a native
+      <code>/api/v1</code> layer of hand-written Rails controllers (products, plans, accounts, users, checkout
+      configurations), and a GraphQL→REST proxy that auto-translates ~59 resources into REST for free (companies,
+      files, affiliates, account links, webhooks, shipments, and more). Everything public is bundled into the
+      generated <code>@whop/sdk</code> — 65 resources today. None of them is a raffle.
+    </p>
+    <p>
+      That distinction matters because "add an endpoint" isn't one task. It's a choice between a native controller,
+      a proxy resource, or a whop.com-only internal mutation that never ships to developers at all. The raffle
+      journey touches all three.
+    </p>
+
+    <h2>What already works</h2>
+    <p>
+      Most of the scaffolding a raffle needs is just commerce, and Whop is good at commerce. The seller can:
+    </p>
+    <ul>
+      <li>create an account and a company (<code>accounts.create</code>, <code>companies.create</code>);</li>
+      <li>upload a prize photo to S3 through the Files module and attach it;</li>
+      <li>create a product with <code>collect_shipping_address</code> flipped on for physical prizes;</li>
+      <li>create a one-time plan with <code>stock: 1000</code> — a fixed-price, limited-supply "ticket";</li>
+      <li>mint a shareable checkout link and recruit affiliates on a revenue share;</li>
+      <li>onboard for payouts (KYC via the existing Sumsub wiring), receive entry webhooks, and ship the prize with EasyPost-backed tracking.</li>
+    </ul>
+
+    <div class="code"><pre><code><span class="c-d">// a "ticket" today: a capped one-time plan</span>
+<span class="c-k">POST</span> /api/v1/plans
+{
+  <span class="c-k">"product_id"</span>: <span class="c-s">"prod_…"</span>,
+  <span class="c-k">"plan_type"</span>: <span class="c-s">"one_time"</span>,
+  <span class="c-k">"initial_price"</span>: <span class="c-s">"5"</span>,
+  <span class="c-k">"currency"</span>: <span class="c-s">"usd"</span>,
+  <span class="c-k">"stock"</span>: <span class="c-n">1000</span>
+}</code></pre></div>
+
+    <p>
+      Run down that list and it reads like a working raffle. It isn't — it's a working <em>store</em> that sells
+      1,000 identical $5 items. The difference is everything a buyer cares about.
+    </p>
+
+    <h2>Where it breaks</h2>
+    <p>
+      Three things make a raffle a raffle, and Whop models none of them today.
+    </p>
+
+    <h3>1. A deadline that actually does something</h3>
+    <p>
+      A plan has <code>expiration_days</code>, but that's when a buyer's <em>membership</em> expires after purchase
+      — not when sales stop. There is no "entries close at" concept anywhere in the model, and nothing that
+      automatically halts sales or kicks off a draw at a point in time. You can stash a date in
+      <code>metadata</code>, but Whop will never read it. You'd be running your own scheduler outside the platform.
+    </p>
+
+    <h3>2. Tickets as entries, not as line items</h3>
+    <p>
+      A plan models one fixed-price entry. Real raffles let someone buy ten tickets in one go, cap how many any
+      single person can hold, and show live odds. Plans have an <code>allow_multiple_quantity</code> flag, but no
+      per-user cap and no notion of odds. "10 out of 1,000" isn't a quantity multiplier — it's a different object.
+    </p>
+
+    <h3>3. A draw people can trust</h3>
+    <p>
+      This is the big one. There is no winner-selection service in the codebase — no RNG, no drawing, nothing.
+      And for a raffle, "pick a random row" isn't good enough. Buyers handing over money for odds need
+      <strong>verifiable fairness</strong>: a seed from a signed external beacon, a published hash, an immutable
+      audit record anyone can check. That's not a nice-to-have; without it, it's indistinguishable from a scam.
+    </p>
+
+    <div class="callout build">
+      <b>The shape of the fix:</b> make <code>raffle</code> a first-class object. A <code>POST /raffles</code>
+      primitive owns the price, the supply, the per-user cap, the <code>ends_at</code>, and the draw mode. A close
+      worker fires at the deadline. <code>POST /raffles/{id}/tickets</code> handles multi-entry buys with odds,
+      <code>POST /raffles/{id}/draw</code> does the provably-fair selection, and <code>GET /raffles/{id}/entries</code>
+      makes the odds public. Five endpoints; one of them carries the weight.
+    </div>
+
+    <div class="code"><pre><code><span class="c-d">// the primitive that gives the deadline and the draw a home</span>
+<span class="c-k">POST</span> /raffles
+{
+  <span class="c-k">"company_id"</span>: <span class="c-s">"biz_…"</span>, <span class="c-k">"image_id"</span>: <span class="c-s">"file_…"</span>,
+  <span class="c-k">"ticket_price"</span>: <span class="c-s">"5"</span>, <span class="c-k">"total_tickets"</span>: <span class="c-n">1000</span>,
+  <span class="c-k">"max_tickets_per_user"</span>: <span class="c-n">50</span>,
+  <span class="c-k">"ends_at"</span>: <span class="c-s">"2026-07-01T00:00:00Z"</span>,
+  <span class="c-k">"winner_count"</span>: <span class="c-n">1</span>, <span class="c-k">"draw_mode"</span>: <span class="c-s">"auto_on_close"</span>
+}
+<span class="c-r">→</span> { <span class="c-k">"id"</span>: <span class="c-s">"raf_…"</span>, <span class="c-k">"checkout_url"</span>: <span class="c-s">"…"</span>, <span class="c-k">"status"</span>: <span class="c-s">"open"</span> }</code></pre></div>
+
+    <p class="pull">
+      Three-quarters of a raffle is commerce we already ship. The last quarter — deadline, odds, a fair draw — is
+      the whole reason anyone calls it a raffle.
+    </p>
+
+    <h2>The build ledger</h2>
+    <div class="ledger">
+      <div class="lrow"><span>Account, company, files, product, plans</span><span class="tag have">reuse</span></div>
+      <div class="lrow"><span>Checkout link, affiliates, payouts KYC, webhooks, shipments</span><span class="tag have">reuse</span></div>
+      <div class="lrow"><span>POST /raffles — the primitive + close worker</span><span class="tag build">build</span></div>
+      <div class="lrow"><span>POST /raffles/{id}/tickets — multi-entry buys + odds</span><span class="tag build">build</span></div>
+      <div class="lrow"><span>POST /raffles/{id}/draw — provably-fair selection</span><span class="tag build">build</span></div>
+      <div class="lrow"><span>GET /raffles/{id}/entries — odds transparency</span><span class="tag build">build</span></div>
+      <div class="lrow"><span>coreDesignProductPage — AI page design (optional)</span><span class="tag build">build</span></div>
+    </div>
+
+    <h2>The two genuinely new dependencies</h2>
+    <p>
+      Most of what a raffle needs externally, we already pay for: PSPs for payments, Sumsub for KYC, EasyPost for
+      shipping, the ads image-and-copy AI pipeline for the prize page. The draw is the exception. Verifiable
+      randomness is a real integration decision — a signed <code>random.org</code> response or a
+      <code>drand</code> beacon is cheap and off-chain; an on-chain VRF is maximally trustworthy but heavier to
+      operate. The second new dependency is conditional: jurisdiction-gated age/eligibility verification, only if
+      compliance requires it per region.
+    </p>
+
+    <h2>The thing that isn't an endpoint</h2>
+    <div class="callout warn">
+      <b>Raffles are legally regulated, and the platform already knows it.</b> The matching classification,
+      <code>sweepstakes_raffles</code>, is flagged <code>FINANCING_RESTRICTED</code> and
+      <code>NON_DISCOVERABLE</code> in the backend — hidden from Discover, no buy-now-pay-later. There's no clean
+      public field to even set that classification today. Before a single line of <code>/raffles</code> ships,
+      legal owns the question of which jurisdictions we launch in and what eligibility rules apply.
+    </div>
+    <p>
+      That's the real lesson of the exercise. The engineering is tractable — one primitive, four actions, one new
+      integration. The gating risk on a new business type like this isn't the API surface. It's everything around
+      it: regulation, fairness people can verify, and trust we have to earn before we ask anyone to buy a ticket.
+    </p>
+
+    <h2>Recommendation</h2>
+    <p>
+      Build the raffle as a first-class resource rather than bolting metadata onto plans. The deadline and the draw
+      have nowhere else to live, and faking them in <code>metadata</code> pushes core behavior off-platform where
+      we can't guarantee fairness or timing. Start whop.com-only behind the compliance review; expose
+      <code>/raffles</code> to third-party developers once the legal and randomness stories are settled. Reuse
+      everything else exactly as-is.
+    </p>
+  </article>
+
+  <footer class="foot">
+    <p class="nav">→ The full call-by-call breakdown: <a href="api_flow_2.html">Raffle business — API journey</a></p>
+    <p class="src">
+      // grounded in repo · graphql_rest_proxy/api_definition.rb · api_v1_context_middleware.rb · models/plan.rb<br>
+      // access_pass_metadata.rb · bot_metadata.rb · business_models.rb · @whop/sdk (65 resources) · backend/public/openapi.json
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>
