@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Raffle Business — API Flow</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #141821;
+    --panel-2: #1b202b;
+    --border: #262d3a;
+    --text: #e6e9ef;
+    --muted: #9aa4b2;
+    --accent: #ff6b35;
+    --green: #3fb950;
+    --amber: #d29922;
+    --blue: #58a6ff;
+    --code: #c9d1d9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 32px; }
+  h1 { font-size: 32px; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); margin: 0; }
+  h2 {
+    font-size: 22px; margin: 48px 0 16px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  h3 { font-size: 17px; margin: 28px 0 10px; color: var(--text); }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--accent); color: #fff; font-size: 15px; font-weight: 700; flex: none;
+  }
+  p { color: var(--text); }
+  a { color: var(--blue); }
+  code { font-family: "SF Mono", ui-monospace, Menlo, Monaco, "Cascadia Code", monospace; }
+  :not(pre) > code {
+    background: var(--panel-2); border: 1px solid var(--border);
+    padding: 1px 6px; border-radius: 5px; font-size: 13px; color: var(--code);
+  }
+  pre {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px 18px; overflow-x: auto; font-size: 13.5px; line-height: 1.55;
+    color: var(--code);
+  }
+  pre .cm { color: var(--muted); font-style: italic; }
+  pre .kw { color: #ff7b72; }
+  pre .st { color: #a5d6ff; }
+  pre .fn { color: var(--blue); }
+  pre .arrow { color: var(--green); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 8px; font-size: 14.5px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; }
+  td code { font-size: 12.5px; }
+  .pill { font-size: 12px; padding: 1px 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+  .pill.ok { background: rgba(63,185,80,.15); color: var(--green); border: 1px solid rgba(63,185,80,.3); }
+  .pill.warn { background: rgba(210,153,34,.15); color: var(--amber); border: 1px solid rgba(210,153,34,.3); }
+  .pill.new { background: rgba(255,107,53,.15); color: var(--accent); border: 1px solid rgba(255,107,53,.3); }
+  .callout {
+    border-left: 3px solid var(--amber); background: rgba(210,153,34,.08);
+    padding: 12px 16px; border-radius: 6px; margin: 20px 0; color: var(--text);
+  }
+  .callout.note { border-left-color: var(--blue); background: rgba(88,166,255,.08); }
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Raffle Business — API Flow</h1>
+  <p class="sub">Mapping the raffle seller journey onto Whop's existing public API (<code>@whop/sdk</code> / <code>/api/v1</code>), plus the gaps that need new endpoints.</p>
+</header>
+
+<h2>Journey → API mapping</h2>
+<table>
+  <thead><tr><th>Seller journey step</th><th>API call</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>1. Create account on Whop</td><td><code>whop.accounts.create</code></td><td><span class="pill ok">exists</span></td></tr>
+    <tr><td>2. Start a raffle business</td><td><code>whop.companies.create</code></td><td><span class="pill ok">exists</span></td></tr>
+    <tr><td>3. What item to raffle</td><td><code>whop.products.create</code></td><td><span class="pill ok">exists</span></td></tr>
+    <tr><td>4. Upload pic of your item</td><td><code>whop.files.create</code></td><td><span class="pill ok">exists</span></td></tr>
+    <tr><td>5. Choose min ticket $ amount</td><td><code>whop.plans.create</code></td><td><span class="pill warn">partial</span></td></tr>
+    <tr><td>6. Choose raffle deadline</td><td><em>plan metadata — no real API</em></td><td><span class="pill new">new</span></td></tr>
+    <tr><td>7. Send link to product raffle</td><td><code>whop.checkoutConfigurations.create</code></td><td><span class="pill ok">exists</span></td></tr>
+  </tbody>
+</table>
+
+<h2><span class="step-num">1</span> Create account on Whop</h2>
+<pre><span class="kw">const</span> account = <span class="kw">await</span> whop.accounts.<span class="fn">create</span>({
+  email: <span class="st">"jack@example.com"</span>,
+});
+<span class="cm">// <span class="arrow">→</span> account.id  (biz_xxx)</span>
+<span class="cm">// Self-serve sellers authenticate via OAuth instead; this is the platform path.</span></pre>
+
+<h2><span class="step-num">2</span> Start a raffle business</h2>
+<pre><span class="kw">const</span> company = <span class="kw">await</span> whop.companies.<span class="fn">create</span>({
+  email: <span class="st">"jack@example.com"</span>,
+  title: <span class="st">"Jack's Raffles"</span>,
+});
+<span class="cm">// <span class="arrow">→</span> company.id  (biz_xxx)  = your raffle business</span></pre>
+
+<h2><span class="step-num">3</span> What item do you want to put up for raffle?</h2>
+<p>The picker — Pokémon cards / Ebike / Robux giftcard / Socks / Labubus — just pre-fills the title.</p>
+<pre><span class="kw">const</span> raffle = <span class="kw">await</span> whop.products.<span class="fn">create</span>({
+  company_id: company.id,
+  title: <span class="st">"Charizard PSA 10 — Raffle"</span>,
+  headline: <span class="st">"1,000 tickets · winner drawn live"</span>,
+  collect_shipping_address: <span class="kw">true</span>,   <span class="cm">// physical prizes; false for Robux (digital)</span>
+});
+<span class="cm">// <span class="arrow">→</span> raffle.id  (prod_xxx)</span></pre>
+
+<h2><span class="step-num">4</span> Prompt to design product page (upload pic of your item)</h2>
+<pre><span class="kw">const</span> file = <span class="kw">await</span> whop.files.<span class="fn">create</span>({
+  filename: <span class="st">"charizard-psa10.png"</span>,
+  visibility: <span class="st">"public"</span>,
+});
+<span class="cm">// PUT the image bytes to file.upload_url with file.upload_headers</span>
+<span class="cm">// Poll whop.files.retrieve(file.id) until upload_status === "ready"</span>
+<span class="cm">// <span class="arrow">→</span> file.id</span></pre>
+<div class="callout note">The AI "design my product page" prompt is not a public endpoint yet. For now: upload a photo of your actual item.</div>
+
+<h2><span class="step-num">5</span> Choose raffle min ticket $ amount</h2>
+<pre><span class="kw">const</span> ticket = <span class="kw">await</span> whop.plans.<span class="fn">create</span>({
+  company_id: company.id,
+  product_id: raffle.id,
+  plan_type: <span class="st">"one_time"</span>,
+  initial_price: <span class="st">5.0</span>,               <span class="cm">// ← min ticket $ amount</span>
+  currency: <span class="st">"usd"</span>,
+  title: <span class="st">"Raffle Ticket"</span>,
+  stock: <span class="st">1000</span>,                      <span class="cm">// total tickets available (optional)</span>
+  image: { id: file.id },           <span class="cm">// ← prize photo from step 4</span>
+});
+<span class="cm">// <span class="arrow">→</span> ticket.id  (plan_xxx)  +  ticket.purchase_url</span></pre>
+
+<h2><span class="step-num">6</span> Choose raffle deadline</h2>
+<div class="callout">No real deadline primitive exists. <code>expiration_days</code> is membership expiry, <strong>not</strong> a raffle close date. Stopgap: store it in metadata and run your own scheduler to stop sales + draw. Whop will <strong>not</strong> auto-close it.</div>
+<pre><span class="kw">await</span> whop.plans.<span class="fn">update</span>(ticket.id, {
+  metadata: { raffle: <span class="st">"true"</span>, raffle_ends_at: <span class="st">"2026-07-01T00:00:00Z"</span> },
+});
+<span class="cm">// Proper fix → ends_at on a real /raffles resource (see "What's missing").</span></pre>
+
+<h2><span class="step-num">7</span> Send link to product raffle</h2>
+<pre><span class="kw">const</span> checkout = <span class="kw">await</span> whop.checkoutConfigurations.<span class="fn">create</span>({
+  company_id: company.id,
+  plan_id: ticket.id,
+});
+<span class="cm">// <span class="arrow">→</span> checkout.purchase_url  → share this in the group chat / socials</span>
+<span class="cm">// (or share ticket.purchase_url from step 5 directly)</span></pre>
+
+<h2>After the drop</h2>
+<p>Beyond the seller journey, but needed to actually get paid and deliver the prize.</p>
+<pre><span class="cm">// Payouts — KYC + bank so ticket revenue can land</span>
+<span class="kw">const</span> link = <span class="kw">await</span> whop.accountLinks.<span class="fn">create</span>({
+  company_id: company.id,
+  use_case: <span class="st">"account_onboarding"</span>,
+  refresh_url: <span class="st">"https://jacks-raffles.com/refresh"</span>,
+  return_url: <span class="st">"https://jacks-raffles.com/done"</span>,
+});
+
+<span class="cm">// Track entries (webhook on payment.succeeded = new ticket)</span>
+<span class="kw">await</span> whop.webhooks.<span class="fn">create</span>({
+  company_id: company.id,
+  url: <span class="st">"https://jacks-raffles.com/webhooks"</span>,
+});
+
+<span class="cm">// After drawing a winner, ship the prize + attach tracking</span>
+<span class="kw">await</span> whop.shipments.<span class="fn">create</span>({
+  company_id: company.id,
+  payment_id: <span class="st">"pay_winner_xxx"</span>,
+  tracking_code: <span class="st">"1Z999AA10123456784"</span>,
+});</pre>
+
+<h2>What's missing <span class="pill new">needs new endpoints</span></h2>
+<p>The journey works end-to-end on existing APIs <em>except</em> steps 6–7's raffle semantics. A raffle isn't a first-class object today — it's approximated by a plan + metadata + manual drawing. Real gaps:</p>
+<pre><span class="cm">// 1. The raffle primitive — collapses steps 3–7, owns deadline + ticketing</span>
+<span class="cm">//    → POST /raffles</span>
+<span class="cm">//      ({ company_id, item_template, image_id, ticket_price, currency,</span>
+<span class="cm">//         total_tickets, max_tickets_per_user, ends_at, winner_count, draw_mode }</span>
+<span class="cm">//       → { id: "raf_xxx", checkout_url, status })</span>
+
+<span class="cm">// 2. Buy N tickets in one purchase (plans only do 1 fixed-price entry)</span>
+<span class="cm">//    → POST /raffles/{id}/tickets   ({ quantity } → entries + payment)</span>
+
+<span class="cm">// 3. Auto-close at the deadline (step 6 has no real backing today)</span>
+<span class="cm">//    → ends_at on /raffles + a worker that closes & draws at the deadline</span>
+
+<span class="cm">// 4. Pick the winner — provably fair (RNG seed + audit record)</span>
+<span class="cm">//    → POST /raffles/{id}/draw   ({ winner_count } → winners[], proof)</span>
+
+<span class="cm">// 5. Entries / odds transparency</span>
+<span class="cm">//    → GET /raffles/{id}/entries   (entrants + ticket counts)</span>
+
+<span class="cm">// 6. AI design generation (step 4's "prompt to design product page")</span>
+<span class="cm">//    → POST /designs   ({ prompt, reference_file_ids[] } → file_ids)</span></pre>
+
+<div class="callout">Not an endpoint, but a blocker: the matching business classification <code>sweepstakes_raffles</code> is <strong>NON_DISCOVERABLE</strong> + <strong>FINANCING_RESTRICTED</strong> (hidden from Discover, payout limits), and raffles are legally regulated — loop in compliance before launch.</div>
+
+<footer>
+  Built on Whop's existing <code>/api/v1</code> public API. Steps 1–4 and 7 ship as-is; steps 5–6 are approximations; winner-draw and true ticketing need new endpoints.
+</footer>
+
+</div>
+</body>
+</html>
